@@ -1,0 +1,1378 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body style="margin:0">
+<meta charset="utf-8">
+<title>サルト納期カレンダー 公開版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,700;1,500;1,700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;900&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{--ground:#E8E9E4; --paper:#FAFAF7; --ink:#191D27; --ink2:#5C6170; --line:#D5D7D0; --navy:#223462; --navy-soft:#E2E6F0; --navy-deep:#1E2C52; --on-deep:#F3F1E9; --chalk:#E3B52C; --chalk-soft:#F8EDC8; --teal:#2E6B61; --teal-soft:#DBEAE5; --rust:#8E3B31; --rust-soft:#F0DEDA; --sat:#35609A; --stitch:rgba(34,52,98,.28); --pin:rgba(25,29,39,.04); --shadow:0 1px 0 rgba(25,29,39,.05),0 14px 30px -18px rgba(25,29,39,.35);}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#0F1217; --paper:#171B22; --ink:#ECEBE5; --ink2:#A3A8B3; --line:#2C323D; --navy:#AFC0E6; --navy-soft:#232D44; --navy-deep:#1F2A48; --on-deep:#F3F1E9; --chalk:#E8C457; --chalk-soft:#3A321C; --teal:#7BC2B2; --teal-soft:#1D3530; --rust:#E39A88; --rust-soft:#3B2521; --sat:#90B3DE; --stitch:rgba(175,192,230,.24); --pin:rgba(255,255,255,.025); --shadow:0 1px 0 rgba(0,0,0,.3),0 16px 32px -18px rgba(0,0,0,.7);}}
+:root[data-theme="dark"]{--ground:#0F1217; --paper:#171B22; --ink:#ECEBE5; --ink2:#A3A8B3; --line:#2C323D; --navy:#AFC0E6; --navy-soft:#232D44; --navy-deep:#1F2A48; --on-deep:#F3F1E9; --chalk:#E8C457; --chalk-soft:#3A321C; --teal:#7BC2B2; --teal-soft:#1D3530; --rust:#E39A88; --rust-soft:#3B2521; --sat:#90B3DE; --stitch:rgba(175,192,230,.24); --pin:rgba(255,255,255,.025); --shadow:0 1px 0 rgba(0,0,0,.3),0 16px 32px -18px rgba(0,0,0,.7);}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;font-size:15px;line-height:1.6;padding:24px 16px 48px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:22px}
+.mono{font-family:"DM Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--chalk);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand{display:grid;gap:2px}
+.brand small{font-size:11px;letter-spacing:.18em;color:var(--ink2)}
+.brand h1{margin:0;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:26px;letter-spacing:.04em}
+.hbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--paper);padding:7px 14px;border-radius:6px;font-size:13px}
+.btn:hover{border-color:var(--navy)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:var(--paper)}
+.btn.big{padding:9px 18px;font-size:14px;font-weight:700}
+.btn.sm{padding:3px 10px;font-size:12px}
+.smode{font-size:11px;color:var(--ink2)}
+
+/* 伝票 */
+.slip{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.slip::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:repeating-linear-gradient(90deg,var(--navy) 0 14px,transparent 14px 22px)}
+.slip-head{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;justify-content:space-between;padding:22px 22px 14px;border-bottom:1px dashed var(--line)}
+.recv{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap}
+.recv .lbl{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:30px;letter-spacing:.14em;line-height:1;padding:12px 18px 13px;border-radius:6px;background:var(--chalk);color:#1D2433;box-shadow:inset 0 0 0 2px rgba(29,36,51,.18),0 3px 0 rgba(29,36,51,.18)}
+.recv .lbl.other{background:var(--navy);color:var(--paper)}
+.recv .date{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:40px;line-height:1.1;letter-spacing:.02em}
+@media (max-width:520px){.recv .lbl{font-size:22px;padding:9px 12px 10px}.recv .date{font-size:28px}}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--chalk-soft);color:var(--ink);border:1px solid var(--chalk)}
+.tag.closed{background:var(--rust-soft);border-color:var(--rust)}
+.back{font-size:13px;border:0;background:none;color:var(--navy);text-decoration:underline;text-underline-offset:3px;padding:0}
+
+.group{padding:16px 22px 22px;display:grid;gap:10px;align-content:start}
+.group h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--ink2)}
+.rows{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.row{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);text-align:left;width:100%}
+.code{grid-row:span 2;width:40px;height:40px;border-radius:7px;display:grid;place-items:center;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:20px;background:var(--navy-soft);color:var(--navy)}
+.row .nm{font-size:13px;color:var(--ink2);display:flex;justify-content:space-between;gap:8px}
+.row .fin{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:21px;line-height:1.2;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.row .fin .left{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:12px;color:var(--ink2)}
+.warn{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14px;font-weight:700;color:var(--rust)}
+.man-tag{font-size:10px;font-weight:700;color:var(--rust);border:1px solid var(--rust);border-radius:3px;padding:0 4px}
+button.row:hover{border-color:var(--navy)}
+.c-toggle .chev{transition:transform .2s}
+.c-toggle[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.cdetail{grid-column:1/-1;display:grid;gap:6px;padding:10px 12px;border-radius:8px;background:var(--navy-soft)}
+.cline{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0;border-bottom:1px solid color-mix(in srgb,var(--navy) 18%,transparent)}
+.cline:last-of-type{border-bottom:0}
+.cline b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:17px;white-space:nowrap}
+.cline span{font-size:13px}
+.cfoot{display:flex;justify-content:flex-end}
+
+/* 週間 */
+.week{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);padding:18px 18px 20px;display:grid;gap:12px}
+.week-scroll{overflow-x:auto;padding-bottom:2px}
+.wgrid{display:grid;grid-template-columns:repeat(7,minmax(118px,1fr));gap:6px;min-width:840px}
+.wday{display:grid;align-content:start;gap:6px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--paper);text-align:left}
+.wday:hover{border-color:var(--navy)}
+.wday.recv{outline:2px solid var(--navy);outline-offset:-2px}
+.wday.closed{background:var(--ground);border-style:dashed}
+.whead{display:flex;align-items:baseline;justify-content:space-between;gap:4px;padding:4px 6px;border-radius:5px}
+.wday.bin .whead{background:repeating-linear-gradient(135deg,var(--rust-soft) 0 7px,var(--paper) 7px 14px)}
+.wday.today .whead{background:var(--chalk);color:#1D2433}
+.wdate{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:22px;line-height:1}
+.wdow{font-size:12px;font-weight:700}
+.wday.sun .wdow,.wday.hol .wdow{color:var(--rust)} .wday.sat .wdow{color:var(--sat)}
+.wday.today .wdow{color:#1D2433}
+.wtags{display:flex;flex-wrap:wrap;gap:3px;min-height:15px}
+.wline{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center;font-size:13px}
+.wline i{font-style:normal;display:grid;place-items:center;width:20px;height:20px;border-radius:4px;background:var(--navy-soft);color:var(--navy);font-family:"Zen Old Mincho",serif;font-weight:900;font-size:12px}
+.wline b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:15px;white-space:nowrap}
+.wline b.man{color:var(--rust)}
+.wline .warn{font-size:12px}
+.wsub{font-size:10px;color:var(--ink2);font-weight:500;margin-left:2px}
+
+/* カレンダー */
+.cal{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);padding:18px 18px 20px;display:grid;gap:12px}
+.cal-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.month{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:22px;display:flex;align-items:center;gap:10px}
+.nav{width:34px;height:34px;border-radius:6px;border:1px solid var(--line);background:var(--paper)}
+.hint{font-size:12px;color:var(--ink2);margin:0}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--paper)}
+.fchip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.grid-scroll,.mcal-wrap{overflow-x:auto}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(44px,1fr));gap:4px;min-width:320px}
+.dow{font-size:11px;text-align:center;color:var(--ink2);letter-spacing:.1em;padding:2px 0}
+.dow.sun{color:var(--rust)} .dow.sat{color:var(--sat)}
+.day{min-height:84px;border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:5px;display:flex;flex-direction:column;gap:3px;text-align:left;align-items:stretch}
+.day:hover,.mday:not(:disabled):hover{border-color:var(--navy)}
+.day.out{opacity:.38}
+.day.bin,.mday.bin{background:repeating-linear-gradient(135deg,var(--rust-soft) 0 7px,var(--paper) 7px 14px);border-color:color-mix(in srgb,var(--rust) 45%,var(--line))}
+.day.closed,.mday.closed{background:var(--ground);border-style:dashed}
+.day.closed .dn,.mday.closed .dn{opacity:.55}
+.bn{align-self:flex-start;font-size:9px;font-weight:700;line-height:1.5;padding:0 4px;border-radius:3px;background:var(--rust);color:var(--paper);white-space:nowrap}
+.bn.add{background:var(--teal)}
+.kn{align-self:flex-start;font-size:9px;line-height:1.5;padding:0 4px;border-radius:3px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.day.today .dn{background:var(--chalk);color:#1D2433;border-radius:4px;padding:0 5px}
+.day.recv,.mday.recv{outline:2px solid var(--navy);outline-offset:-2px}
+.mday.sel{outline:2px solid var(--chalk);outline-offset:-2px}
+.dn{font-size:13px;font-weight:700;align-self:flex-start}
+.day.sun .dn,.day.hol .dn,.mday.sun .dn,.mday.hol .dn{color:var(--rust)} .day.sat .dn,.mday.sat .dn{color:var(--sat)}
+.day.today .dn{color:#1D2433}
+.hn{font-size:9px;color:var(--rust);line-height:1.2;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.marks{display:flex;flex-wrap:wrap;gap:2px}
+.mk{font-size:10px;line-height:1;padding:3px 4px;border-radius:3px;font-weight:700;background:var(--navy);color:var(--paper)}
+.mk.c{background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy)}
+.mk.man{background:var(--rust)}
+@media (max-width:520px){.day{min-height:64px;padding:3px}.hn{display:none}.mk{font-size:9px;padding:2px 3px}.bn{font-size:8px;padding:0 2px}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--ink2)}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.note{font-size:12px;color:var(--ink2);margin:0}
+
+/* 確認カレンダー */
+.confirm{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--ground)}
+.calhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.calhead h4{margin:0}
+.mnav{display:flex;align-items:center;gap:6px;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:16px}
+.mnav .nav{width:30px;height:30px}
+.mcal{display:grid;grid-template-columns:repeat(7,minmax(58px,1fr));gap:3px;min-width:440px}
+.mday{min-height:60px;border:1px solid var(--line);border-radius:5px;background:var(--paper);padding:3px 4px;display:flex;flex-direction:column;gap:2px;text-align:left;align-items:stretch;font-size:11px}
+.mday:disabled{opacity:.4;cursor:default}
+.mday.out{visibility:hidden}
+.mday .ln{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;line-height:1.35;white-space:nowrap}
+.mday .ln.man{color:var(--rust);font-weight:700}
+.mday .big{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:16px;line-height:1.2;white-space:nowrap}
+.mday .big.man{color:var(--rust)}
+.mday .big small{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:10px}
+.mcal.single .mday{min-height:70px}
+.pickbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;background:var(--chalk-soft);border:1px solid var(--chalk)}
+.mcal.picking .mday:not(:disabled){border-color:var(--chalk)}
+.mk.fin{background:var(--navy);color:var(--paper)}
+dialog.pick{width:min(560px,calc(100vw - 24px))}
+.pknow{display:grid;gap:4px}
+.pkrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;border:1px solid var(--line);font-size:14px;background:var(--paper);text-align:left;width:100%}
+.pkrow.on{border-color:var(--chalk);background:var(--chalk-soft)}
+.pkrow b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:16px}
+.pkrow b.man{color:var(--rust)}
+.pkrow .r{display:flex;gap:8px;align-items:center}
+#pkCal{min-width:340px;grid-template-columns:repeat(7,minmax(44px,1fr))}
+#pkCal .mday{min-height:54px}
+.caltools{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;align-items:center}
+.h4row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.h4row h4{margin:0}
+.wk input:disabled+*,.wk label:has(input:disabled){opacity:.6}
+.editbtn[aria-pressed="true"],#mEditBtn[aria-pressed="true"]{background:var(--chalk-soft);border-color:var(--chalk);font-weight:700}
+.mcal.editing .mday:not(:disabled){border-color:color-mix(in srgb,var(--chalk) 70%,var(--line))}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;background:var(--paper);padding:6px 12px;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.medit{display:grid;gap:8px;padding:12px;border-radius:8px;background:var(--navy-soft)}
+.me-row{display:grid;grid-template-columns:minmax(90px,1fr) 150px auto auto;gap:8px;align-items:center}
+.me-row .auto{font-size:11px;color:var(--ink2);display:block}
+@media (max-width:520px){.me-row{grid-template-columns:1fr 1fr}.me-row button{grid-column:1/-1;justify-self:start}}
+
+/* フロント担当 */
+dialog{border:0;border-radius:12px;padding:0;background:var(--paper);color:var(--ink);width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 40px);overflow:auto;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(20,23,30,.5)}
+.dlg{display:grid;gap:16px;padding:20px 22px 22px}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg h3{margin:0;font-family:"Zen Old Mincho",serif;font-size:22px}
+.dlg h4{margin:0 0 6px;font-size:12px;letter-spacing:.14em;color:var(--ink2)}
+.x{border:0;background:none;font-size:24px;line-height:1;padding:4px 8px;color:var(--ink2)}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{border:0;background:none;padding:8px 12px;font-size:14px;border-bottom:2px solid transparent;white-space:nowrap;color:var(--ink2)}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--navy);font-weight:700}
+.pane{display:grid;gap:16px}
+.dlg input:not([type=checkbox]),.dlg select{font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);width:100%;min-width:0}
+.fieldrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fieldrow label{font-size:13px;color:var(--ink2)}
+.fieldrow input[type=date]{width:auto}
+.c-in{display:grid;grid-template-columns:minmax(70px,1fr) 170px minmax(120px,1.2fr);gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.c-in label{font-weight:700}
+@media (max-width:520px){.c-in{grid-template-columns:1fr 1fr}.c-hint{grid-column:1/-1}}
+.c-hint{font-size:12px;color:var(--ink2)} .c-hint.bad{color:var(--rust)}
+.days7{display:flex;flex-wrap:wrap;gap:6px}
+.dchip{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper)}
+.dchip.ok{border-color:var(--teal);background:var(--teal-soft)}
+.dchip.no{border-style:dashed;color:var(--ink2)}
+.dchip[aria-current="true"]{outline:2px solid var(--navy);outline-offset:1px}
+.set-row{display:grid;grid-template-columns:1fr 80px 100px;gap:6px;align-items:center;margin-bottom:6px}
+.set-row .lab{font-weight:700;font-size:14px}
+.monthnav{display:flex;align-items:center;gap:8px;font-family:"Zen Old Mincho",serif;font-size:19px;font-weight:900}
+.mstat{font-size:12px;color:var(--ink2)} .mstat.set{color:var(--teal)} .mstat.dirty{color:var(--rust);font-weight:700}
+.tbl{overflow-x:auto}
+.mtable{width:100%;border-collapse:collapse;font-size:13px}
+.mtable th,.mtable td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.mtable th{font-size:11px;color:var(--ink2);font-weight:500;letter-spacing:.08em}
+.mtable tbody tr{cursor:pointer}
+.mtable tr.inh td{color:var(--ink2)}
+.mtable tr.sel td{background:var(--navy-soft)}
+.ci-row{display:grid;grid-template-columns:1fr auto;gap:6px;margin-bottom:6px}
+.wk{display:flex;flex-wrap:wrap;gap:6px}
+.wk label,.chk{display:inline-flex;align-items:center;gap:5px;font-size:14px;padding:4px 10px;border:1px solid var(--line);border-radius:6px}
+.extra{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.extra button{font-size:12px;border:1px solid var(--rust);background:var(--rust-soft);border-radius:99px;padding:2px 10px}
+.addrow{display:flex;gap:6px}
+.addrow input{width:auto!important}
+.foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:14px;position:sticky;bottom:0;background:var(--paper);padding-bottom:4px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:8px;font-size:14px;z-index:10;max-width:calc(100vw - 32px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Sartoria テーマ ===== */
+body{background-color:var(--ground);background-image:repeating-linear-gradient(90deg,transparent 0 23px,var(--pin) 23px 24px)}
+.wrap{gap:28px}
+header{align-items:center;padding-block:0 18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:18px}
+.wordmark{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-style:italic;font-weight:700;font-size:60px;line-height:.9;color:var(--navy);letter-spacing:-.01em;position:relative;padding-bottom:8px}
+.wordmark::after{content:"";position:absolute;left:4px;right:4px;bottom:0;border-bottom:2px dashed var(--chalk)}
+.brand-txt{display:grid;gap:2px}
+.brand small{font-family:"DM Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.3em}
+.brand h1{font-size:22px;letter-spacing:.1em}
+@media (max-width:520px){.wordmark{font-size:44px}.brand{gap:12px}.brand h1{font-size:16px}}
+.btn{border-radius:999px;padding:8px 16px}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.big{padding:11px 24px;letter-spacing:.1em}
+.btn.sm{border-radius:999px}
+.smode{font-family:"DM Mono",ui-monospace,monospace;letter-spacing:.06em}
+
+.eyebrow{display:flex;align-items:baseline;gap:12px;margin:0;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:16px;letter-spacing:.12em;color:var(--ink)}
+.eyebrow em{font-family:"Bodoni Moda",serif;font-style:italic;font-weight:500;font-size:24px;letter-spacing:0;color:var(--navy)}
+.eyebrow::after{content:"";flex:1;border-bottom:1px dashed var(--stitch);transform:translateY(-5px)}
+
+/* 伝票＝下げ札 */
+.slip{display:grid;grid-template-columns:minmax(260px,330px) 1fr;border-radius:4px;background:var(--paper)}
+.slip::before{height:14px;background-color:var(--chalk);background-image:repeating-linear-gradient(90deg,rgba(25,29,39,.75) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,rgba(25,29,39,.4) 0 1px,transparent 1px 8px);background-size:100% 11px,100% 6px;background-repeat:no-repeat;z-index:1}
+.slip-head{flex-direction:column;flex-wrap:nowrap;align-items:flex-start;justify-content:center;gap:16px;padding:48px 28px 30px;background:var(--navy-deep);color:var(--on-deep);border-bottom:0;position:relative}
+.slip-head::before{content:"";position:absolute;top:30px;right:24px;width:14px;height:14px;border-radius:50%;background:var(--ground);box-shadow:inset 0 1px 3px rgba(0,0,0,.45)}
+.slip-head::after{content:"";position:absolute;inset:22px 10px 10px;border:1px dashed rgba(243,241,233,.22);border-radius:3px;pointer-events:none}
+.recv{flex-direction:column;align-items:flex-start;gap:14px}
+.recv .lbl{font-size:30px;padding:12px 20px 13px;border-radius:3px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.recv .lbl.other{background:var(--on-deep);color:#191D27}
+.recv .date{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:36px;line-height:1.15;color:var(--on-deep);text-wrap:balance}
+.slip-head .tag{background:var(--chalk);border-color:var(--chalk);color:#191D27}
+.slip-head .tag.closed{background:#F0DEDA;border-color:#F0DEDA}
+.back{color:var(--chalk);position:relative;z-index:1}
+.group{padding:36px 26px 26px;gap:16px}
+.rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.row{position:relative;border-radius:6px;padding:16px 18px;gap:4px 14px}
+.row::after{content:"";position:absolute;inset:4px;border:1px dashed var(--stitch);border-radius:4px;pointer-events:none}
+.code{width:auto;min-width:52px;height:38px;padding:0 12px;border-radius:999px;background:transparent;border:1.5px solid var(--navy);color:var(--navy);font-family:"Zen Old Mincho",serif;font-style:normal;font-weight:900;font-size:16px;white-space:nowrap}
+.row .nm{font-size:13px;letter-spacing:0;color:var(--ink);font-weight:700;align-items:center;flex-wrap:nowrap;gap:6px}
+.row .nm>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.row .nm .mono{font-size:13px;font-weight:700;color:var(--ink);background:var(--chalk-soft);border:1px solid var(--chalk);border-radius:999px;padding:2px 10px;white-space:nowrap;letter-spacing:0}
+.row .nm .chev{color:var(--ink2)}
+.row .fin{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:clamp(19px,2.1vw,25px);white-space:nowrap;flex-wrap:nowrap}
+.cdetail{background:var(--ground);border-radius:6px;padding:12px 16px}
+.cline b{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:18px}
+@media (max-width:760px){.slip{grid-template-columns:1fr}.slip-head{padding:42px 22px 24px}}
+@media (max-width:520px){.rows{grid-template-columns:1fr}.recv .date{font-size:28px}.group{padding:24px 16px 18px}}
+
+/* 週間・月間 */
+.week,.cal{border-radius:4px;padding:24px 24px 26px;gap:14px}
+.month{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:24px}
+.nav{border-radius:50%;background:transparent}
+.hint{letter-spacing:.02em}
+.wday{border-radius:6px;padding:10px;gap:8px}
+.whead{padding:6px 8px 7px;border-radius:3px}
+.wdate{font-family:"Bodoni Moda",serif;font-weight:700;font-size:26px}
+.wdow{font-family:"Zen Old Mincho",serif;font-weight:900}
+.wline i{width:auto;min-width:24px;padding:0 5px;border-radius:999px;background:transparent;border:1px solid var(--navy);font-family:"Zen Old Mincho",serif;font-style:normal;font-weight:900;font-size:10px;white-space:nowrap}
+.wline b{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:15px}
+.grid{gap:6px}
+.dow{font-family:"DM Mono",ui-monospace,monospace;letter-spacing:.2em}
+.day{border-radius:4px;min-height:92px}
+.day .dn,.mday .dn{font-family:"Bodoni Moda",serif;font-weight:700;font-size:16px}
+.day.today .dn{border-radius:999px;padding:0 7px}
+.mk{border-radius:999px;padding:3px 6px;font-family:"DM Mono",ui-monospace,monospace;font-weight:500}
+.bn,.kn{border-radius:999px;padding:0 6px}
+.fchip{border-radius:999px}
+.legend i{border-radius:999px}
+.note{letter-spacing:.02em}
+
+/* フロント担当 */
+dialog{border-radius:6px}
+.dlg h3{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700}
+.tab[aria-selected="true"]{border-color:var(--chalk)}
+.confirm{border:1px dashed var(--stitch);border-radius:6px}
+.mday{border-radius:4px}
+.mday .big{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700}
+.seg{border-radius:999px}
+.pkrow b{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700}
+.wdrow{grid-template-columns:1fr}
+.wdin{display:grid;grid-template-columns:repeat(7,minmax(38px,1fr));gap:4px}
+.wdin label{display:grid;gap:2px;text-align:center;font-size:11px;color:var(--ink2)}
+.wdin input{text-align:center;padding:5px 2px!important}
+.brandwrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.brandlbl{font-size:12px;letter-spacing:.16em;color:var(--ink2)}
+.brandbar{display:inline-flex;border:1.5px solid var(--navy);border-radius:999px;overflow:hidden;background:var(--paper)}
+.brandbar button{border:0;background:transparent;color:var(--navy);padding:10px 30px;font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:19px;letter-spacing:.04em;min-width:9em}
+.brandbar button+button{border-left:1.5px solid var(--navy)}
+.brandbar button[aria-pressed="true"]{background:var(--navy);color:var(--paper)}
+.brandbar button:not([aria-pressed="true"]):hover{background:var(--navy-soft)}
+.brandnow{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--paper);background:var(--navy);border-radius:999px;padding:2px 10px;margin-left:4px;transform:translateY(-2px)}
+@media (max-width:520px){.brandbar{width:100%}.brandbar button{flex:1;min-width:0;padding:10px 8px;font-size:17px}}
+.seg.wrap{flex-wrap:wrap;border-radius:12px}
+.kn.off-s{border-color:var(--navy);color:var(--navy);font-weight:700}
+.kn.off-r{border-color:var(--teal);color:var(--teal);font-weight:700}
+.kn.off-f{border-color:var(--rust);color:var(--rust);font-weight:700}
+.extra{display:grid;gap:8px}
+.offlist{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.offlist .kn{font-size:11px;padding:1px 8px}
+.rep-row{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);text-align:left;width:100%;margin-bottom:6px}
+.rep-row:hover{border-color:var(--navy)}
+.rep-name{font-weight:700;font-size:14px}
+.rep-sub{grid-column:2/-1;font-size:11px;color:var(--ink2)}
+.cat{display:inline-grid;place-items:center;min-width:34px;height:30px;padding:0 9px;border-radius:999px;border:1.5px solid var(--navy);color:var(--navy);font-family:"Zen Old Mincho",serif;font-style:normal;font-weight:900;font-size:13px;white-space:nowrap}
+.cat.e{border-color:var(--teal);color:var(--teal)}
+.cat.f{border-color:var(--rust);color:var(--rust)}
+.cat.min{border-color:var(--chalk);color:var(--chalk);font-size:13px}
+.cat.q{border-color:var(--ink2);color:var(--ink2);font-size:13px}
+.rep-item.var{border-color:var(--chalk);background:var(--chalk-soft)}
+.varpill{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--chalk);color:#191D27}
+.rep-fin{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:17px;white-space:nowrap}
+.rep-fin .warn{font-size:12px}
+.ntcbar{display:grid;gap:8px}
+.ntcbar .ntc-item{margin:0;border-left-width:4px;box-shadow:var(--shadow)}
+.ntcbar .ntc-head{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.ntcbar .ntc-tag{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:11px;letter-spacing:.14em;color:#191D27;background:var(--chalk);border-radius:999px;padding:1px 10px}
+.ntc-badge{display:inline-grid;place-items:center;min-width:19px;height:19px;border-radius:999px;background:var(--rust);color:var(--paper);font-size:11px;font-weight:700;padding:0 5px;margin-left:7px}
+.ntc-item{border:1px solid var(--line);border-left:3px solid var(--chalk);border-radius:6px;padding:12px 14px;background:var(--paper);margin-bottom:8px}
+.ntc-item h4{margin:0 0 4px;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:15px;letter-spacing:.04em}
+.ntc-item p{margin:0;white-space:pre-wrap;font-size:13.5px;line-height:1.7}
+.ntc-when{margin-top:6px;font-size:11px;color:var(--ink2)}
+.ntc-edit{display:grid;gap:6px;padding:10px;border:1px dashed var(--stitch);border-radius:6px;margin-bottom:8px}
+.ntc-edit textarea{font:inherit;font-size:14px;line-height:1.6;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);width:100%;min-height:84px;resize:vertical}
+.ntc-row2{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center}
+@media (max-width:520px){.ntc-row2{grid-template-columns:1fr 1fr}.ntc-row2 button{grid-column:1/-1;justify-self:start}}
+.per-g{border:1px solid var(--line);border-radius:6px;background:var(--paper);margin-bottom:10px;overflow:hidden}
+.per-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px;padding:9px 12px;background:var(--navy-soft)}
+.per-h b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:15px}
+.per-h .d{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:19px;white-space:nowrap}
+.per-h .d.warn{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14px}
+.per-r{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:7px 12px;border-top:1px solid var(--line);font-size:13px}
+.per-r .who{font-size:11px;color:var(--ink2);grid-column:1/-1}
+.per-r .it{font-size:11px;color:var(--ink2)}
+.per-basics{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px}
+.per-b{display:grid;gap:1px;padding:6px 10px;border:1px solid var(--line);border-radius:5px;font-size:11px;color:var(--ink2);min-width:92px}
+.per-b b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:13px;color:var(--ink)}
+.per-n{display:grid;gap:3px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);font-size:12.5px;color:var(--ink2);margin-bottom:8px}
+.per-n b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:13px;color:var(--ink)}
+.per-n.warnbox{border-color:var(--rust);background:var(--rust-soft)}
+.per-n.warnbox b{color:var(--rust)}
+.rep-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.rep-item{display:grid;gap:2px;padding:16px 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);text-align:left;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:17px}
+.rep-item:hover{border-color:var(--navy)}
+.rep-now{font-weight:700;font-size:14px}
+.rep-res{display:grid;gap:10px;padding:16px;border-radius:8px;background:var(--navy-soft)}
+.rep-res-top{display:flex;gap:12px;align-items:center}
+.rep-res-top .cat{min-width:52px;height:40px;font-size:16px}
+.rep-res-top b{display:block;font-size:16px}
+.rep-res-fin{font-family:"Bodoni Moda","Zen Old Mincho",serif;font-weight:700;font-size:30px;line-height:1.1;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rep-res-fin .left{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:12px;color:var(--ink2)}
+.rep-edit{display:grid;grid-template-columns:1fr 120px auto;gap:6px;align-items:center;margin-bottom:8px;padding:10px;border:1px dashed var(--stitch);border-radius:6px}
+.rep-edit .full{grid-column:1/-1}
+@media (max-width:520px){.rep-edit{grid-template-columns:1fr 1fr}.rep-edit button{grid-column:1/-1;justify-self:start}}
+#btnFront,#repEdit,#ntcEdit,#cGo,#saveMode,#repAdd,#repSave,#ntcAdd,#ntcSave,#ntcDirty,#repDirty{display:none!important}
+.pubnote{font-size:11px;color:var(--ink2);letter-spacing:.06em}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><div class="brand-txt"><small>SARTORIA · CONSEGNA</small><h1>サルト納期カレンダー</h1></div></div>
+    <div class="hbtns"><span class="pubnote">お客様用の納期のご案内</span><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
+  </header>
+
+  <div class="brandwrap">
+    <span class="brandlbl">表示するお店</span>
+    <div class="brandbar" role="group" aria-label="表示するお店" id="brandBar"><button type="button" data-b="a" id="brandA">サローネ</button><button type="button" data-b="r" id="brandR">ReSARTO</button></div>
+  </div>
+
+  <section class="ntcbar" id="ntcBar" aria-live="polite" hidden></section>
+
+  <section class="slip" aria-live="polite">
+    <div class="slip-head">
+      <div class="recv"><span class="lbl" id="recvLbl">本日受付</span><span class="date" id="recvDate"></span><span id="recvTag"></span></div>
+      <button class="back" id="btnToday" type="button" hidden>今日の受付に戻す</button>
+    </div>
+    <div class="group">
+      <h2 class="eyebrow"><em>Consegna</em>出来上がり日<span class="brandnow" id="brandNow"></span></h2>
+      <div class="rows" id="abcRows"></div>
+    </div>
+  </section>
+
+  <section class="week">
+    <h2 class="eyebrow"><em>Settimana</em>週間早見</h2>
+    <div class="cal-top">
+      <div class="month"><button class="nav" id="wPrev" type="button" aria-label="前の週">‹</button><span id="wLbl"></span><button class="nav" id="wNext" type="button" aria-label="次の週">›</button></div>
+      <button class="back" id="wToday" type="button" hidden>今日からの1週間に戻す</button>
+    </div>
+    <p class="hint">その日に受付した場合の仕上がり日です。日付をタップすると上の伝票が切り替わります。</p>
+    <div class="week-scroll"><div class="wgrid" id="wGrid"></div></div>
+  </section>
+
+  <section class="cal">
+    <h2 class="eyebrow"><em>Calendario</em>月間カレンダー</h2>
+    <div class="cal-top">
+      <div class="month"><button class="nav" id="prev" type="button" aria-label="前の月">‹</button><span id="monthLbl"></span><button class="nav" id="next" type="button" aria-label="次の月">›</button></div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <p class="hint">日付をタップすると、その日に受付した場合の仕上がり日が上の伝票とカレンダーに表示されます。</p>
+    <div class="grid-scroll"><div class="grid" id="grid"></div></div>
+    <div class="legend">
+      <span><i style="background:var(--chalk)"></i>今日</span>
+      <span><i style="outline:2px solid var(--navy);outline-offset:-2px;background:var(--paper)"></i>受付日</span>
+      <span><i style="background:repeating-linear-gradient(135deg,var(--rust-soft) 0 3px,var(--paper) 3px 6px);border:1px solid var(--rust)"></i>ワニナル便の日</span>
+      <span><i style="background:var(--ground);border:1px dashed var(--ink2)"></i>定休日・休業日</span>
+      <span><i style="background:var(--navy)"></i>納期ごとの仕上がり</span>
+      <span><i style="background:var(--rust)"></i>手で修正した仕上がり</span>
+      <span><i style="background:var(--navy-soft);border:1px solid var(--navy)"></i>変動 仕上がり</span>
+    </div>
+    <p class="note">納期の日数は月ごと、変動の仕上がり日は毎日「フロント担当」から入力します。</p>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<dialog id="front" aria-labelledby="frontTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="frontTitle">フロント担当</h3><button class="x" type="button" id="frontClose" aria-label="閉じる">×</button></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" type="button" id="tab-c" data-t="c">変動（毎日入力）</button>
+      <button class="tab" role="tab" type="button" id="tab-m" data-t="m">納期の月間設定</button>
+      <button class="tab" role="tab" type="button" id="tab-s" data-t="s">便・休業日・名前</button>
+    </div>
+
+    <!-- C -->
+    <section class="pane" id="pane-c" role="tabpanel" aria-labelledby="tab-c">
+      <div class="fieldrow"><label for="cDay">受付日</label><input type="date" id="cDay"><span class="mstat" id="cStat"></span></div>
+      <div id="cInputs"></div>
+      <div class="fieldrow"><button class="btn" type="button" id="cCopy">前回と同じ日数で入れる</button><span class="note">空欄のままの項目はトップに「未入力」と出ます。</span></div>
+      <div class="confirm">
+        <div class="calhead"><h4>確認カレンダー</h4><div class="mnav"><button class="nav" type="button" id="cCalPrev" aria-label="前の月">‹</button><span id="cCalLbl"></span><button class="nav" type="button" id="cCalNext" aria-label="次の月">›</button></div></div>
+        <div class="chips"><span class="note">直す項目（変動）：</span><span class="chips" id="cChips"></span></div>
+        <p class="note">項目を選んで日付をタップすると、その日を仕上がり日にします（選んだ後は次の項目に進みます）。</p>
+        <div class="mcal-wrap"><div class="mcal" id="cCal"></div></div>
+      </div>
+      <div><h4>直近の入力状況</h4><div class="days7" id="cRecent"></div></div>
+      <div class="foot"><button class="btn" type="button" id="cClear">この日の入力を消す</button><div class="hbtns"><span class="mstat dirty" id="cDirty" hidden>未保存</span><button class="btn primary" type="button" id="cSave">保存する</button></div></div>
+    </section>
+
+    <!-- 納期の月間設定 -->
+    <section class="pane" id="pane-m" role="tabpanel" aria-labelledby="tab-m" hidden>
+      <div class="fieldrow" style="justify-content:space-between">
+        <div class="monthnav"><button class="nav" type="button" id="mPrev" aria-label="前の月">‹</button><span id="mLbl"></span><button class="nav" type="button" id="mNext" aria-label="次の月">›</button></div>
+        <span class="mstat" id="mStat"></span>
+      </div>
+      <div id="mRows"></div>
+      <p class="note">数え方 —「営業日」: 休業日を除いて数える／「暦日」: カレンダー通りに数え、仕上がりが休業日なら翌営業日へ。</p>
+      <div class="confirm">
+        <div class="calhead"><h4 id="mCalTitle">確認カレンダー（受付日ごとの仕上がり日）</h4><button class="btn sm" type="button" id="mCopy">前月の値を入れる</button></div>
+        <div class="chips"><span class="note">表示：</span><div class="seg wrap" role="group" aria-label="確認カレンダーの表示" id="mViewSeg"><button type="button" data-v="all">全部</button><button type="button" data-v="a">A</button><button type="button" data-v="r">A</button><button type="button" data-v="b">B</button><button type="button" data-v="c">C</button><button type="button" data-v="d">D</button><button type="button" data-v="f">F</button></div></div>
+        <p class="note">「修正する」を押して受付日をタップすると、仕上がり日を選ぶカレンダーが開きます。直した日は<span style="color:var(--rust);font-weight:700">赤字</span>になります。直したら「保存する」を押してください。</p>
+        <div class="caltools"><button class="btn" type="button" id="mEditBtn" aria-pressed="false">修正する</button><span class="mstat dirty" id="mDirty2" hidden>未保存</span><button class="btn primary" type="button" id="mSave2">保存する</button></div>
+        <div class="mcal-wrap"><div class="mcal" id="mCal"></div></div>
+      </div>
+      <div><h4>月ごとの一覧（タップで切り替え）</h4><div class="tbl"><table class="mtable"><thead><tr><th>月</th><th>サローネ</th><th>ReSARTO</th><th>2週間</th><th>3週間</th><th>4週間</th><th>クリーニング</th><th>状態</th></tr></thead><tbody id="mTable"></tbody></table></div></div>
+      <div class="foot"><button class="btn" type="button" id="mDel">この月の設定を消す</button><div class="hbtns"><span class="mstat dirty" id="mDirty" hidden>未保存</span><button class="btn primary" type="button" id="mSave">保存する</button></div></div>
+    </section>
+
+    <!-- 便・休業日・名前 -->
+    <section class="pane" id="pane-s" role="tabpanel" aria-labelledby="tab-s" hidden>
+      <div><div class="h4row"><h4>ワニナル便の曜日</h4><div class="caltools"><button class="btn editbtn" type="button" id="sEditBtn1" aria-pressed="false">修正する</button><span class="mstat dirty" id="sDirty1" hidden>未保存</span><button class="btn primary" type="button" id="sSave1">保存する</button></div></div><div class="wk" id="sBin"></div></div>
+      <div class="wk"><label class="chk"><input type="checkbox" id="sHol"> 祝日も休業にする</label><label class="chk"><input type="checkbox" id="sShift"> 祝日のワニナル便を移動する（月曜→翌日・金曜→前日）</label></div>
+      <div class="confirm">
+        <div class="calhead"><h4>定休日・ワニナル便カレンダー</h4><div class="mnav"><button class="nav" type="button" id="sCalPrev" aria-label="前の月">‹</button><span id="sCalLbl"></span><button class="nav" type="button" id="sCalNext" aria-label="次の月">›</button></div></div>
+        <div class="caltools"><button class="btn editbtn" type="button" id="sEditBtn2" aria-pressed="false">修正する</button><span class="mstat dirty" id="sDirty2" hidden>未保存</span><button class="btn primary" type="button" id="sSave2">保存する</button></div>
+        <div class="chips"><span class="note">登録するもの：</span><div class="seg wrap" role="group" aria-label="登録するもの" id="sModeSeg"><button type="button" data-mode="s">サローネ定休日</button><button type="button" data-mode="r">ReSARTO定休日</button><button type="button" data-mode="f">フロント（古江）定休日</button><button type="button" data-mode="b">ワニナル便</button></div></div>
+        <p class="note">「修正する」→ 登録するものを選ぶ → 日付をタップ。もう一度タップで外れます。サローネ定休日はサローネ、ReSARTO定休日は ReSARTO、フロント（古江）定休日は 2週間・3週間・4週間・変動・クリーニングとワニナル便の仕上がり計算に使います。ワニナル便を選ぶと、便の日は「便休み」、便のない日は「臨時便」に切り替わります（祝日の月曜の便は翌日、金曜の便は前日に移ります）。</p>
+        <div class="mcal-wrap"><div class="mcal" id="sCal"></div></div>
+        <div class="extra" id="sExtra"></div>
+      </div>
+      <div><h4>名前</h4>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">サ</span><input id="sNa" aria-label="サローネの名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">Re</span><input id="sNr" aria-label="ReSARTOの名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">2週</span><input id="sNb" aria-label="2週間の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">3週</span><input id="sNc" aria-label="3週間の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">4週</span><input id="sNd" aria-label="4週間の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">変動</span><input id="sNe" aria-label="変動の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">クリ</span><input id="sNf" aria-label="クリーニングの名前"></div>
+      </div>
+      <div><h4>変動の項目</h4><div id="sCItems"></div><button class="btn" type="button" id="sCAdd">＋ 変動の項目を追加</button></div>
+      <div class="foot"><span></span><div class="hbtns"><span class="mstat dirty" id="sDirty" hidden>未保存</span><button class="btn primary" type="button" id="sSave">保存する</button></div></div>
+    </section>
+  </div>
+</dialog>
+
+<dialog id="ntcPop" class="pick" aria-labelledby="ntcPopTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="ntcPopTitle">お知らせ</h3><button class="x" type="button" id="ntcPopX" aria-label="閉じる">×</button></div>
+    <div id="ntcPopList"></div>
+    <div class="foot"><span class="note">×か「閉じる」で消えます。次に開いたときは出ません。</span><button class="btn primary" type="button" id="ntcPopDone">閉じる</button></div>
+  </div>
+</dialog>
+
+<dialog id="ntcDlg" class="pick" aria-labelledby="ntcTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="ntcTitle">お知らせ</h3><button class="x" type="button" id="ntcX" aria-label="閉じる">×</button></div>
+    <p class="note" id="ntcNote"></p>
+    <div id="ntcList"></div>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="ntcEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="ntcDirty" hidden>未保存</span></div><div class="hbtns"><button class="btn" type="button" id="ntcAdd" hidden>＋ 追加</button><button class="btn primary" type="button" id="ntcSave" hidden>保存する</button></div></div>
+  </div>
+</dialog>
+
+<dialog id="perDlg" class="pick" aria-labelledby="perTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="perTitle">期間別一覧表</h3><button class="x" type="button" id="perX" aria-label="閉じる">×</button></div>
+    <p class="note" id="perNote"></p>
+    <div id="perList"></div>
+    <div class="foot"><span class="note">受付日はカレンダーで選んだ日です。</span><button class="btn primary" type="button" id="perDone">閉じる</button></div>
+  </div>
+</dialog>
+
+<dialog id="repDlg" class="pick" aria-labelledby="repTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="repTitle">修理内容から探す</h3><button class="x" type="button" id="repX" aria-label="閉じる">×</button></div>
+    <div class="fieldrow"><input type="search" id="repQ" placeholder="裾上げ／ウエスト／ファスナー など" aria-label="修理内容を検索"></div>
+    <div class="chips" id="repCats"></div>
+    <p class="note" id="repNote"></p>
+    <div id="repList"></div>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="repEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="repDirty" hidden>未保存</span></div><div class="hbtns"><button class="btn" type="button" id="repAdd" hidden>＋ 追加</button><button class="btn primary" type="button" id="repSave" hidden>保存する</button></div></div>
+  </div>
+</dialog>
+
+<dialog id="pickDlg" class="pick" aria-labelledby="pkTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="pkTitle"></h3><button class="x" type="button" id="pkX" aria-label="閉じる">×</button></div>
+    <div class="seg wrap" role="group" aria-label="直す項目" id="pkSeg"><button type="button" data-c="a">A</button><button type="button" data-c="r">A</button><button type="button" data-c="b">B</button><button type="button" data-c="c">C</button><button type="button" data-c="d">D</button><button type="button" data-c="f">F</button></div>
+    <div class="pknow" id="pkNow"></div>
+    <div class="calhead"><b id="pkHint" style="font-size:14px"></b><div class="mnav"><button class="nav" type="button" id="pkPrev" aria-label="前の月">‹</button><span id="pkYmLbl"></span><button class="nav" type="button" id="pkNext" aria-label="次の月">›</button></div></div>
+    <div class="mcal-wrap"><div class="mcal" id="pkCal"></div></div>
+    <div class="foot"><span class="note">最後にフロント担当の「保存する」で反映されます。</span><button class="btn primary" type="button" id="pkDone">閉じる</button></div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+const HOL={"2026-01-01":"元日","2026-01-12":"成人の日","2026-02-11":"建国記念の日","2026-02-23":"天皇誕生日","2026-03-20":"春分の日","2026-04-29":"昭和の日","2026-05-03":"憲法記念日","2026-05-04":"みどりの日","2026-05-05":"こどもの日","2026-05-06":"振替休日","2026-07-20":"海の日","2026-08-11":"山の日","2026-09-21":"敬老の日","2026-09-22":"国民の休日","2026-09-23":"秋分の日","2026-10-12":"スポーツの日","2026-11-03":"文化の日","2026-11-23":"勤労感謝の日",
+"2027-01-01":"元日","2027-01-11":"成人の日","2027-02-11":"建国記念の日","2027-02-23":"天皇誕生日","2027-03-21":"春分の日","2027-03-22":"振替休日","2027-04-29":"昭和の日","2027-05-03":"憲法記念日","2027-05-04":"みどりの日","2027-05-05":"こどもの日","2027-07-19":"海の日","2027-08-11":"山の日","2027-09-20":"敬老の日","2027-09-23":"秋分の日","2027-10-11":"スポーツの日","2027-11-03":"文化の日","2027-11-23":"勤労感謝の日"};
+const WD=["日","月","火","水","木","金","土"];
+const DEF_SHOP={
+  names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",f:"クリーニング（勝川）",e:"変動"},
+  cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
+  repairs:[{"id":"p1", "item":"パンツ", "name":"裾上げ（シングル）", "cat":"A", "yomi":"すそあげ しんぐる たけつめ", "memo":"", "staff":""},{"id":"p2", "item":"パンツ", "name":"裾上げ（ダブル）", "cat":"A", "yomi":"すそあげ だぶる たけつめ", "memo":"", "staff":""},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id":"p6", "item":"パンツ", "name":"渡り詰め／3方詰め", "cat":"c", "yomi":"わたりつめ さんぽうづめ", "memo":"次ページ①待ち。区分がまだ決まっていません", "staff":"古田・小林さん（紳士）／浅野・久田・小林さん（婦人）", "kind":"pending"},{"id":"p7", "item":"スカート", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":"p25", "item":"コート・アウター", "name":"袖丈詰め（筒袖）", "cat":"b", "yomi":"そでたけつめ つつそで", "memo":"", "staff":"丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""},{"id":"p40", "item":"その他", "name":"仕立て直し（ReSARTO）", "cat":"r", "yomi":"したてなおし りめいく", "memo":"", "staff":""}],
+  binWd:[1,3,5], binHolShift:true, binAdd:[], binSkip:[], closedWd:[], holClosed:false, extra:[], off:{s:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],r:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],f:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"]}
+};
+const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},f:{days:7,mode:"biz"}};
+const LS="sarto-noki-v3";
+
+let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[{id:"n-pub-1",title:"納期のご案内",body:"修理内容を選ぶと、本日お預かりした場合の仕上がり予定日が出ます。\n混み具合や生地の取り寄せで前後することがあります。詳しくは店頭でおたずねください。",start:"",end:"",updated:1}];
+try{const v=JSON.parse(localStorage.getItem(LS));if(v&&v.shop){shop=normShop(v.shop);monthly=v.monthly||{};cdaily=v.cdaily||{};abdover=v.abdover||{};notices=v.notices||[];}}catch(e){}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({shop,monthly,cdaily,abdover,notices}));}catch(e){}}
+
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,"0");
+const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parseKey=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d);};
+const ymOf=d=>key(d).slice(0,7);
+const ymShift=(ym,n)=>{const [y,m]=ym.split("-").map(Number);return ymOf(new Date(y,m-1+n,1));};
+const ymLabel=ym=>{const [y,m]=ym.split("-").map(Number);return y+"年"+m+"月";};
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const today=()=>{const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate());};
+const fmt=d=>(d.getMonth()+1)+"月"+d.getDate()+"日（"+WD[d.getDay()]+"）";
+const fmtS=d=>(d.getMonth()+1)+"/"+d.getDate()+"（"+WD[d.getDay()]+"）";
+const md=d=>(d.getMonth()+1)+"/"+d.getDate();
+const diff=(a,b)=>Math.round((b-a)/864e5);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function normShop(x){
+  const s=Object.assign(structuredClone(DEF_SHOP),x||{});
+  s.names=Object.assign({},DEF_SHOP.names,(x&&x.names)||{});
+  if(x&&x.off)s.off=Object.assign({s:[],r:[],f:[]},x.off);
+  else{
+    s.off=structuredClone(DEF_SHOP.off);
+    ((x&&x.extra)||[]).forEach(k=>["s","r","f"].forEach(z=>{if(!s.off[z].includes(k))s.off[z].push(k);}));
+  }
+  s.repairs=(x&&Array.isArray(x.repairs))?structuredClone(x.repairs):structuredClone(DEF_SHOP.repairs);
+  s.extra=[];s.closedWd=[];
+  // フロント（古江）は最初だけ土日を定休日として登録（外した日は戻さない）
+  if(!s.frontWeekendSeeded){
+    const p2=n=>String(n).padStart(2,"0");
+    for(let d=new Date(2026,8,1);d<=new Date(2027,11,31);d.setDate(d.getDate()+1)){
+      if(d.getDay()!==0&&d.getDay()!==6)continue;
+      const k=d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
+      if(!s.off.f.includes(k))s.off.f.push(k);
+    }
+    s.frontWeekendSeeded=true;
+  }
+  return s;
+}
+/* 定休日：s=サローネ、r=ReSARTO、f=フロント（古江） */
+const SCOPE={a:"s",r:"r",b:"f",c:"f",d:"f",f:"f",e:"f"};
+const isClosed=(d,s=shop,z="f")=>(s.holClosed&&!!HOL[key(d)])||(((s.off||{})[z])||[]).includes(key(d));
+const offName=(z,s=shop)=>z==="s"?(s.names.a||"サローネ"):z==="r"?(s.names.r||"ReSARTO"):"フロント（古江）";
+const offShort=z=>z==="s"?"サローネ休":z==="r"?"ReSARTO休":"古江休";
+function closedTags(d,s,zs){return zs.filter(z=>isClosed(d,s,z)).map(z=>`<span class="kn off-${z}">${offShort(z)}</span>`).join("");}
+function isBin(d,s=shop){
+  if(isClosed(d,s))return false;
+  const k=key(d);
+  if((s.binSkip||[]).includes(k))return false;
+  if((s.binAdd||[]).includes(k))return true;
+  return weeklyBin(d,s).on;
+}
+/* ワニナル便：月曜が祝日→翌日、金曜が祝日→前日（移動先も祝日・休業日ならさらに移動） */
+const isHol=k=>!!HOL[k];
+function binMoveTarget(d,dir,s){let x=addD(d,dir),g=0;while((isHol(key(x))||isClosed(x,s))&&g++<7)x=addD(x,dir);return x;}
+function weeklyBin(d,s=shop){
+  const k=key(d), wd=d.getDay(), shift=s.binHolShift!==false;
+  let on=false, moved=false, away=null;
+  if(s.binWd.includes(wd)){
+    if(shift&&isHol(k)&&(wd===1||wd===5))away=wd===1?"翌日":"前日"; else on=true;
+  }
+  if(isClosed(d,s))return {on:false,moved:false,away};
+  if(!on&&shift){
+    for(let i=1;i<=6&&!on;i++){const m=addD(d,-i);if(m.getDay()===1&&s.binWd.includes(1)&&isHol(key(m))&&key(binMoveTarget(m,1,s))===k){on=true;moved=true;}}
+    for(let i=1;i<=6&&!on;i++){const f=addD(d,i);if(f.getDay()===5&&s.binWd.includes(5)&&isHol(key(f))&&key(binMoveTarget(f,-1,s))===k){on=true;moved=true;}}
+  }
+  return {on,moved,away};
+}
+function binTag(d,s=shop){
+  const k=key(d), w=weeklyBin(d,s);
+  if(isClosed(d,s))return "";
+  if((s.binSkip||[]).includes(k))return w.on?'<span class="kn">便休み</span>':"";
+  if(isBin(d,s))return w.on?`<span class="bn">${w.moved?"振替便":"ワニナル便"}</span>`:'<span class="bn add">臨時便</span>';
+  return w.away?`<span class="kn">便→${w.away}</span>`:"";
+}
+function finish(start,it){
+  let d=new Date(start),n=Math.max(0,+(it.wd?it.wd[start.getDay()]:it.days)||0),g=0;
+  const z=it.scope||"f";
+  if(it.mode==="biz"){while(n>0&&g++<800){d=addD(d,1);if(!isClosed(d,shop,z))n--;}}
+  else{d=addD(d,n);while(isClosed(d,shop,z)&&g++<60)d=addD(d,1);}
+  return d;
+}
+function monthCfg(ym){
+  if(monthly[ym])return {cfg:monthly[ym],src:"set"};
+  const prev=Object.keys(monthly).filter(k=>k<ym).sort().pop();
+  if(prev)return {cfg:monthly[prev],src:"prev",from:prev};
+  return {cfg:DEF_M,src:"def"};
+}
+function item(code,ym){const c=(monthCfg(ym).cfg||{})[code]||DEF_M[code];return {name:shop.names[code]||code.toUpperCase(),days:c.days,mode:c.mode,wd:c.wd,nights:NIGHTS.includes(code),scope:SCOPE[code]};}
+/* A・B・D の仕上がり（手修正があればそれを優先） */
+function abd(recvD,code,cfg,over){
+  const k=key(recvD), o=(over||abdover[k.slice(0,7)]||{})[k];
+  if(o&&o[code])return {date:parseKey(o[code]),manual:true};
+  const c=cfg?cfg[code]:item(code,ymOf(recvD));
+  return {date:finish(recvD,Object.assign({scope:SCOPE[code]},c)),manual:false};
+}
+const cEntries=k=>(cdaily[k.slice(0,7)]||{})[k]||null;
+const unit=(it,d)=>{
+  if(it.wd){
+    if(d){const n=it.wd[d.getDay()];return n+"泊"+(n+1)+"日";}
+    const mn=Math.min(...it.wd),mx=Math.max(...it.wd);return mn===mx?mn+"泊"+(mn+1)+"日":mn+"〜"+mx+"泊";
+  }
+  if(it.nights&&it.mode==="cal")return it.days+"泊"+(+it.days+1)+"日";
+  return it.days+(it.mode==="biz"?"営業日":"日");
+};
+const NIGHTS=["a","r","b","c","d"];
+const CODES=["a","r","b","c","d","f"];
+const SHORT={a:"サ",r:"Re",b:"2週",c:"3週",d:"4週",e:"変動",f:"クリ"};
+const letterOf=c=>SHORT[c]||c;
+const markOf=c=>SHORT[c]||c;
+const labelOf=c=>shop.names[c]||SHORT[c]||c;
+
+let toastT;
+function toast(msg){const t=$("toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3200);}
+function writeFail(e){toast(e&&e.code==="quota_exceeded"?"保存容量がいっぱいです。古い月の入力を消してから保存してください。":"保存できませんでした。通信を確認して、もう一度「保存する」を押してください。");}
+function persist(path,body){
+  if(!db){saveLocal();return Promise.resolve();}
+  return (body===null?db.doc(path).delete():db.doc(path).set(body)).catch(e=>{writeFail(e);throw e;});
+}
+
+/* 確認カレンダー共通 */
+function miniCal(el,ym,cell,onTap){
+  const [y,m]=ym.split("-").map(Number), first=new Date(y,m-1,1);
+  const start=addD(first,-first.getDay());
+  const weeks=Math.ceil((first.getDay()+new Date(y,m,0).getDate())/7);
+  let h=WD.map((w,i)=>`<div class="dow ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
+  for(let i=0;i<weeks*7;i++){
+    const d=addD(start,i),k=key(d);
+    if(d.getMonth()!==m-1){h+=`<span class="mday out" aria-hidden="true"></span>`;continue;}
+    const c=cell(d,k), cls=["mday"].concat(c.cls||[]);
+    if(d.getDay()==0)cls.push("sun");if(d.getDay()==6)cls.push("sat");if(HOL[k])cls.push("hol");
+    h+=`<button type="button" class="${cls.join(" ")}" data-k="${k}" ${c.disabled?"disabled":""} aria-label="${fmt(d)}${c.label||""}"><span class="dn mono">${d.getDate()}</span>${c.html||""}</button>`;
+  }
+  el.innerHTML=h;
+  el.querySelectorAll("button.mday").forEach(b=>b.onclick=()=>onTap(b.dataset.k));
+}
+
+/* ---------- 表示 ---------- */
+let recv=today(), view=new Date(recv.getFullYear(),recv.getMonth(),1), cOpen=false;
+let show={ab:true,c:true};
+let brand="a";try{const b=localStorage.getItem("sarto-brand");if(b==="a"||b==="r")brand=b;}catch(e){}
+
+function rowHTML(code,it,r){
+  return `<span class="code">${code}</span><span class="nm"><span>${esc(it.name)}</span>${r.manual?'<span class="man-tag">手修正</span>':`<span class="mono">${unit(it,recv)}</span>`}</span><span class="fin">${fmt(r.date)}</span>`;
+}
+function cList(){const ent=cEntries(key(recv));return shop.cItems.map(ci=>({name:ci.name,date:ent&&ent[ci.id]?parseKey(ent[ci.id]):null}));}
+
+function renderSlip(){
+  const isToday=key(recv)===key(today()), ym=ymOf(recv);
+  $("recvLbl").textContent=isToday?"本日受付":"受付日";$("recvLbl").classList.toggle("other",!isToday);
+  $("recvDate").textContent=recv.getFullYear()+"年"+fmt(recv);
+  $("recvTag").innerHTML=[SCOPE[brand],"f"].filter(z=>isClosed(recv,shop,z)).map(z=>`<span class="tag closed">${esc(offName(z))} 定休日</span>`).join(" ");
+  $("btnToday").hidden=isToday;
+  const cl=cList(), ds=cl.filter(x=>x.date).map(x=>x.date);
+  let cFin='<span class="warn">未入力</span>';
+  if(ds.length){const mn=new Date(Math.min(...ds)),mx=new Date(Math.max(...ds));cFin=key(mn)===key(mx)?fmt(mn):`${fmtS(mn)} 〜 ${fmtS(mx)}`;}
+  $("abcRows").innerHTML=
+    `<div class="row">${rowHTML(SHORT[brand],item(brand,ym),abd(recv,brand))}</div>`+
+    `<div class="row">${rowHTML(SHORT.b,item("b",ym),abd(recv,"b"))}</div>`+
+    `<div class="row">${rowHTML(SHORT.c,item("c",ym),abd(recv,"c"))}</div>`+
+    `<div class="row">${rowHTML(SHORT.d,item("d",ym),abd(recv,"d"))}</div>`+
+    `<button class="row c-toggle" type="button" id="cToggle" aria-expanded="${cOpen}" aria-controls="cDetail"><span class="code">変動</span><span class="nm"><span>${esc(shop.names.e||"変動")} · タップで詳細</span><span class="chev">▶</span></span><span class="fin" style="font-size:17px">${cFin}</span></button>`+
+    `<div class="row">${rowHTML(SHORT.f,item("f",ym),abd(recv,"f"))}</div>`+
+    `<div class="cdetail" id="cDetail" ${cOpen?"":"hidden"}>${cl.map(x=>`<div class="cline"><span>${esc(x.name)}</span>${x.date?`<b>${fmt(x.date)}</b><span class="mono" style="color:var(--ink2);font-size:12px">受付から${diff(recv,x.date)}日</span>`:'<span class="warn">未入力</span>'}</div>`).join("")}<div class="cfoot"><button class="btn" type="button" id="cGo">${ds.length===cl.length?"変動の仕上がり日を修正する":"フロント担当で変動を入力する"}</button></div></div>`;
+  $("cToggle").onclick=()=>{cOpen=!cOpen;renderSlip();};
+  $("cGo").onclick=()=>{cDayK=key(recv);openFront("c");};
+}
+
+function renderFilters(){
+  const f=[["ab","納期ごと"],["c","変動"]];
+  $("filters").innerHTML=f.map(([k,l])=>`<button class="fchip" type="button" data-k="${k}" aria-pressed="${show[k]}">${l}</button>`).join("");
+  $("filters").querySelectorAll("button").forEach(b=>b.onclick=()=>{show[b.dataset.k]=!show[b.dataset.k];renderFilters();renderCal();});
+}
+
+function renderCal(){
+  $("monthLbl").textContent=view.getFullYear()+"年 "+(view.getMonth()+1)+"月";
+  const marks={};
+  const put=(d,t,c)=>{(marks[key(d)]=marks[key(d)]||[]).push([t,c]);};
+  if(show.ab)[brand,"b","c","d","f"].forEach(c=>{const r=abd(recv,c);put(r.date,letterOf(c),r.manual?"man":"");});
+  if(show.c)cList().forEach((x,i)=>{if(x.date)put(x.date,"変"+(i+1),"c");});
+  let h=WD.map((w,i)=>`<div class="dow ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
+  const start=addD(view,-view.getDay()), tk=key(today()), rk=key(recv);
+  const weeks=Math.ceil((view.getDay()+new Date(view.getFullYear(),view.getMonth()+1,0).getDate())/7);
+  for(let i=0;i<weeks*7;i++){
+    const d=addD(start,i),k=key(d),cls=["day"];
+    const zs=[SCOPE[brand],"f"], closed=zs.some(z=>isClosed(d,shop,z)), bin=isBin(d);
+    if(d.getMonth()!==view.getMonth())cls.push("out");
+    if(d.getDay()==0)cls.push("sun");if(d.getDay()==6)cls.push("sat");
+    if(HOL[k])cls.push("hol");if(closed)cls.push("closed");if(bin)cls.push("bin");
+    if(k===tk)cls.push("today");if(k===rk)cls.push("recv");
+    const m=(marks[k]||[]).map(([t,c])=>`<span class="mk ${c}">${t}</span>`).join("");
+    h+=`<button type="button" class="${cls.join(" ")}" data-k="${k}" aria-label="${fmt(d)}${bin?"（ワニナル便）":""}${closed?"（休業日）":""}を受付日にする"><span class="dn mono">${d.getDate()}</span>${binTag(d)}${closedTags(d,shop,zs)}${HOL[k]?`<span class="hn">${HOL[k]}</span>`:""}<span class="marks">${m}</span></button>`;
+  }
+  $("grid").innerHTML=h;
+  $("grid").querySelectorAll(".day").forEach(b=>b.onclick=()=>{recv=parseKey(b.dataset.k);if(recv.getMonth()!==view.getMonth())view=new Date(recv.getFullYear(),recv.getMonth(),1);render();});
+}
+let wStart=today();
+function renderWeek(){
+  const end=addD(wStart,6), tk=key(today()), rk=key(recv);
+  $("wLbl").textContent=`${fmtS(wStart)} 〜 ${fmtS(end)}`;
+  $("wToday").hidden=key(wStart)===tk;
+  let h="";
+  for(let i=0;i<7;i++){
+    const d=addD(wStart,i),k=key(d),zs=[SCOPE[brand],"f"],closed=zs.some(z=>isClosed(d,shop,z)),bin=isBin(d),cls=["wday"];
+    if(d.getDay()==0)cls.push("sun");if(d.getDay()==6)cls.push("sat");if(HOL[k])cls.push("hol");
+    if(closed)cls.push("closed");if(bin)cls.push("bin");if(k===tk)cls.push("today");if(k===rk)cls.push("recv");
+    const tags=binTag(d)+closedTags(d,shop,zs)+(HOL[k]?`<span class="kn">${HOL[k]}</span>`:"");
+    const line=c=>{const r=abd(d,c);return `<span class="wline"><i>${letterOf(c)}</i><span><b class="${r.manual?"man":""}">${fmtS(r.date)}</b>${(c==="a"||c==="r")?`<span class="wsub">${esc(shop.names[c])}</span>`:""}</span></span>`;};
+    const ent=cEntries(k), cds=ent?shop.cItems.map(ci=>ent[ci.id]).filter(Boolean).map(parseKey):[];
+    let cTxt='<span class="warn">未入力</span>';
+    if(cds.length){const mn=new Date(Math.min(...cds)),mx=new Date(Math.max(...cds));cTxt=key(mn)===key(mx)?`<b>${fmtS(mn)}</b>`:`<b>${md(mn)}〜${md(mx)}</b>`;}
+    h+=`<button type="button" class="${cls.join(" ")}" data-k="${k}" aria-label="${fmt(d)}受付の仕上がりを見る"><span class="whead"><span class="wdate mono">${d.getMonth()+1}/${d.getDate()}</span><span class="wdow">${WD[d.getDay()]}</span></span><span class="wtags">${tags}</span>${line(brand)}${line("b")}${line("c")}${line("d")}${line("f")}<span class="wline"><i>変</i>${cTxt}</span></button>`;
+  }
+  $("wGrid").innerHTML=h;
+  $("wGrid").querySelectorAll(".wday").forEach(b=>b.onclick=()=>{recv=parseKey(b.dataset.k);view=new Date(recv.getFullYear(),recv.getMonth(),1);render();window.scrollTo({top:0,behavior:"smooth"});});
+}
+$("wPrev").onclick=()=>{wStart=addD(wStart,-7);renderWeek();};
+$("wNext").onclick=()=>{wStart=addD(wStart,7);renderWeek();};
+$("wToday").onclick=()=>{wStart=today();renderWeek();};
+function renderBrand(){
+  $("brandA").textContent=shop.names.a||"サローネ";$("brandR").textContent=shop.names.r||"ReSARTO";
+  $("brandBar").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.b===brand)));
+  $("brandNow").textContent=shop.names[brand]||"";
+}
+$("brandBar").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  brand=b.dataset.b;try{localStorage.setItem("sarto-brand",brand);}catch(e){}
+  render();
+});
+function render(){renderBrand();renderSlip();renderWeek();renderCal();}
+
+$("prev").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);renderCal();};
+$("next").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);renderCal();};
+$("btnToday").onclick=()=>{recv=today();view=new Date(recv.getFullYear(),recv.getMonth(),1);render();};
+
+/* ---------- フロント担当 ---------- */
+let tab="c", cDayK=key(today()), cCalYm=null, cSel=0;
+let mYm=ymOf(today()), mDraft=null, mDraftYm=null, mSelK=null;
+let T=null, sCalYm=ymOf(today()), sMode="s";
+const dirty=(id,on)=>{$(id).hidden=!on;[id+"1",id+"2"].forEach(x=>{const b=$(x);if(b)b.hidden=!on;});};
+
+function openFront(t){
+  if(t)tab=t;
+  if(!$("front").open){mYm=ymOf(recv);mDraft=null;T=null;cCalYm=null;sCalYm=ymOf(recv);}
+  fillAll();
+  if(!$("front").open)$("front").showModal();
+}
+function fillAll(){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===tab)));
+  ["c","m","s"].forEach(t=>$("pane-"+t).hidden=t!==tab);
+  if(tab==="c")fillC(); if(tab==="m")fillM(); if(tab==="s")fillS();
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.t;fillAll();});
+$("btnFront").onclick=()=>{cDayK=key(recv);openFront();};
+$("frontClose").onclick=()=>$("front").close();
+$("front").addEventListener("close",()=>{T=null;mDraft=null;sEditOn=false;});
+
+/* C 毎日 */
+function cHint(ci){
+  const v=$("cf-"+ci.id).value, h=$("ch-"+ci.id);
+  if(!v){h.textContent="未入力";h.className="c-hint";return;}
+  const d=parseKey(v), n=diff(parseKey(cDayK),d);
+  h.textContent=`受付から${n}日`+(isClosed(d)?"・休業日です":"")+(n<0?"・受付日より前です":"");
+  h.className="c-hint"+(isClosed(d)||n<0?" bad":"");
+}
+function cChanged(){dirty("cDirty",true);drawCCal();}
+function fillC(){
+  $("cDay").value=cDayK;
+  if(!cCalYm)cCalYm=cDayK.slice(0,7);
+  const ent=cEntries(cDayK)||{};
+  $("cStat").textContent=cEntries(cDayK)?"入力済み":"未入力";
+  $("cStat").className="mstat"+(cEntries(cDayK)?" set":"");
+  $("cInputs").innerHTML=shop.cItems.map(ci=>`<div class="c-in"><label for="cf-${ci.id}">${esc(ci.name)}</label><input type="date" id="cf-${ci.id}" value="${ent[ci.id]||""}" min="${cDayK}"><span class="c-hint" id="ch-${ci.id}"></span></div>`).join("");
+  shop.cItems.forEach(ci=>{$("cf-"+ci.id).oninput=()=>{cHint(ci);cChanged();};cHint(ci);});
+  if(cSel>=shop.cItems.length)cSel=0;
+  dirty("cDirty",false);
+  drawCCal();
+  const t=today(); let h="";
+  for(let i=-6;i<=1;i++){const d=addD(t,i),k=key(d),ok=!!cEntries(k);
+    h+=`<button type="button" class="dchip ${ok?"ok":"no"}" data-k="${k}" aria-current="${k===cDayK}">${fmtS(d)} ${ok?"入力済":"未入力"}</button>`;}
+  $("cRecent").innerHTML=h;
+  $("cRecent").querySelectorAll("button").forEach(b=>b.onclick=()=>{cDayK=b.dataset.k;cCalYm=cDayK.slice(0,7);fillC();});
+}
+function drawCCal(){
+  $("cCalLbl").textContent=ymLabel(cCalYm);
+  $("cChips").innerHTML=shop.cItems.map((ci,i)=>`<button type="button" class="fchip" data-i="${i}" aria-pressed="${i===cSel}">${esc(ci.name)}</button>`).join("");
+  $("cChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{cSel=+b.dataset.i;drawCCal();});
+  const vals={};shop.cItems.forEach((ci,i)=>{const v=$("cf-"+ci.id).value;if(v)(vals[v]=vals[v]||[]).push(i);});
+  miniCal($("cCal"),cCalYm,(d,k)=>{
+    const cls=[];if(isClosed(d))cls.push("closed");else if(isBin(d))cls.push("bin");
+    if(k===cDayK)cls.push("recv");
+    const mk=(vals[k]||[]).map(i=>`<span class="mk c">E${i+1}</span>`).join("");
+    return {cls,disabled:k<cDayK,html:(k===cDayK?'<span class="kn">受付</span>':"")+(isClosed(d)?'<span class="kn">休</span>':"")+`<span class="marks">${mk}</span>`};
+  },k=>{
+    const ci=shop.cItems[cSel];if(!ci)return;
+    $("cf-"+ci.id).value=k;cHint(ci);
+    cSel=(cSel+1)%shop.cItems.length;cChanged();
+  });
+}
+$("cCalPrev").onclick=()=>{cCalYm=ymShift(cCalYm,-1);drawCCal();};
+$("cCalNext").onclick=()=>{cCalYm=ymShift(cCalYm,1);drawCCal();};
+$("cDay").onchange=()=>{if($("cDay").value){cDayK=$("cDay").value;cCalYm=cDayK.slice(0,7);fillC();}};
+$("cCopy").onclick=()=>{
+  const prevK=Object.values(cdaily).flatMap(m=>Object.keys(m)).filter(k=>k<cDayK).sort().pop();
+  if(!prevK){toast("これより前の変動の入力がありません。");return;}
+  const prev=cEntries(prevK), base=parseKey(cDayK);
+  shop.cItems.forEach(ci=>{
+    if(!prev[ci.id])return;
+    let d=addD(base,diff(parseKey(prevK),parseKey(prev[ci.id]))),g=0;
+    while(isClosed(d)&&g++<60)d=addD(d,1);
+    $("cf-"+ci.id).value=key(d);cHint(ci);
+  });
+  cChanged();
+  toast(fmtS(parseKey(prevK))+"と同じ日数で入れました。カレンダーで確認して保存してください。");
+};
+function saveCDay(vals){
+  const ym=cDayK.slice(0,7), m=Object.assign({},cdaily[ym]||{});
+  if(vals)m[cDayK]=vals; else delete m[cDayK];
+  cdaily=Object.assign({},cdaily,{[ym]:m});
+  render();fillC();
+  return persist("cdaily/"+ym,Object.keys(m).length?{days:m}:null);
+}
+$("cSave").onclick=()=>{
+  const vals={};shop.cItems.forEach(ci=>{const v=$("cf-"+ci.id).value;if(v)vals[ci.id]=v;});
+  const d=parseKey(cDayK);
+  saveCDay(Object.keys(vals).length?vals:null).then(()=>toast(fmtS(d)+"受付の変動を保存しました。"),()=>{});
+};
+$("cClear").onclick=()=>{
+  if(!cEntries(cDayK)){toast("この日は入力がありません。");return;}
+  saveCDay(null).then(()=>toast("入力を消しました。"),()=>{});
+};
+
+/* A・B・D 月間 */
+function mRow(code,c){
+  const id="m"+code, L=SHORT[code]||code;
+  const lab=`<span class="lab">${L}　<span style="font-weight:400;color:var(--ink2);font-size:13px">${esc(shop.names[code])}</span></span>`;
+  const sel=`<select id="${id}-m" aria-label="${L}の数え方"><option value="biz"${c.mode==="biz"?" selected":""}>営業日</option><option value="cal"${c.mode==="cal"?" selected":""}>暦日</option></select>`;
+  if(c.wd)return `<div class="set-row wdrow">${lab}<div class="wdin">${WD.map((w,i)=>`<label><span>${w}</span><input id="${id}-w${i}" type="number" min="0" max="365" value="${c.wd[i]}" class="mono" aria-label="${w}曜受けの泊数"></label>`).join("")}</div>${sel}</div><p class="note" style="margin:-2px 0 10px">${esc(shop.names[code])}は受付曜日ごとの泊数（7泊8日なら 7）</p>`;
+  return `<div class="set-row">${lab}<input id="${id}-d" type="number" min="0" max="365" value="${c.days}" aria-label="${L}の${NIGHTS.includes(code)?"泊数":"日数"}" class="mono">${sel}</div>`+(NIGHTS.includes(code)?`<p class="note" style="margin:-2px 0 10px">${esc(shop.names[code])}は泊数（10泊11日なら 10）</p>`:"");
+}
+function cfgForm(){
+  const cfg={};
+  CODES.forEach(c=>{
+    const m=$("m"+c+"-m").value;
+    if(DEF_M[c].wd)cfg[c]={mode:m,wd:WD.map((_,i)=>Math.max(0,parseInt($("m"+c+"-w"+i).value)||0))};
+    else cfg[c]={days:Math.max(0,parseInt($("m"+c+"-d").value)||0),mode:m};
+  });
+  return cfg;
+}
+function fillM(cfgOverride){
+  if(mDraftYm!==mYm||!mDraft){mDraft=structuredClone(abdover[mYm]||{});mDraftYm=mYm;mSelK=null;}
+  const st=monthCfg(mYm), cfg=cfgOverride||st.cfg;
+  $("mLbl").textContent=ymLabel(mYm);
+  $("mStat").textContent=st.src==="set"?"設定済み":st.src==="prev"?`未設定（${ymLabel(st.from)}の値を使用中）`:"未設定（初期値を使用中）";
+  $("mStat").className="mstat"+(st.src==="set"?" set":"");
+  $("mRows").innerHTML=CODES.map(c=>mRow(c,Object.assign({},DEF_M[c],cfg[c]||{}))).join("");
+  $("mRows").querySelectorAll("input").forEach(i=>i.oninput=mChanged);$("mRows").querySelectorAll("select").forEach(x=>x.onchange=mChanged);
+  $("mDel").hidden=st.src!=="set"&&!abdover[mYm];
+  dirty("mDirty",!!cfgOverride);
+  drawMCal();drawMEdit();
+  const base=ymOf(today()); let h="";
+  for(let i=-1;i<=10;i++){const ym=ymShift(base,i),s=monthCfg(ym),u=c=>unit(Object.assign({nights:NIGHTS.includes(c)},DEF_M[c],s.cfg[c]||{})),n=Object.keys(abdover[ym]||{}).length;
+    h+=`<tr class="${s.src==="set"?"":"inh"} ${ym===mYm?"sel":""}" data-ym="${ym}"><td>${ymLabel(ym)}</td><td class="mono">${u("a")}</td><td class="mono">${u("r")}</td><td class="mono">${u("b")}</td><td class="mono">${u("c")}</td><td class="mono">${u("d")}</td><td class="mono">${u("f")}</td><td>${s.src==="set"?"設定済み":"前の月と同じ"}${n?`・手修正${n}日`:""}</td></tr>`;}
+  $("mTable").innerHTML=h;
+  $("mTable").querySelectorAll("tr").forEach(r=>r.onclick=()=>{mYm=r.dataset.ym;fillM();});
+}
+function mChanged(){dirty("mDirty",true);drawMCal();drawMEdit(true);}
+let mView="all", mEditOn=false, pkCode="a", pkYm=null;
+const codesM=()=>mView==="all"?CODES:[mView];
+function setOver(k,c,v){
+  const auto=key(finish(parseKey(k),Object.assign({scope:SCOPE[c]},cfgForm()[c])));
+  const cur=Object.assign({},mDraft[k]||{});
+  if(!v||v===auto)delete cur[c]; else cur[c]=v;
+  if(Object.keys(cur).length)mDraft[k]=cur; else delete mDraft[k];
+  dirty("mDirty",true);
+}
+function drawMCal(){
+  const cfg=cfgForm();
+  $("mEditBtn").setAttribute("aria-pressed",String(mEditOn));
+  $("mEditBtn").textContent=mEditOn?"修正をやめる":"修正する";
+  $("mCal").classList.toggle("editing",mEditOn);
+  $("mViewSeg").querySelectorAll("button").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.v===mView));if(b.dataset.v!=="all")b.textContent=labelOf(b.dataset.v);});
+  $("mCalTitle").textContent=mView==="all"?"確認カレンダー（受付日ごとの仕上がり日）":`${labelOf(mView)} の確認カレンダー`;
+  $("mCal").classList.toggle("single",mView!=="all");
+  miniCal($("mCal"),mYm,(d,k)=>{
+    const cls=[];if(isClosed(d,shop,mView==="all"?"f":SCOPE[mView]))cls.push("closed");if(k===mSelK)cls.push("sel");if(k===key(today()))cls.push("recv");
+    let html;
+    if(mView==="all"){
+      html=CODES.map(c=>{const r=abd(d,c,cfg,mDraft);return `<span class="ln ${r.manual?"man":""}">${markOf(c)} ${md(r.date)}</span>`;}).join("");
+    }else{
+      const r=abd(d,mView,cfg,mDraft);
+      html=`<span class="big ${r.manual?"man":""}">${md(r.date)}<small>（${WD[r.date.getDay()]}）</small></span><span class="ln ${r.manual?"man":""}">${r.manual?"手修正":diff(d,r.date)+"日後"}</span>`;
+    }
+    return {cls,html,label:"受付の仕上がり日を修正"};
+  },k=>{
+    if(!mEditOn){toast("「修正する」を押してから受付日をタップしてください。");return;}
+    openPick(k);
+  });
+}
+$("mEditBtn").onclick=()=>{
+  mEditOn=!mEditOn;if(!mEditOn)mSelK=null;
+  drawMCal();
+  if(mEditOn)toast("直したい受付日をタップしてください。");
+};
+$("mSave2").onclick=()=>$("mSave").click();
+$("mViewSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{mView=b.dataset.v;drawMCal();});
+
+/* 受付日をタップ → 仕上がり日を選ぶカレンダー */
+function openPick(k){
+  mSelK=k;pkCode=mView==="all"?"a":mView;
+  pkYm=ymOf(abd(parseKey(k),pkCode,cfgForm(),mDraft).date);
+  drawMCal();drawPick();
+  $("pickDlg").showModal();
+}
+function drawPick(){
+  const recvD=parseKey(mSelK), cfg=cfgForm();
+  $("pkTitle").textContent=fmt(recvD)+" 受付";
+  $("pkSeg").hidden=mView!=="all";
+  $("pkSeg").querySelectorAll("button").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.c===pkCode));b.textContent=labelOf(b.dataset.c);});
+  $("pkNow").innerHTML=codesM().map(c=>{const r=abd(recvD,c,cfg,mDraft);
+    return `<div class="pkrow ${c===pkCode?"on":""}"><span>${esc(labelOf(c))}</span><span class="r"><b class="${r.manual?"man":""}">${fmtS(r.date)}</b><span class="note">${r.manual?"手修正":"自動"}</span>${r.manual?`<button class="btn sm" type="button" data-reset="${c}">自動に戻す</button>`:""}</span></div>`;}).join("");
+  $("pkNow").querySelectorAll("button[data-reset]").forEach(b=>b.onclick=()=>{
+    const cur=Object.assign({},mDraft[mSelK]||{});delete cur[b.dataset.reset];
+    if(Object.keys(cur).length)mDraft[mSelK]=cur; else delete mDraft[mSelK];
+    dirty("mDirty",true);drawMCal();drawPick();
+  });
+  $("pkHint").textContent=`${labelOf(pkCode)} の仕上がり日をタップ`;
+  $("pkYmLbl").textContent=ymLabel(pkYm);
+  const cur=abd(recvD,pkCode,cfg,mDraft);
+  miniCal($("pkCal"),pkYm,(d,k)=>{
+    const cls=[];if(isClosed(d,shop,SCOPE[pkCode]))cls.push("closed");else if(isBin(d))cls.push("bin");
+    if(k===mSelK)cls.push("recv");if(k===key(cur.date))cls.push("sel");
+    let html="";
+    if(k===mSelK)html+='<span class="kn">受付</span>';
+    if(k===key(cur.date))html+=`<span class="marks"><span class="mk ${cur.manual?"man":"fin"}">仕上がり</span></span>`;
+    html+=closedTags(d,shop,[SCOPE[pkCode]]);
+    return {cls,html,disabled:k<mSelK,label:"を仕上がり日にする"};
+  },k=>{
+    const c=pkCode;setOver(mSelK,c,k);drawMCal();
+    toast(`${labelOf(c)} の仕上がりを${fmtS(parseKey(k))}にしました。`);
+    if(mView!=="all"||c==="d"){$("pickDlg").close();return;}
+    pkCode=CODES[CODES.indexOf(c)+1];
+    pkYm=ymOf(abd(recvD,pkCode,cfgForm(),mDraft).date);
+    drawPick();
+  });
+}
+function drawMEdit(){if($("pickDlg").open)drawPick();}
+$("pkSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{pkCode=b.dataset.c;pkYm=ymOf(abd(parseKey(mSelK),pkCode,cfgForm(),mDraft).date);drawPick();});
+$("pkPrev").onclick=()=>{pkYm=ymShift(pkYm,-1);drawPick();};
+$("pkNext").onclick=()=>{pkYm=ymShift(pkYm,1);drawPick();};
+$("pkX").onclick=()=>$("pickDlg").close();
+$("pkDone").onclick=()=>$("pickDlg").close();
+$("pickDlg").addEventListener("close",()=>{mSelK=null;if($("front").open)drawMCal();});
+$("mPrev").onclick=()=>{mYm=ymShift(mYm,-1);fillM();};
+$("mNext").onclick=()=>{mYm=ymShift(mYm,1);fillM();};
+$("mCopy").onclick=()=>{fillM(monthCfg(ymShift(mYm,-1)).cfg);toast(ymLabel(ymShift(mYm,-1))+"の値を入れました。カレンダーで確認して保存してください。");};
+$("mSave").onclick=()=>{
+  const cfg=cfgForm(), ym=mYm, over=structuredClone(mDraft);
+  monthly=Object.assign({},monthly,{[ym]:cfg});
+  const ao=Object.assign({},abdover);if(Object.keys(over).length)ao[ym]=over;else delete ao[ym];abdover=ao;
+  mDraft=null;mEditOn=false;render();fillM();
+  Promise.all([persist("monthly/"+ym,cfg),persist("abdover/"+ym,Object.keys(over).length?{days:over}:null)])
+    .then(()=>toast(ymLabel(ym)+"の納期を保存しました。"),()=>{});
+};
+$("mDel").onclick=()=>{
+  const ym=mYm, m=Object.assign({},monthly);delete m[ym];monthly=m;
+  const ao=Object.assign({},abdover);delete ao[ym];abdover=ao;
+  mDraft=null;render();fillM();
+  Promise.all([persist("monthly/"+ym,null),persist("abdover/"+ym,null)]).then(()=>toast(ymLabel(ym)+"の設定と手修正を消しました。前の月の値を使います。"),()=>{});
+};
+
+/* 便・休業日・名前 */
+function readS(){
+  if(!T)return;
+  T.names={a:$("sNa").value.trim()||"サローネ",r:$("sNr").value.trim()||"ReSARTO",b:$("sNb").value.trim()||"2週間",c:$("sNc").value.trim()||"3週間",d:$("sNd").value.trim()||"4週間",e:$("sNe").value.trim()||"変動",f:$("sNf").value.trim()||"クリーニング（勝川）"};
+  T.cItems.forEach(ci=>{const el=$("sc-"+ci.id);if(el)ci.name=el.value.trim()||ci.name;});
+  T.binWd=WD.map((_,i)=>i).filter(i=>$("sb"+i).checked);
+  T.holClosed=$("sHol").checked;T.binHolShift=$("sShift").checked;
+}
+function sChanged(){readS();dirty("sDirty",true);drawSCal();}
+function fillS(){
+  if(!T){T=structuredClone(shop);T.binAdd=T.binAdd||[];T.binSkip=T.binSkip||[];dirty("sDirty",false);}
+  $("sBin").innerHTML=WD.map((w,i)=>`<label><input type="checkbox" id="sb${i}" ${T.binWd.includes(i)?"checked":""}>${w}</label>`).join("");
+  $("sHol").checked=T.holClosed;
+  WD.forEach((_,i)=>{$("sb"+i).onchange=sChanged;});
+  $("sHol").onchange=sChanged;$("sShift").checked=T.binHolShift!==false;$("sShift").onchange=sChanged;
+  $("sNa").value=T.names.a;$("sNr").value=T.names.r||"ReSARTO";$("sNb").value=T.names.b;$("sNc").value=T.names.c||"3週間";$("sNd").value=T.names.d;$("sNe").value=T.names.e||"変動";$("sNf").value=T.names.f||"クリーニング（勝川）";
+  ["sNa","sNr","sNb","sNc","sNd","sNe","sNf"].forEach(id=>$(id).oninput=()=>dirty("sDirty",true));
+  $("sCItems").innerHTML=T.cItems.map((ci,i)=>`<div class="ci-row"><input id="sc-${ci.id}" value="${esc(ci.name)}" aria-label="変動${i+1}の名前"><button class="btn" type="button" data-id="${ci.id}">削除</button></div>`).join("");
+  T.cItems.forEach(ci=>$("sc-"+ci.id).oninput=()=>dirty("sDirty",true));
+  $("sCItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{readS();if(T.cItems.length<=1){toast("変動の項目は1つ以上必要です。");return;}T.cItems=T.cItems.filter(x=>x.id!==b.dataset.id);dirty("sDirty",true);fillS();});
+  drawSCal();
+}
+let sEditOn=false;
+function syncSEdit(){
+  ["sEditBtn1","sEditBtn2"].forEach(id=>{$(id).setAttribute("aria-pressed",String(sEditOn));$(id).textContent=sEditOn?"修正をやめる":"修正する";});
+  document.querySelectorAll("#sBin input,#sHol,#sShift").forEach(i=>i.disabled=!sEditOn);
+  $("sCal").classList.toggle("editing",sEditOn);
+}
+["sEditBtn1","sEditBtn2"].forEach(id=>$(id).onclick=()=>{
+  sEditOn=!sEditOn;syncSEdit();
+  if(sEditOn)toast("便の曜日や、カレンダーの定休日・便を変えられます。終わったら「保存する」を押してください。");
+});
+["sSave1","sSave2"].forEach(id=>$(id).onclick=()=>$("sSave").click());
+function drawSCal(){
+  syncSEdit();
+  $("sCalLbl").textContent=ymLabel(sCalYm);
+  $("sModeSeg").querySelectorAll("button").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.mode===sMode));if(b.dataset.mode!=="b")b.textContent=offName(b.dataset.mode,T)+"定休日";});
+  miniCal($("sCal"),sCalYm,(d,k)=>{
+    const zs=["s","r","f"], bin=isBin(d,T), cls=[];
+    if(zs.some(z=>isClosed(d,T,z)))cls.push("closed");if(bin)cls.push("bin");
+    let html=binTag(d,T)+closedTags(d,T,zs);
+    if(HOL[k])html+=`<span class="hn">${HOL[k]}</span>`;
+    return {cls,html};
+  },k=>{
+    if(!sEditOn){toast("「修正する」を押してから日付をタップしてください。");return;}
+    const d=parseKey(k), tog=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):arr.concat(v);
+    if(sMode!=="b"){T.off[sMode]=tog(T.off[sMode]||[],k);}
+    else{
+      if(isClosed(d,T)){toast("フロント（古江）の定休日には便を設定できません。先に定休日を外してください。");return;}
+      if(weeklyBin(d,T).on)T.binSkip=tog(T.binSkip,k); else T.binAdd=tog(T.binAdd,k);
+    }
+    dirty("sDirty",true);drawSCal();
+  });
+  const from=key(today());
+  $("sExtra").innerHTML=["s","r","f"].map(z=>{
+    const a=(T.off[z]||[]).filter(k=>k>=from).sort();
+    return `<div class="offlist"><span class="kn off-${z}">${esc(offName(z,T))}定休日</span>${a.length?a.map(k=>`<button type="button" data-z="${z}" data-k="${k}" aria-label="${k}を${esc(offName(z,T))}定休日から外す">${fmtS(parseKey(k))} ×</button>`).join(""):'<span class="note">登録なし</span>'}</div>`;
+  }).join("");
+  $("sExtra").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    if(!sEditOn){toast("「修正する」を押してから外してください。");return;}
+    T.off[b.dataset.z]=(T.off[b.dataset.z]||[]).filter(x=>x!==b.dataset.k);dirty("sDirty",true);drawSCal();
+  });
+}
+$("sModeSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{sMode=b.dataset.mode;drawSCal();});
+$("sCalPrev").onclick=()=>{sCalYm=ymShift(sCalYm,-1);drawSCal();};
+$("sCalNext").onclick=()=>{sCalYm=ymShift(sCalYm,1);drawSCal();};
+$("sCAdd").onclick=()=>{readS();T.cItems.push({id:"c"+Date.now().toString(36),name:"変動"+(T.cItems.length+1)});dirty("sDirty",true);fillS();};
+$("sSave").onclick=()=>{
+  readS();shop=structuredClone(T);sEditOn=false;syncSEdit();render();dirty("sDirty",false);
+  persist("settings/shop",shop).then(()=>toast("設定を保存しました。"),()=>{});
+};
+
+/* ---------- お知らせ ---------- */
+const NSEEN="sarto-notice-seen";
+let N=null, ntcEditOn=false;
+const ntcVer=n=>n.updated||1;
+const ntcActive=n=>{const k=key(today());return (!n.start||n.start<=k)&&(!n.end||k<=n.end);};
+function seenMap(){try{return JSON.parse(localStorage.getItem(NSEEN))||{};}catch(e){return {};}}
+function markSeen(list){try{const m=seenMap();list.forEach(n=>m[n.id]=ntcVer(n));localStorage.setItem(NSEEN,JSON.stringify(m));}catch(e){}}
+function unseenNotices(){const m=seenMap();return notices.filter(ntcActive).filter(n=>m[n.id]!==ntcVer(n));}
+function renderBadge(){const n=unseenNotices().length;$("ntcBadge").hidden=!n;$("ntcBadge").textContent=n;renderNtcBar();}
+function renderNtcBar(){
+  const act=notices.filter(ntcActive);
+  $("ntcBar").hidden=!act.length;
+  $("ntcBar").innerHTML=act.map(n=>`<div class="ntc-item"><div class="ntc-head"><span class="ntc-tag">お知らせ</span><h4 style="margin:0">${esc(n.title||"")}</h4></div><p>${esc(n.body||"")}</p>`+
+    ((n.start||n.end)?`<div class="ntc-when">${esc(n.start||"")}${n.end?" 〜 "+esc(n.end):""}</div>`:"")+`</div>`).join("");
+}
+function ntcHTML(n){
+  return `<div class="ntc-item"><h4>${esc(n.title||"お知らせ")}</h4><p>${esc(n.body||"")}</p>`+
+    ((n.start||n.end)?`<div class="ntc-when">表示期間：${esc(n.start||"いつでも")}${n.end?" 〜 "+esc(n.end):" 〜"}</div>`:"")+`</div>`;
+}
+function maybeShowNotice(){
+  renderBadge();
+  const u=unseenNotices();
+  if(!u.length||$("ntcPop").open||$("front").open)return;
+  $("ntcPopList").innerHTML=u.map(ntcHTML).join("");
+  $("ntcPop").showModal();
+}
+function closePop(){markSeen(unseenNotices());renderBadge();$("ntcPop").close();}
+$("ntcPopX").onclick=closePop;
+$("ntcPopDone").onclick=closePop;
+$("ntcPop").addEventListener("close",()=>{markSeen(unseenNotices());renderBadge();});
+function renderNtc(){
+  $("ntcEdit").setAttribute("aria-pressed",String(ntcEditOn));
+  $("ntcEdit").textContent=ntcEditOn?"修正をやめる":"修正する";
+  $("ntcAdd").hidden=!ntcEditOn;$("ntcSave").hidden=!ntcEditOn;
+  $("ntcNote").textContent=ntcEditOn?"文面を直して「保存する」を押すと、全端末に反映されます。":"ページを開いたときにポップで出ます。";
+  if(ntcEditOn){
+    $("ntcList").innerHTML=(N||[]).map((n,i)=>`<div class="ntc-edit"><input id="nt-t-${i}" value="${esc(n.title||"")}" placeholder="見出し（例：年末年始の休み）" aria-label="見出し"><textarea id="nt-b-${i}" placeholder="本文" aria-label="本文">${esc(n.body||"")}</textarea><div class="ntc-row2"><input type="date" id="nt-s-${i}" value="${esc(n.start||"")}" aria-label="表示の開始日"><input type="date" id="nt-e-${i}" value="${esc(n.end||"")}" aria-label="表示の終了日"><button class="btn sm" type="button" data-del="${i}">削除</button></div></div>`).join("")
+      ||'<p class="note">お知らせがありません。「＋ 追加」で作ってください。</p>';
+    $("ntcList").querySelectorAll("input,textarea").forEach(el=>el.oninput=()=>{readNtc();dirty("ntcDirty",true);});
+    $("ntcList").querySelectorAll("button[data-del]").forEach(b=>b.onclick=()=>{readNtc();N.splice(+b.dataset.del,1);dirty("ntcDirty",true);renderNtc();});
+    return;
+  }
+  const act=notices.filter(ntcActive), other=notices.filter(n=>!ntcActive(n));
+  $("ntcList").innerHTML=(act.length?act.map(ntcHTML).join(""):'<p class="note">今出ているお知らせはありません。</p>')+
+    (other.length?`<p class="note" style="margin-top:10px">期間外のお知らせ（${other.length}件）</p>`+other.map(ntcHTML).join(""):"");
+}
+function readNtc(){if(!N)return;N.forEach((n,i)=>{const t=$("nt-t-"+i);if(!t)return;n.title=t.value;n.body=$("nt-b-"+i).value;n.start=$("nt-s-"+i).value;n.end=$("nt-e-"+i).value;});}
+$("btnNtc").onclick=()=>{ntcEditOn=false;N=null;dirty("ntcDirty",false);renderNtc();$("ntcDlg").showModal();};
+$("ntcX").onclick=()=>$("ntcDlg").close();
+$("ntcEdit").onclick=()=>{ntcEditOn=!ntcEditOn;if(ntcEditOn)N=structuredClone(notices);renderNtc();};
+$("ntcAdd").onclick=()=>{readNtc();N.push({id:"n"+Date.now().toString(36),title:"",body:"",start:"",end:"",updated:Date.now()});dirty("ntcDirty",true);renderNtc();};
+$("ntcSave").onclick=()=>{
+  readNtc();
+  const before=new Map(notices.map(n=>[n.id,n]));
+  notices=(N||[]).filter(n=>(n.title||"").trim()||(n.body||"").trim()).map(n=>{
+    const b=before.get(n.id);
+    const changed=!b||b.title!==n.title||b.body!==n.body||b.start!==n.start||b.end!==n.end;
+    return Object.assign({},n,{updated:changed?Date.now():ntcVer(b)});
+  });
+  ntcEditOn=false;N=null;dirty("ntcDirty",false);renderNtc();renderBadge();
+  persist("settings/notices",{list:notices}).then(()=>toast("お知らせを保存しました。"),()=>{});
+};
+
+/* ---------- 期間別一覧表 ---------- */
+function perGroups(){
+  const gs=new Map();
+  (shop.repairs||[]).forEach(x=>{
+    const c=catOf(x);
+    let k,label,ord;
+    if(x.kind==="min"){k="min"+(x.weeks||6);label="基本"+(x.weeks||6)+"週間以上（納期変動）";ord=70;}
+    else if(x.kind==="quote"){k="quote";label="要見積もり";ord=80;}
+    else if(x.kind==="pending"){k="pending";label="確認中（次ページ待ち）";ord=90;}
+    else if(x.kind==="order"){k="order-"+c;label=(shop.names[c]||"")+"＋取り寄せ";ord=60;}
+    else {k=c;label=labelOf(c);ord=({a:10,r:11,b:20,c:30,d:40,f:50,e:65})[c]||55;}
+    if(!gs.has(k))gs.set(k,{k,label,ord,items:[],sample:x});
+    gs.get(k).items.push(x);
+  });
+  return [...gs.values()].sort((p,q)=>p.ord-q.ord);
+}
+function basicsHTML(){
+  const ym=ymOf(recv);
+  return ["a","r","b","c","d","f"].map(c=>`<span class="per-b"><b>${esc(shop.names[c]||"")}</b>${esc(unit(item(c,ym),recv))}</span>`).join("")
+    +'<span class="per-b"><b>'+esc(shop.names.e||"変動")+'</b>毎日入力</span>';
+}
+function notesHTML(){
+  const ym=ymOf(recv);
+  return `<div class="per-n"><b>取り寄せが必要なもの</b>取り寄せに10日〜2週間。取り寄せ後に、修理日をお客様へお伝えします。最初に仕上がり日を約束しません。</div>`+
+    `<div class="per-n"><b>次ページ待ち</b>× ① パンツ／渡り詰め・3方詰め　× ② パンツの補足（スラックスとデニム／ゴム仕様は阿部さん・小林さん）。紙が届くまで「確認中」の扱いです。</div>`+
+    `<div class="per-n warnbox"><b>要確認</b>① 2週間の6件は「丸の内へ変更」。② サローネの日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`;
+}
+function renderPer(){
+  $("perNote").textContent=(key(recv)===key(today())?"本日":fmtS(recv))+"受付した場合の仕上がり日です。";
+  const basics=basicsHTML();
+  const groups=perGroups().map(g=>{
+    const f=repCalc(g.sample);
+    return `<div class="per-g"><div class="per-h"><b>${esc(g.label)}</b><span class="d">${f.html}</span></div>`+
+      g.items.map(x=>`<div class="per-r"><span>${esc(x.name)}</span><span class="it">${esc(x.item||"")}</span>`+
+        `${x.staff?`<span class="who">担当：${esc(x.staff)}</span>`:""}${x.memo?`<span class="who">※ ${esc(x.memo)}</span>`:""}</div>`).join("")+
+      `</div>`;
+  }).join("");
+  const notes=notesHTML();
+  $("perList").innerHTML=`<div class="per-g"><div class="per-h"><b>納期の基本</b><span class="d" style="font-size:13px">${fmtS(recv)}受付</span></div><div class="per-basics">${basics}</div></div>`+
+    groups+notes;
+}
+$("btnPer").onclick=()=>{renderPer();$("perDlg").showModal();};
+$("perX").onclick=()=>$("perDlg").close();
+$("perDone").onclick=()=>$("perDlg").close();
+
+/* ---------- 修理内容から探す ---------- */
+const kana=t=>String(t||"").toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+const catLabel=c=>c==="A"?"お店に合わせる（サローネ／ReSARTO）":labelOf(c);
+const REPCATS=["A","b","c","d","e","f","a","r"];
+const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["e",""],["f",""],["a",""],["r",""],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
+const repVal=x=>x.kind==="order"?("order-"+(x.cat||"c")):x.kind==="min"?"min6":x.kind==="quote"?"quote":x.kind==="pending"?"pending":(x.cat||"b");
+const repOptLabel=v=>{const o=REPOPTS.find(o=>o[0]===v);return o&&o[1]?o[1]:catLabel(v);};
+const catOf=x=>x.cat==="A"?brand:(x.cat||"b");
+let repQ="", repItem="", repPick="", repEditOn=false, R=null;
+const REPKINDS={min:"最低週数",order:"取り寄せ",quote:"要見積もり",pending:"確認中"};
+const nameOfC=id=>{const c=(shop.cItems||[]).find(y=>y.id===id);return c?c.name:"";};
+function repWeeks(n){return finish(recv,{days:n*7,mode:"cal",scope:"f"});}
+function catBadge(x){
+  if(x.kind==="min")return {cls:"min",t:(x.weeks||6)+"週"};
+  if(x.kind==="quote")return {cls:"q",t:"見"};
+  if(x.kind==="pending")return {cls:"q",t:"？"};
+  const c=catOf(x);return {cls:c,t:SHORT[c]||c};
+}
+function repCalc(x){
+  if(x.kind==="quote")return {html:'<span class="warn">要見積もり</span>',sub:"紙に週数の記載がありません"};
+  if(x.kind==="pending")return {html:'<span class="warn">確認中</span>',sub:"次ページ①待ち"};
+  if(x.kind==="min"){
+    const n=x.weeks||6,d=repWeeks(n);
+    if(x.cid){
+      const ent=cEntries(key(recv))||{};
+      if(ent[x.cid]){const dd=parseKey(ent[x.cid]);return {date:dd,html:fmtS(dd),sub:"変動（今日の入力済み）"};}
+      return {html:"基本"+n+"週間以上",date:d,sub:"変動 未入力（目安 "+fmtS(d)+"以降）"};
+    }
+    return {html:"基本"+n+"週間以上",date:d,sub:"納期変動（目安 "+fmtS(d)+"以降）"};
+  }
+  const c=catOf(x);
+  if(x.kind==="order"){const r=abd(recv,c);return {html:fmtS(r.date)+" ＋取り寄せ",date:r.date,sub:(shop.names[c]||"")+"＋取り寄せ期間（要見積もり）"};}
+  if(c==="e"){
+    const ds=cList().filter(y=>y.date).map(y=>y.date);
+    if(!ds.length)return {html:'<span class="warn">未入力</span>',sub:"フロント担当で入力してください"};
+    const mn=new Date(Math.min(...ds)),mx=new Date(Math.max(...ds));
+    return {html:key(mn)===key(mx)?fmtS(mn):`${md(mn)}〜${md(mx)}`,date:mx,sub:catLabel("e")};
+  }
+  const r=abd(recv,c);
+  return {html:fmtS(r.date),date:r.date,manual:r.manual,sub:catLabel(c)+" ・ "+unit(item(c,ymOf(recv)),recv)};
+}
+const repList=()=>shop.repairs||[];
+const repItems=()=>[...new Set(repList().map(x=>x.item||"その他"))];
+const VARKINDS=["min","quote","pending"];
+const isVar=x=>VARKINDS.includes(x.kind)||catOf(x)==="e";
+const VARITEM="変動";
+function renderRep(){
+  $("repEdit").setAttribute("aria-pressed",String(repEditOn));
+  $("repEdit").textContent=repEditOn?"修正をやめる":"修正する";
+  $("repAdd").hidden=!repEditOn;$("repSave").hidden=!repEditOn;
+  $("repQ").parentElement.hidden=repEditOn;
+  $("repNote").textContent=(key(recv)===key(today())?"本日":fmtS(recv))+"受付した場合の仕上がり日が出ます。";
+  if(repEditOn)return renderRepEdit();
+  const q=kana(repQ).trim();
+  const pick=repList().find(x=>x.id===repPick);
+  const pc=pick?catOf(pick):"";
+  // 3. 選んだ結果
+  if(pick){
+    const f=repCalc(pick), b=catBadge(pick);
+    $("repCats").innerHTML='<button type="button" class="btn sm" id="repBack">← ほかの修理を選ぶ</button>';
+    $("repBack").onclick=()=>{repPick="";renderRep();};
+    $("repList").innerHTML=`<div class="rep-res"><div class="rep-res-top"><span class="cat ${b.cls}">${b.t}</span><span><b>${esc((pick.item||"")+" "+pick.name)}</b><span class="rep-sub">${esc(f.sub||"")}</span></span></div>`+
+      (isVar(pick)?'<p class="note"><span class="varpill">変動</span>　納期が動きます。お客様には最低の目安としてお伝えください。</p>':"")+
+      `<div class="rep-res-fin">${f.html}<span class="left">${fmtS(recv)}受付${f.date&&pc!=="e"?" ・ "+diff(recv,f.date)+"日後":""}</span></div>`+
+      (pick.staff?`<p class="note">担当：${esc(pick.staff)}</p>`:"")+(pick.memo?`<p class="note">${esc(pick.memo)}</p>`:"")+
+      (pc==="e"?'<div class="cfoot"><button class="btn" type="button" id="repGoE">フロント担当で入力する</button></div>':"")+`</div>`;
+    if($("repGoE"))$("repGoE").onclick=()=>{cDayK=key(recv);$("repDlg").close();openFront("c");};
+    return;
+  }
+  // 2'. 打ち込んで探した結果
+  if(q){
+    $("repCats").innerHTML="";
+    const hit=repList().filter(x=>kana((x.item||"")+" "+x.name+" "+(x.yomi||"")+" "+(x.memo||"")).includes(q));
+    $("repList").innerHTML=hit.length?hit.map(x=>repRowHTML(x)).join(""):'<p class="note">見つかりません。別の言い方で探すか、「修正する」から登録してください。</p>';
+    bindRepRows();return;
+  }
+  // 1. アイテムを選ぶ
+  if(!repItem){
+    $("repCats").innerHTML="";
+    const nv=repList().filter(isVar).length;
+    $("repList").innerHTML='<p class="note">アイテムを選んでください。</p><div class="rep-items">'+
+      repItems().map(it=>`<button type="button" class="rep-item" data-it="${esc(it)}">${esc(it)}<span class="rep-sub">${repList().filter(x=>(x.item||"その他")===it).length}件</span></button>`).join("")+
+      (nv?`<button type="button" class="rep-item var" data-it="${VARITEM}">変動<span class="rep-sub">毎日入力・基本6週間以上・見積もり　${nv}件</span></button>`:"")+'</div>';
+    $("repList").insertAdjacentHTML("beforeend",
+      `<div class="per-g" style="margin-top:12px"><div class="per-h"><b>納期の基本</b><span class="d" style="font-size:13px">${fmtS(recv)}受付</span></div><div class="per-basics">${basicsHTML()}</div></div>`+notesHTML());
+    $("repList").querySelectorAll(".rep-item").forEach(b=>b.onclick=()=>{repItem=b.dataset.it;renderRep();});
+    return;
+  }
+  // 2. 修理内容を選ぶ
+  $("repCats").innerHTML='<button type="button" class="btn sm" id="repBack">← アイテムを選び直す</button><span class="rep-now">'+esc(repItem===VARITEM?"変動（納期が動くもの）":repItem)+'</span>';
+  $("repBack").onclick=()=>{repItem="";renderRep();};
+  $("repList").innerHTML=(repItem===VARITEM?repList().filter(isVar):repList().filter(x=>(x.item||"その他")===repItem)).map(x=>repRowHTML(x)).join("");
+  bindRepRows();
+}
+function repRowHTML(x){
+  const f=repCalc(x), b=catBadge(x);
+  const sub=[isVar(x)?"変動":"",x.item,f.sub,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ ");
+  return `<button type="button" class="rep-row" data-id="${x.id}"><span class="cat ${b.cls}">${b.t}</span><span class="rep-name">${esc(x.name)}</span><span class="rep-fin ${f.manual?"man":""}">${f.html}</span><span class="rep-sub">${esc(sub)}</span></button>`;
+}
+function bindRepRows(){
+  $("repList").querySelectorAll(".rep-row").forEach(b=>b.onclick=()=>{
+    const x=repList().find(y=>y.id===b.dataset.id);if(!x)return;
+    if(x.cat==="a"||x.cat==="r"){brand=x.cat;try{localStorage.setItem("sarto-brand",x.cat);}catch(e){}render();}
+    repPick=x.id;renderRep();
+  });
+}
+function renderRepEdit(){
+  $("repCats").innerHTML="";
+  const its=repItems();
+  $("repList").innerHTML='<datalist id="repItemList">'+its.map(i=>`<option value="${esc(i)}"></option>`).join("")+'</datalist>'+
+    (R||[]).map((x,i)=>`<div class="rep-edit"><input id="rp-i-${i}" list="repItemList" value="${esc(x.item||"")}" placeholder="アイテム（例：パンツ）" aria-label="アイテム"><select id="rp-c-${i}" aria-label="区分">${REPOPTS.map(([v])=>`<option value="${v}"${repVal(x)===v?" selected":""}>${esc(repOptLabel(v))}</option>`).join("")}</select><button class="btn sm" type="button" data-del="${i}">削除</button><input class="full" id="rp-n-${i}" value="${esc(x.name)}" placeholder="修理内容（例：裾上げ（シングル））" aria-label="修理内容"><input class="full" id="rp-s-${i}" value="${esc(x.staff||"")}" placeholder="担当（例：久田・小林さん／丸の内）" aria-label="担当"><input class="full" id="rp-y-${i}" value="${esc(x.yomi||"")}" placeholder="よみ・別の言い方（例：すそあげ 丈詰め）" aria-label="よみ・別の言い方"><input class="full" id="rp-m-${i}" value="${esc(x.memo||"")}" placeholder="メモ（例：生地により+1週間）" aria-label="メモ"></div>`).join("")
+    ||'<p class="note">項目がありません。「＋ 追加」で登録してください。</p>';
+  $("repList").querySelectorAll("input,select").forEach(el=>el.oninput=()=>{readRep();dirty("repDirty",true);});
+  $("repList").querySelectorAll("button[data-del]").forEach(b=>b.onclick=()=>{readRep();R.splice(+b.dataset.del,1);dirty("repDirty",true);renderRep();});
+}
+function readRep(){if(!R)return;R.forEach((x,i)=>{
+  const n=$("rp-n-"+i);if(!n)return;
+  x.name=n.value;x.item=$("rp-i-"+i).value;x.yomi=$("rp-y-"+i).value;x.memo=$("rp-m-"+i).value;x.staff=$("rp-s-"+i).value;
+  const v=$("rp-c-"+i).value;
+  delete x.kind;delete x.weeks;
+  if(v.startsWith("order-")){x.kind="order";x.cat=v.slice(6);}
+  else if(v==="min6"){x.kind="min";x.weeks=6;x.cat="";}
+  else if(v==="quote"||v==="pending"){x.kind=v;x.cat="";}
+  else x.cat=v;
+});}
+$("btnRep").onclick=()=>{repEditOn=false;R=null;repQ="";repItem="";repPick="";$("repQ").value="";dirty("repDirty",false);renderRep();$("repDlg").showModal();};
+$("repX").onclick=()=>$("repDlg").close();
+$("repQ").oninput=()=>{repQ=$("repQ").value;repPick="";renderRep();};
+$("repEdit").onclick=()=>{repEditOn=!repEditOn;if(repEditOn)R=structuredClone(shop.repairs||[]);renderRep();};
+$("repAdd").onclick=()=>{readRep();R.push({id:"p"+Date.now().toString(36),item:(repItem===VARITEM?"":repItem)||"",name:"",cat:"b",yomi:"",memo:"",staff:""});dirty("repDirty",true);renderRep();};
+$("repSave").onclick=()=>{
+  readRep();shop.repairs=(R||[]).filter(x=>x.name.trim());
+  repEditOn=false;R=null;dirty("repDirty",false);renderRep();
+  persist("settings/shop",shop).then(()=>toast("修理内容の一覧を保存しました。"),()=>{});
+};
+
+/* ---------- 共有データ ---------- */
+function setMode(shared){$("saveMode").textContent=shared?"● 全端末で共有中":"この端末だけに保存";}
+function onErr(){toast("共有データに接続できませんでした。ページを開き直してください。");}
+const cl=window.claude;
+(cl&&cl.use?cl.use("db"):Promise.resolve(null)).then(d=>{
+  if(!d){setMode(false);return;}
+  db=d;setMode(true);
+  shop=normShop(null);monthly={};cdaily={};abdover={};render();
+  db.doc("settings/shop").onSnapshot(s=>{shop=normShop(s.exists?structuredClone(s.data()):null);render();},onErr);
+  db.collection("monthly").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=x.data());monthly=m;render();},onErr);
+  db.collection("cdaily").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});cdaily=m;render();},onErr);
+  db.collection("abdover").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});abdover=m;render();},onErr);
+  db.doc("settings/notices").onSnapshot(s=>{notices=(s.exists&&(s.data()||{}).list)||[];maybeShowNotice();},onErr);
+}).catch(()=>setMode(false));
+
+renderFilters();render();renderNtcBar();maybeShowNotice();
+let lastDay=key(today());
+setInterval(()=>{const k=key(today());if(k!==lastDay){const was=key(recv)===lastDay;lastDay=k;if(was){recv=today();wStart=today();view=new Date(recv.getFullYear(),recv.getMonth(),1);}render();}},60000);
+})();
+</script>
+
+
+
+</body>
+</html>
