@@ -343,6 +343,24 @@ dialog{border-radius:6px}
 .ntc-edit textarea{font:inherit;font-size:14px;line-height:1.6;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);width:100%;min-height:84px;resize:vertical}
 .ntc-row2{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center}
 @media (max-width:520px){.ntc-row2{grid-template-columns:1fr 1fr}.ntc-row2 button{grid-column:1/-1;justify-self:start}}
+.cat-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);margin-bottom:6px}
+.cat-row .nm2{font-weight:700;font-size:14px}
+.cat-row .sub2{grid-column:1/-1;font-size:11px;color:var(--ink2)}
+.whoami{font-size:12px;font-weight:700;color:var(--ink);background:var(--navy-soft);border-radius:999px;padding:3px 12px}
+.login-roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.login-roles button{padding:16px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-family:"Zen Old Mincho",serif;font-weight:900;font-size:17px}
+.login-roles button:hover{border-color:var(--navy)}
+.login-roles .sub{display:block;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:11px;color:var(--ink2);margin-top:2px}
+body.noedit #btnFront,body.noedit .catsel,body.noedit #repEdit,body.noedit #ntcEdit,body.noedit #cGo{display:none!important}
+body.notadmin .adminonly{display:none!important}
+.changed{border-color:var(--rust)!important;background:var(--rust-soft)!important}
+.chgpill{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--rust);color:var(--paper);margin-right:6px}
+.ntc-more{width:100%;justify-self:stretch;border-style:dashed}
+.ntcPopList .ntc-item+.ntc-item{margin-top:10px}
+.ntc-item.auto{border-left-color:var(--rust)}
+.ntc-item.auto h4{color:var(--rust)}
+.ntcbar .ntc-item.auto .ntc-tag{background:var(--rust);color:var(--paper)}
+.cat-row select{font:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink)}
 .per-g{border:1px solid var(--line);border-radius:6px;background:var(--paper);margin-bottom:10px;overflow:hidden}
 .per-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px;padding:9px 12px;background:var(--navy-soft)}
 .per-h b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:15px}
@@ -371,14 +389,14 @@ dialog{border-radius:6px}
 .rep-edit{display:grid;grid-template-columns:1fr 120px auto;gap:6px;align-items:center;margin-bottom:8px;padding:10px;border:1px dashed var(--stitch);border-radius:6px}
 .rep-edit .full{grid-column:1/-1}
 @media (max-width:520px){.rep-edit{grid-template-columns:1fr 1fr}.rep-edit button{grid-column:1/-1;justify-self:start}}
-#btnFront,#repEdit,#ntcEdit,#cGo,#saveMode,#repAdd,#repSave,#ntcAdd,#ntcSave,#ntcDirty,#repDirty{display:none!important}
+#btnFront,#repEdit,#ntcEdit,#cGo,#saveMode,#repAdd,#repSave,#ntcAdd,#ntcSave,#ntcDirty,#repDirty,.catsel,#btnLogout,.whoami{display:none!important}
 .pubnote{font-size:11px;color:var(--ink2);letter-spacing:.06em}
 </style>
 
 <div class="wrap">
   <header>
     <div class="brand"><div class="brand-txt"><small>SARTORIA · CONSEGNA</small><h1>サルト納期カレンダー</h1></div></div>
-    <div class="hbtns"><span class="pubnote">お客様用の納期のご案内</span><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
+    <div class="hbtns"><span class="whoami" id="whoami"></span><button class="btn sm" id="btnLogout" type="button" hidden>ログアウト</button><span class="pubnote">お客様用の納期のご案内</span><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
   </header>
 
   <div class="brandwrap">
@@ -399,15 +417,6 @@ dialog{border-radius:6px}
     </div>
   </section>
 
-  <section class="week">
-    <h2 class="eyebrow"><em>Settimana</em>週間早見</h2>
-    <div class="cal-top">
-      <div class="month"><button class="nav" id="wPrev" type="button" aria-label="前の週">‹</button><span id="wLbl"></span><button class="nav" id="wNext" type="button" aria-label="次の週">›</button></div>
-      <button class="back" id="wToday" type="button" hidden>今日からの1週間に戻す</button>
-    </div>
-    <p class="hint">その日に受付した場合の仕上がり日です。日付をタップすると上の伝票が切り替わります。</p>
-    <div class="week-scroll"><div class="wgrid" id="wGrid"></div></div>
-  </section>
 
   <section class="cal">
     <h2 class="eyebrow"><em>Calendario</em>月間カレンダー</h2>
@@ -466,12 +475,12 @@ dialog{border-radius:6px}
       <p class="note">数え方 —「営業日」: 休業日を除いて数える／「暦日」: カレンダー通りに数え、仕上がりが休業日なら翌営業日へ。</p>
       <div class="confirm">
         <div class="calhead"><h4 id="mCalTitle">確認カレンダー（受付日ごとの仕上がり日）</h4><button class="btn sm" type="button" id="mCopy">前月の値を入れる</button></div>
-        <div class="chips"><span class="note">表示：</span><div class="seg wrap" role="group" aria-label="確認カレンダーの表示" id="mViewSeg"><button type="button" data-v="all">全部</button><button type="button" data-v="a">A</button><button type="button" data-v="r">A</button><button type="button" data-v="b">B</button><button type="button" data-v="c">C</button><button type="button" data-v="d">D</button><button type="button" data-v="f">F</button></div></div>
+        <div class="chips"><span class="note">表示：</span><div class="seg wrap" role="group" aria-label="確認カレンダーの表示" id="mViewSeg"><button type="button" data-v="all">全部</button><button type="button" data-v="a">A</button><button type="button" data-v="r">A</button><button type="button" data-v="b">B</button><button type="button" data-v="c">C</button><button type="button" data-v="d">D</button><button type="button" data-v="g">G</button><button type="button" data-v="h">H</button><button type="button" data-v="f">F</button></div></div>
         <p class="note">「修正する」を押して受付日をタップすると、仕上がり日を選ぶカレンダーが開きます。直した日は<span style="color:var(--rust);font-weight:700">赤字</span>になります。直したら「保存する」を押してください。</p>
         <div class="caltools"><button class="btn" type="button" id="mEditBtn" aria-pressed="false">修正する</button><span class="mstat dirty" id="mDirty2" hidden>未保存</span><button class="btn primary" type="button" id="mSave2">保存する</button></div>
         <div class="mcal-wrap"><div class="mcal" id="mCal"></div></div>
       </div>
-      <div><h4>月ごとの一覧（タップで切り替え）</h4><div class="tbl"><table class="mtable"><thead><tr><th>月</th><th>サローネ</th><th>ReSARTO</th><th>2週間</th><th>3週間</th><th>4週間</th><th>クリーニング</th><th>状態</th></tr></thead><tbody id="mTable"></tbody></table></div></div>
+      <div><h4>月ごとの一覧（タップで切り替え）</h4><div class="tbl"><table class="mtable"><thead><tr><th>月</th><th>サローネ</th><th>ReSARTO</th><th>2週間</th><th>3週間</th><th>4週間</th><th>5週間</th><th>6週間</th><th>クリーニング</th><th>状態</th></tr></thead><tbody id="mTable"></tbody></table></div></div>
       <div class="foot"><button class="btn" type="button" id="mDel">この月の設定を消す</button><div class="hbtns"><span class="mstat dirty" id="mDirty" hidden>未保存</span><button class="btn primary" type="button" id="mSave">保存する</button></div></div>
     </section>
 
@@ -493,8 +502,17 @@ dialog{border-radius:6px}
         <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">2週</span><input id="sNb" aria-label="2週間の名前"></div>
         <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">3週</span><input id="sNc" aria-label="3週間の名前"></div>
         <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">4週</span><input id="sNd" aria-label="4週間の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">5週</span><input id="sNg" aria-label="5週間の名前"></div>
+        <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">6週</span><input id="sNh" aria-label="6週間の名前"></div>
         <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">変動</span><input id="sNe" aria-label="変動の名前"></div>
         <div class="set-row" style="grid-template-columns:40px 1fr"><span class="lab">クリ</span><input id="sNf" aria-label="クリーニングの名前"></div>
+      </div>
+      <div class="adminonly"><h4>パスワード（管理のみ）</h4>
+        <div class="set-row" style="grid-template-columns:90px 1fr"><span class="lab">サローネ</span><input id="pinS" inputmode="numeric" aria-label="サローネのパスワード"></div>
+        <div class="set-row" style="grid-template-columns:90px 1fr"><span class="lab">ReSARTO</span><input id="pinR" inputmode="numeric" aria-label="ReSARTOのパスワード"></div>
+        <div class="set-row" style="grid-template-columns:90px 1fr"><span class="lab">古江</span><input id="pinF" inputmode="numeric" aria-label="古江のパスワード"></div>
+        <div class="set-row" style="grid-template-columns:90px 1fr"><span class="lab">管理</span><input id="pinK" inputmode="numeric" aria-label="管理のパスワード"></div>
+        <p class="note">空欄にすると、そのログインはパスワードなしになります。</p>
       </div>
       <div><h4>変動の項目</h4><div id="sCItems"></div><button class="btn" type="button" id="sCAdd">＋ 変動の項目を追加</button></div>
       <div class="foot"><span></span><div class="hbtns"><span class="mstat dirty" id="sDirty" hidden>未保存</span><button class="btn primary" type="button" id="sSave">保存する</button></div></div>
@@ -516,6 +534,27 @@ dialog{border-radius:6px}
     <p class="note" id="ntcNote"></p>
     <div id="ntcList"></div>
     <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="ntcEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="ntcDirty" hidden>未保存</span></div><div class="hbtns"><button class="btn" type="button" id="ntcAdd" hidden>＋ 追加</button><button class="btn primary" type="button" id="ntcSave" hidden>保存する</button></div></div>
+  </div>
+</dialog>
+
+<dialog id="loginDlg" aria-labelledby="loginTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="loginTitle">ログイン</h3></div>
+    <p class="note" id="loginNote">使う人を選んでください。</p>
+    <div class="login-roles" id="loginRoles"></div>
+    <div id="loginPinWrap" hidden>
+      <div class="fieldrow"><label for="loginPin">パスワード</label><input type="password" id="loginPin" inputmode="numeric" autocomplete="off" style="width:140px"><button class="btn primary" type="button" id="loginGo">入る</button><button class="btn" type="button" id="loginBack">選び直す</button></div>
+      <p class="note" id="loginMsg"></p>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="catDlg" class="pick" aria-labelledby="catTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="catTitle"></h3><button class="x" type="button" id="catX" aria-label="閉じる">×</button></div>
+    <p class="note" id="catNote"></p>
+    <div id="catList"></div>
+    <div class="foot"><span class="note" id="catFoot"></span><button class="btn primary" type="button" id="catDone">閉じる</button></div>
   </div>
 </dialog>
 
@@ -542,7 +581,7 @@ dialog{border-radius:6px}
 <dialog id="pickDlg" class="pick" aria-labelledby="pkTitle">
   <div class="dlg">
     <div class="dlg-head"><h3 id="pkTitle"></h3><button class="x" type="button" id="pkX" aria-label="閉じる">×</button></div>
-    <div class="seg wrap" role="group" aria-label="直す項目" id="pkSeg"><button type="button" data-c="a">A</button><button type="button" data-c="r">A</button><button type="button" data-c="b">B</button><button type="button" data-c="c">C</button><button type="button" data-c="d">D</button><button type="button" data-c="f">F</button></div>
+    <div class="seg wrap" role="group" aria-label="直す項目" id="pkSeg"><button type="button" data-c="a">A</button><button type="button" data-c="r">A</button><button type="button" data-c="b">B</button><button type="button" data-c="c">C</button><button type="button" data-c="d">D</button><button type="button" data-c="g">G</button><button type="button" data-c="h">H</button><button type="button" data-c="f">F</button></div>
     <div class="pknow" id="pkNow"></div>
     <div class="calhead"><b id="pkHint" style="font-size:14px"></b><div class="mnav"><button class="nav" type="button" id="pkPrev" aria-label="前の月">‹</button><span id="pkYmLbl"></span><button class="nav" type="button" id="pkNext" aria-label="次の月">›</button></div></div>
     <div class="mcal-wrap"><div class="mcal" id="pkCal"></div></div>
@@ -556,12 +595,13 @@ const HOL={"2026-01-01":"元日","2026-01-12":"成人の日","2026-02-11":"建�
 "2027-01-01":"元日","2027-01-11":"成人の日","2027-02-11":"建国記念の日","2027-02-23":"天皇誕生日","2027-03-21":"春分の日","2027-03-22":"振替休日","2027-04-29":"昭和の日","2027-05-03":"憲法記念日","2027-05-04":"みどりの日","2027-05-05":"こどもの日","2027-07-19":"海の日","2027-08-11":"山の日","2027-09-20":"敬老の日","2027-09-23":"秋分の日","2027-10-11":"スポーツの日","2027-11-03":"文化の日","2027-11-23":"勤労感謝の日"};
 const WD=["日","月","火","水","木","金","土"];
 const DEF_SHOP={
-  names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",f:"クリーニング（勝川）",e:"変動"},
+  names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",g:"5週間",h:"6週間",f:"クリーニング（勝川）",e:"変動"},
   cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
-  repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":"p25", "item":"コート・アウター", "name":"袖丈詰め（筒袖）", "cat":"b", "yomi":"そでたけつめ つつそで", "memo":"", "staff":"丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
+  repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7}, {"id":  "p2g", "item":  "パンツ", "name":  "裾上げ（Gカット）", "cat":  "", "yomi":  "すそあげ じーかっと gかっと でにむ ちょんぱ", "memo": "", "staff":  "", "kind":  "fix", "nights":  7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":"p25", "item":"コート・アウター", "name":"袖丈詰め（筒袖）", "cat":"b", "yomi":"そでたけつめ つつそで", "memo":"", "staff":"丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
+  pins:{s:"",r:"",k:"0711",f:"0000"},
   binWd:[1,3,5], binHolShift:true, binAdd:[], binSkip:[], closedWd:[], holClosed:false, extra:[], off:{s:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],r:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],f:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"]}
 };
-const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},f:{days:7,mode:"biz"}};
+const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},g:{days:35,mode:"cal"},h:{days:42,mode:"cal"},f:{days:7,mode:"biz"}};
 const LS="sarto-noki-v3";
 
 let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[{id:"n-pub-1",title:"納期のご案内",body:"修理内容を選ぶと、本日お預かりした場合の仕上がり予定日が出ます。\n混み具合や生地の取り寄せで前後することがあります。詳しくは店頭でおたずねください。",start:"",end:"",updated:1}];
@@ -592,6 +632,7 @@ function normShop(x){
     ((x&&x.extra)||[]).forEach(k=>["s","r","f"].forEach(z=>{if(!s.off[z].includes(k))s.off[z].push(k);}));
   }
   s.repairs=(x&&Array.isArray(x.repairs))?structuredClone(x.repairs):structuredClone(DEF_SHOP.repairs);
+  s.pins=Object.assign({},DEF_SHOP.pins,(x&&x.pins)||{});
   s.extra=[];s.closedWd=[];
   // フロント（古江）は最初だけ土日を定休日として登録（外した日は戻さない）
   if(!s.frontWeekendSeeded){
@@ -606,7 +647,7 @@ function normShop(x){
   return s;
 }
 /* 定休日：s=サローネ、r=ReSARTO、f=フロント（古江） */
-const SCOPE={a:"s",r:"r",b:"f",c:"f",d:"f",f:"f",e:"f"};
+const SCOPE={a:"s",r:"r",b:"f",c:"f",d:"f",g:"f",h:"f",f:"f",e:"f"};
 const isClosed=(d,s=shop,z="f")=>(s.holClosed&&!!HOL[key(d)])||(((s.off||{})[z])||[]).includes(key(d));
 const offName=(z,s=shop)=>z==="s"?(s.names.a||"サローネ"):z==="r"?(s.names.r||"ReSARTO"):"フロント（古江）";
 const offShort=z=>z==="s"?"サローネ休":z==="r"?"ReSARTO休":"古江休";
@@ -671,9 +712,9 @@ const unit=(it,d)=>{
   if(it.nights&&it.mode==="cal")return it.days+"泊"+(+it.days+1)+"日";
   return it.days+(it.mode==="biz"?"営業日":"日");
 };
-const NIGHTS=["a","r","b","c","d"];
-const CODES=["a","r","b","c","d","f"];
-const SHORT={a:"サ",r:"Re",b:"2週",c:"3週",d:"4週",e:"変動",f:"クリ"};
+const NIGHTS=["a","r","b","c","d","g","h"];
+const CODES=["a","r","b","c","d","g","h","f"];
+const SHORT={a:"サ",r:"Re",b:"2週",c:"3週",d:"4週",g:"5週",h:"6週",e:"変動",f:"クリ"};
 const letterOf=c=>SHORT[c]||c;
 const markOf=c=>SHORT[c]||c;
 const labelOf=c=>shop.names[c]||SHORT[c]||c;
@@ -708,8 +749,8 @@ let recv=today(), view=new Date(recv.getFullYear(),recv.getMonth(),1), cOpen=fal
 let show={ab:true,c:true};
 let brand="a";try{const b=localStorage.getItem("sarto-brand");if(b==="a"||b==="r")brand=b;}catch(e){}
 
-function rowHTML(code,it,r){
-  return `<span class="code">${code}</span><span class="nm"><span>${esc(it.name)}</span>${r.manual?'<span class="man-tag">手修正</span>':`<span class="mono">${unit(it,recv)}</span>`}</span><span class="fin">${fmt(r.date)}</span>`;
+function rowHTML(code,it,r,noUnit){
+  return `<span class="code">${code}</span><span class="nm"><span>${esc(it.name)}</span>${r.manual?'<span class="man-tag">手修正</span>':(noUnit?"":`<span class="mono">${unit(it,recv)}</span>`)}</span><span class="fin">${fmt(r.date)}</span>`;
 }
 function cList(){const ent=cEntries(key(recv));return shop.cItems.map(ci=>({name:ci.name,date:ent&&ent[ci.id]?parseKey(ent[ci.id]):null}));}
 
@@ -723,14 +764,17 @@ function renderSlip(){
   let cFin='<span class="warn">未入力</span>';
   if(ds.length){const mn=new Date(Math.min(...ds)),mx=new Date(Math.max(...ds));cFin=key(mn)===key(mx)?fmt(mn):`${fmtS(mn)} 〜 ${fmtS(mx)}`;}
   $("abcRows").innerHTML=
-    `<div class="row">${rowHTML(SHORT[brand],item(brand,ym),abd(recv,brand))}</div>`+
-    `<div class="row">${rowHTML(SHORT.b,item("b",ym),abd(recv,"b"))}</div>`+
-    `<div class="row">${rowHTML(SHORT.c,item("c",ym),abd(recv,"c"))}</div>`+
-    `<div class="row">${rowHTML(SHORT.d,item("d",ym),abd(recv,"d"))}</div>`+
+    `<button type="button" class="row" data-cat="${brand}">${rowHTML(SHORT[brand],item(brand,ym),abd(recv,brand))}</button>`+
+    `<button type="button" class="row" data-cat="${"b"}">${rowHTML(SHORT.b,item("b",ym),abd(recv,"b"))}</button>`+
+    `<button type="button" class="row" data-cat="${"c"}">${rowHTML(SHORT.c,item("c",ym),abd(recv,"c"))}</button>`+
+    `<button type="button" class="row" data-cat="${"d"}">${rowHTML(SHORT.d,item("d",ym),abd(recv,"d"))}</button>`+
+    `<button type="button" class="row" data-cat="${"g"}">${rowHTML(SHORT.g,item("g",ym),abd(recv,"g"))}</button>`+
+    `<button type="button" class="row" data-cat="${"h"}">${rowHTML(SHORT.h,item("h",ym),abd(recv,"h"))}</button>`+
     `<button class="row c-toggle" type="button" id="cToggle" aria-expanded="${cOpen}" aria-controls="cDetail"><span class="code">変動</span><span class="nm"><span>${esc(shop.names.e||"変動")} · タップで詳細</span><span class="chev">▶</span></span><span class="fin" style="font-size:17px">${cFin}</span></button>`+
-    `<div class="row">${rowHTML(SHORT.f,item("f",ym),abd(recv,"f"))}</div>`+
+    `<button type="button" class="row" data-cat="${"f"}">${rowHTML(SHORT.f,item("f",ym),abd(recv,"f"),true)}</button>`+
     `<div class="cdetail" id="cDetail" ${cOpen?"":"hidden"}>${cl.map(x=>`<div class="cline"><span>${esc(x.name)}</span>${x.date?`<b>${fmt(x.date)}</b><span class="mono" style="color:var(--ink2);font-size:12px">受付から${diff(recv,x.date)}日</span>`:'<span class="warn">未入力</span>'}</div>`).join("")}<div class="cfoot"><button class="btn" type="button" id="cGo">${ds.length===cl.length?"変動の仕上がり日を修正する":"フロント担当で変動を入力する"}</button></div></div>`;
   $("cToggle").onclick=()=>{cOpen=!cOpen;renderSlip();};
+  $("abcRows").querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>openCat(b.dataset.cat));
   $("cGo").onclick=()=>{cDayK=key(recv);openFront("c");};
 }
 
@@ -744,7 +788,7 @@ function renderCal(){
   $("monthLbl").textContent=view.getFullYear()+"年 "+(view.getMonth()+1)+"月";
   const marks={};
   const put=(d,t,c)=>{(marks[key(d)]=marks[key(d)]||[]).push([t,c]);};
-  if(show.ab)[brand,"b","c","d","f"].forEach(c=>{const r=abd(recv,c);put(r.date,letterOf(c),r.manual?"man":"");});
+  if(show.ab)[brand,"b","c","d","g","h","f"].forEach(c=>{const r=abd(recv,c);put(r.date,letterOf(c),r.manual?"man":"");});
   if(show.c)cList().forEach((x,i)=>{if(x.date)put(x.date,"変"+(i+1),"c");});
   let h=WD.map((w,i)=>`<div class="dow ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
   const start=addD(view,-view.getDay()), tk=key(today()), rk=key(recv);
@@ -764,6 +808,7 @@ function renderCal(){
 }
 let wStart=today();
 function renderWeek(){
+  if(!$("wGrid"))return;
   const end=addD(wStart,6), tk=key(today()), rk=key(recv);
   $("wLbl").textContent=`${fmtS(wStart)} 〜 ${fmtS(end)}`;
   $("wToday").hidden=key(wStart)===tk;
@@ -782,9 +827,9 @@ function renderWeek(){
   $("wGrid").innerHTML=h;
   $("wGrid").querySelectorAll(".wday").forEach(b=>b.onclick=()=>{recv=parseKey(b.dataset.k);view=new Date(recv.getFullYear(),recv.getMonth(),1);render();window.scrollTo({top:0,behavior:"smooth"});});
 }
-$("wPrev").onclick=()=>{wStart=addD(wStart,-7);renderWeek();};
-$("wNext").onclick=()=>{wStart=addD(wStart,7);renderWeek();};
-$("wToday").onclick=()=>{wStart=today();renderWeek();};
+
+
+
 function renderBrand(){
   $("brandA").textContent=shop.names.a||"サローネ";$("brandR").textContent=shop.names.r||"ReSARTO";
   $("brandBar").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.b===brand)));
@@ -794,7 +839,7 @@ $("brandBar").querySelectorAll("button").forEach(b=>b.onclick=()=>{
   brand=b.dataset.b;try{localStorage.setItem("sarto-brand",brand);}catch(e){}
   render();
 });
-function render(){renderBrand();renderSlip();renderWeek();renderCal();}
+function render(){renderBrand();renderSlip();renderCal();}
 
 $("prev").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);renderCal();};
 $("next").onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);renderCal();};
@@ -927,7 +972,7 @@ function fillM(cfgOverride){
   drawMCal();drawMEdit();
   const base=ymOf(today()); let h="";
   for(let i=-1;i<=10;i++){const ym=ymShift(base,i),s=monthCfg(ym),u=c=>unit(Object.assign({nights:NIGHTS.includes(c)},DEF_M[c],s.cfg[c]||{})),n=Object.keys(abdover[ym]||{}).length;
-    h+=`<tr class="${s.src==="set"?"":"inh"} ${ym===mYm?"sel":""}" data-ym="${ym}"><td>${ymLabel(ym)}</td><td class="mono">${u("a")}</td><td class="mono">${u("r")}</td><td class="mono">${u("b")}</td><td class="mono">${u("c")}</td><td class="mono">${u("d")}</td><td class="mono">${u("f")}</td><td>${s.src==="set"?"設定済み":"前の月と同じ"}${n?`・手修正${n}日`:""}</td></tr>`;}
+    h+=`<tr class="${s.src==="set"?"":"inh"} ${ym===mYm?"sel":""}" data-ym="${ym}"><td>${ymLabel(ym)}</td><td class="mono">${u("a")}</td><td class="mono">${u("r")}</td><td class="mono">${u("b")}</td><td class="mono">${u("c")}</td><td class="mono">${u("d")}</td><td class="mono">${u("g")}</td><td class="mono">${u("h")}</td><td class="mono">${u("f")}</td><td>${s.src==="set"?"設定済み":"前の月と同じ"}${n?`・手修正${n}日`:""}</td></tr>`;}
   $("mTable").innerHTML=h;
   $("mTable").querySelectorAll("tr").forEach(r=>r.onclick=()=>{mYm=r.dataset.ym;fillM();});
 }
@@ -1039,10 +1084,11 @@ $("mDel").onclick=()=>{
 /* 便・休業日・名前 */
 function readS(){
   if(!T)return;
-  T.names={a:$("sNa").value.trim()||"サローネ",r:$("sNr").value.trim()||"ReSARTO",b:$("sNb").value.trim()||"2週間",c:$("sNc").value.trim()||"3週間",d:$("sNd").value.trim()||"4週間",e:$("sNe").value.trim()||"変動",f:$("sNf").value.trim()||"クリーニング（勝川）"};
+  T.names={a:$("sNa").value.trim()||"サローネ",r:$("sNr").value.trim()||"ReSARTO",b:$("sNb").value.trim()||"2週間",c:$("sNc").value.trim()||"3週間",d:$("sNd").value.trim()||"4週間",g:$("sNg").value.trim()||"5週間",h:$("sNh").value.trim()||"6週間",e:$("sNe").value.trim()||"変動",f:$("sNf").value.trim()||"クリーニング（勝川）"};
   T.cItems.forEach(ci=>{const el=$("sc-"+ci.id);if(el)ci.name=el.value.trim()||ci.name;});
   T.binWd=WD.map((_,i)=>i).filter(i=>$("sb"+i).checked);
   T.holClosed=$("sHol").checked;T.binHolShift=$("sShift").checked;
+  if(isAdmin())T.pins={s:$("pinS").value.trim(),r:$("pinR").value.trim(),f:$("pinF").value.trim(),k:$("pinK").value.trim()};
 }
 function sChanged(){readS();dirty("sDirty",true);drawSCal();}
 function fillS(){
@@ -1051,8 +1097,9 @@ function fillS(){
   $("sHol").checked=T.holClosed;
   WD.forEach((_,i)=>{$("sb"+i).onchange=sChanged;});
   $("sHol").onchange=sChanged;$("sShift").checked=T.binHolShift!==false;$("sShift").onchange=sChanged;
-  $("sNa").value=T.names.a;$("sNr").value=T.names.r||"ReSARTO";$("sNb").value=T.names.b;$("sNc").value=T.names.c||"3週間";$("sNd").value=T.names.d;$("sNe").value=T.names.e||"変動";$("sNf").value=T.names.f||"クリーニング（勝川）";
-  ["sNa","sNr","sNb","sNc","sNd","sNe","sNf"].forEach(id=>$(id).oninput=()=>dirty("sDirty",true));
+  const pn=T.pins||{};$("pinS").value=pn.s||"";$("pinR").value=pn.r||"";$("pinF").value=pn.f||"";$("pinK").value=pn.k||"";
+  $("sNa").value=T.names.a;$("sNr").value=T.names.r||"ReSARTO";$("sNb").value=T.names.b;$("sNc").value=T.names.c||"3週間";$("sNd").value=T.names.d;$("sNg").value=T.names.g||"5週間";$("sNh").value=T.names.h||"6週間";$("sNe").value=T.names.e||"変動";$("sNf").value=T.names.f||"クリーニング（勝川）";
+  ["sNa","sNr","sNb","sNc","sNd","sNg","sNh","sNe","sNf"].forEach(id=>$(id).oninput=()=>dirty("sDirty",true));
   $("sCItems").innerHTML=T.cItems.map((ci,i)=>`<div class="ci-row"><input id="sc-${ci.id}" value="${esc(ci.name)}" aria-label="変動${i+1}の名前"><button class="btn" type="button" data-id="${ci.id}">削除</button></div>`).join("");
   T.cItems.forEach(ci=>$("sc-"+ci.id).oninput=()=>dirty("sDirty",true));
   $("sCItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{readS();if(T.cItems.length<=1){toast("変動の項目は1つ以上必要です。");return;}T.cItems=T.cItems.filter(x=>x.id!==b.dataset.id);dirty("sDirty",true);fillS();});
@@ -1115,22 +1162,25 @@ const ntcVer=n=>n.updated||1;
 const ntcActive=n=>{const k=key(today());return (!n.start||n.start<=k)&&(!n.end||k<=n.end);};
 function seenMap(){try{return JSON.parse(localStorage.getItem(NSEEN))||{};}catch(e){return {};}}
 function markSeen(list){try{const m=seenMap();list.forEach(n=>m[n.id]=ntcVer(n));localStorage.setItem(NSEEN,JSON.stringify(m));}catch(e){}}
-function unseenNotices(){const m=seenMap();return notices.filter(ntcActive).filter(n=>m[n.id]!==ntcVer(n));}
+function unseenNotices(){const m=seenMap();return allNotices().filter(ntcActive).filter(n=>m[n.id]!==ntcVer(n));}
 function renderBadge(){const n=unseenNotices().length;$("ntcBadge").hidden=!n;$("ntcBadge").textContent=n;renderNtcBar();}
 function renderNtcBar(){
-  const act=notices.filter(ntcActive);
+  const act=allNotices().filter(ntcActive), MAX=2, head=act.slice(0,MAX), rest=act.length-head.length;
   $("ntcBar").hidden=!act.length;
-  $("ntcBar").innerHTML=act.map(n=>`<div class="ntc-item"><div class="ntc-head"><span class="ntc-tag">お知らせ</span><h4 style="margin:0">${esc(n.title||"")}</h4></div><p>${esc(n.body||"")}</p>`+
-    ((n.start||n.end)?`<div class="ntc-when">${esc(n.start||"")}${n.end?" 〜 "+esc(n.end):""}</div>`:"")+`</div>`).join("");
+  $("ntcBar").innerHTML=head.map(n=>`<div class="ntc-item ${n.auto?"auto":""}"><div class="ntc-head"><span class="ntc-tag">お知らせ</span><h4 style="margin:0">${esc(n.title||"")}</h4></div><p>${esc(n.body||"")}</p>`+
+    ((n.start||n.end)?`<div class="ntc-when">${esc(n.start||"")}${n.end?" 〜 "+esc(n.end):""}</div>`:"")+`</div>`).join("")
+    +(rest>0?`<button type="button" class="btn ntc-more" id="ntcMore">ほかに${rest}件のお知らせ</button>`:"");
+  if($("ntcMore"))$("ntcMore").onclick=()=>{ntcEditOn=false;N=null;renderNtc();$("ntcDlg").showModal();};
 }
 function ntcHTML(n){
-  return `<div class="ntc-item"><h4>${esc(n.title||"お知らせ")}</h4><p>${esc(n.body||"")}</p>`+
+  return `<div class="ntc-item ${n.auto?"auto":""}"><h4>${esc(n.title||"お知らせ")}</h4><p>${esc(n.body||"")}</p>`+
     ((n.start||n.end)?`<div class="ntc-when">表示期間：${esc(n.start||"いつでも")}${n.end?" 〜 "+esc(n.end):" 〜"}</div>`:"")+`</div>`;
 }
 function maybeShowNotice(){
   renderBadge();
   const u=unseenNotices();
   if(!u.length||$("ntcPop").open||$("front").open)return;
+  $("ntcPopTitle").textContent=u.length>1?`お知らせ（全${u.length}件）`:"お知らせ";
   $("ntcPopList").innerHTML=u.map(ntcHTML).join("");
   $("ntcPop").showModal();
 }
@@ -1150,7 +1200,8 @@ function renderNtc(){
     $("ntcList").querySelectorAll("button[data-del]").forEach(b=>b.onclick=()=>{readNtc();N.splice(+b.dataset.del,1);dirty("ntcDirty",true);renderNtc();});
     return;
   }
-  const act=notices.filter(ntcActive), other=notices.filter(n=>!ntcActive(n));
+  const act=allNotices().filter(ntcActive), other=notices.filter(n=>!ntcActive(n));
+  $("ntcTitle").textContent=act.length>1?`お知らせ（${act.length}件）`:"お知らせ";
   $("ntcList").innerHTML=(act.length?act.map(ntcHTML).join(""):'<p class="note">今出ているお知らせはありません。</p>')+
     (other.length?`<p class="note" style="margin-top:10px">期間外のお知らせ（${other.length}件）</p>`+other.map(ntcHTML).join(""):"");
 }
@@ -1171,6 +1222,98 @@ $("ntcSave").onclick=()=>{
   persist("settings/notices",{list:notices}).then(()=>toast("お知らせを保存しました。"),()=>{});
 };
 
+/* ---------- ログイン ---------- */
+const ROLES={s:"サローネ",r:"ReSARTO",f:"古江",k:"管理"};
+const ROLESUB={s:"見るだけ",r:"見るだけ",f:"修正できます",k:"修正・パスワード変更"};
+const LSU="sarto-user";
+let authUser="guest", loginRole=null;
+const canEdit=()=>false;
+const isAdmin=()=>false;
+function applyAuth(){
+  document.body.classList.toggle("noedit",!canEdit());
+  document.body.classList.toggle("notadmin",!isAdmin());
+  $("whoami").textContent="";
+  $("btnLogout").hidden=!authUser;
+}
+function renderLogin(){
+  $("loginRoles").innerHTML=Object.keys(ROLES).map(k=>`<button type="button" data-role="${k}">${ROLES[k]}<span class="sub">${ROLESUB[k]}</span></button>`).join("");
+  $("loginRoles").querySelectorAll("button").forEach(b=>b.onclick=()=>pickRole(b.dataset.role));
+  $("loginPinWrap").hidden=true;$("loginRoles").hidden=false;
+  $("loginNote").textContent="使う人を選んでください。";
+}
+function pickRole(k){
+  loginRole=k;
+  const pin=((shop.pins||{})[k]||"");
+  if(!pin){doLogin(k);return;}
+  $("loginRoles").hidden=true;$("loginPinWrap").hidden=false;
+  $("loginNote").textContent=ROLES[k]+" のパスワードを入れてください。";
+  $("loginMsg").textContent="";$("loginPin").value="";$("loginPin").focus();
+}
+function doLogin(k){
+  authUser=k;try{localStorage.setItem(LSU,k);}catch(e){}
+  if(k==="s"||k==="r"){brand=k==="s"?"a":"r";try{localStorage.setItem("sarto-brand",brand);}catch(e){}}
+  applyAuth();render();$("loginDlg").close();
+}
+function showLogin(){renderLogin();if(!$("loginDlg").open)$("loginDlg").showModal();}
+$("loginGo").onclick=()=>{
+  const pin=((shop.pins||{})[loginRole]||"");
+  if($("loginPin").value===pin)doLogin(loginRole);
+  else{$("loginMsg").textContent="パスワードが違います。もう一度入れてください。";$("loginPin").value="";$("loginPin").focus();}
+};
+$("loginPin").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginGo").click();});
+$("loginBack").onclick=renderLogin;
+$("loginDlg").addEventListener("cancel",e=>{e.preventDefault();});
+$("loginDlg").addEventListener("close",()=>{if(!authUser)showLogin();});
+$("btnLogout").onclick=()=>{authUser=null;try{localStorage.removeItem(LSU);}catch(e){}applyAuth();showLogin();};
+try{const u=localStorage.getItem(LSU);if(u&&ROLES[u])authUser=u;}catch(e){}
+
+/* ---------- 基本から変えた項目 ---------- */
+const BASEREP=new Map(DEF_SHOP.repairs.map(r=>[r.id,r]));
+const baseVal=x=>{const b=BASEREP.get(x.id);return b?repVal(b):null;};
+const isChanged=x=>{const b=baseVal(x);return !!b&&b!==repVal(x);};
+const changeText=x=>isChanged(x)?("納期変更 "+repOptLabel(baseVal(x))+" → "+repOptLabel(repVal(x))):"";
+const changedList=()=>(shop.repairs||[]).filter(isChanged);
+function autoNotice(){
+  const ch=changedList();
+  if(!ch.length)return null;
+  return {id:"auto-changed",title:"納期を変更した項目があります",
+    body:ch.map(x=>"・"+((x.item||"")+" "+x.name).trim()+"：" + repOptLabel(baseVal(x))+" → "+repOptLabel(repVal(x))).join("\n")
+      +"\n\nお客様にご案内するときは、変更後の日数でお伝えください。",
+    start:"",end:"",updated:"auto-"+ch.map(x=>x.id+":"+repVal(x)).join(","),auto:true};
+}
+const ntcSort=a=>a.slice().sort((x,y)=>(Number(y.updated)||0)-(Number(x.updated)||0));
+const allNotices=()=>{const a=autoNotice();return (a?[a]:[]).concat(ntcSort(notices||[]));};
+
+/* ---------- 週のカードから一覧 ---------- */
+let catNow="";
+function catItems(code){return (shop.repairs||[]).filter(x=>!x.kind&&catOf(x)===code);}
+function renderCat(){
+  const code=catNow, ym=ymOf(recv), it=item(code,ym), r=abd(recv,code);
+  $("catTitle").textContent=(shop.names[code]||"")+" の修理一覧";
+  $("catNote").textContent=`${fmtS(recv)}受付 → ${fmt(r.date)}`+(code==="f"?"":`（${unit(it,recv)}）`);
+  const list=catItems(code);
+  $("catFoot").textContent=list.length+"件";
+  $("catList").innerHTML=list.length?list.map(x=>`<div class="cat-row ${isChanged(x)?"changed":""}"><span class="nm2">${esc(x.name)}</span>`+
+    `<select class="catsel" data-id="${x.id}" aria-label="${esc(x.name)}の納期">${REPOPTS.map(([v])=>`<option value="${v}"${repVal(x)===v?" selected":""}>${esc(repOptLabel(v))}</option>`).join("")}</select>`+
+    `<span class="sub2">${chgPill(x)}${esc([x.item,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ "))}</span></div>`).join("")
+    :'<p class="note">この納期の修理はまだ登録されていません。</p>';
+  $("catList").querySelectorAll(".catsel").forEach(sel=>sel.onchange=()=>{
+    const x=(shop.repairs||[]).find(y=>y.id===sel.dataset.id);if(!x)return;
+    const v=sel.value;
+    delete x.kind;delete x.weeks;delete x.nights;
+    if(v==="fix7"){x.kind="fix";x.nights=7;x.cat="";}
+    else if(v.startsWith("order-")){x.kind="order";x.cat=v.slice(6);}
+    else if(v==="min6"){x.kind="min";x.weeks=6;x.cat="";}
+    else if(v==="quote"||v==="pending"){x.kind=v;x.cat="";}
+    else x.cat=v;
+    render();renderCat();renderBadge();
+    persist("settings/shop",shop).then(()=>toast(x.name+" を "+repOptLabel(v)+" にしました。"),()=>{});
+  });
+}
+function openCat(code){catNow=code;renderCat();$("catDlg").showModal();}
+$("catX").onclick=()=>$("catDlg").close();
+$("catDone").onclick=()=>$("catDlg").close();
+
 /* ---------- 期間別一覧表 ---------- */
 function perGroups(){
   const gs=new Map();
@@ -1178,11 +1321,11 @@ function perGroups(){
     const c=catOf(x);
     let k,label,ord;
     if(x.kind==="fix"){const n=x.nights||7;k="fix"+n;label=n+"泊"+(n+1)+"日";ord=15;}
-    else if(x.kind==="min"){k="min"+(x.weeks||6);label="基本"+(x.weeks||6)+"週間以上（納期変動）";ord=70;}
+    else if(x.kind==="min"){k="min"+(x.weeks||6);label="納期変動";ord=70;}
     else if(x.kind==="quote"){k="quote";label="要見積もり";ord=80;}
     else if(x.kind==="pending"){k="pending";label="確認中（次ページ待ち）";ord=90;}
     else if(x.kind==="order"){k="order-"+c;label=(shop.names[c]||"")+"＋取り寄せ";ord=60;}
-    else {k=c;label=labelOf(c);ord=({a:10,r:11,b:20,c:30,d:40,f:50,e:65})[c]||55;}
+    else {k=c;label=labelOf(c);ord=({a:10,r:11,b:20,c:30,d:40,g:42,h:44,f:50,e:65})[c]||55;}
     if(!gs.has(k))gs.set(k,{k,label,ord,items:[],sample:x});
     gs.get(k).items.push(x);
   });
@@ -1190,7 +1333,7 @@ function perGroups(){
 }
 function basicsHTML(){
   const ym=ymOf(recv);
-  return ["a","r","b","c","d","f"].map(c=>`<span class="per-b"><b>${esc(shop.names[c]||"")}</b>${esc(unit(item(c,ym),recv))}</span>`).join("")
+  return ["a","r","b","c","d","g","h","f"].map(c=>`<span class="per-b"><b>${esc(shop.names[c]||"")}</b>${c==="f"?"":esc(unit(item(c,ym),recv))}</span>`).join("")
     +'<span class="per-b"><b>'+esc(shop.names.e||"変動")+'</b>毎日入力</span>';
 }
 function notesHTML(){
@@ -1204,8 +1347,8 @@ function renderPer(){
   const groups=perGroups().map(g=>{
     const f=repCalc(g.sample);
     return `<div class="per-g"><div class="per-h"><b>${esc(g.label)}</b><span class="d">${f.html}</span></div>`+
-      g.items.map(x=>`<div class="per-r"><span>${esc(x.name)}</span><span class="it">${esc(x.item||"")}</span>`+
-        `${x.staff?`<span class="who">担当：${esc(x.staff)}</span>`:""}${x.memo?`<span class="who">※ ${esc(x.memo)}</span>`:""}</div>`).join("")+
+      g.items.map(x=>`<div class="per-r ${isChanged(x)?"changed":""}"><span>${esc(dispName(x))}</span><span class="it">${esc(x.item||"")}</span>`+
+        `${chgPill(x)?`<span class="who">${chgPill(x)}</span>`:""}${x.staff?`<span class="who">担当：${esc(x.staff)}</span>`:""}${x.memo?`<span class="who">※ ${esc(x.memo)}</span>`:""}</div>`).join("")+
       `</div>`;
   }).join("");
   const notes=notesHTML();
@@ -1219,8 +1362,8 @@ $("perDone").onclick=()=>$("perDlg").close();
 /* ---------- 修理内容から探す ---------- */
 const kana=t=>String(t||"").toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
 const catLabel=c=>c==="A"?"お店に合わせる（サローネ／ReSARTO）":labelOf(c);
-const REPCATS=["A","b","c","d","e","f","a","r"];
-const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["e",""],["f",""],["a",""],["r",""],["fix7","7泊8日"],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
+const REPCATS=["A","b","c","d","g","h","e","f","a","r"];
+const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["g",""],["h",""],["e",""],["f",""],["a",""],["r",""],["fix7","7泊8日"],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
 const repVal=x=>x.kind==="fix"?"fix7":x.kind==="order"?("order-"+(x.cat||"c")):x.kind==="min"?"min6":x.kind==="quote"?"quote":x.kind==="pending"?"pending":(x.cat||"b");
 const repOptLabel=v=>{const o=REPOPTS.find(o=>o[0]===v);return o&&o[1]?o[1]:catLabel(v);};
 const catOf=x=>x.cat==="A"?brand:(x.cat||"b");
@@ -1282,7 +1425,8 @@ function renderRep(){
     const f=repCalc(pick), b=catBadge(pick);
     $("repCats").innerHTML='<button type="button" class="btn sm" id="repBack">← ほかの修理を選ぶ</button>';
     $("repBack").onclick=()=>{repPick="";renderRep();};
-    $("repList").innerHTML=`<div class="rep-res"><div class="rep-res-top"><span class="cat ${b.cls}">${b.t}</span><span><b>${esc((pick.item||"")+" "+pick.name)}</b><span class="rep-sub">${esc(f.sub||"")}</span></span></div>`+
+    $("repList").innerHTML=`<div class="rep-res"><div class="rep-res-top"><span class="cat ${b.cls}">${b.t}</span><span><b>${esc((pick.item||"")+" "+dispName(pick))}</b><span class="rep-sub">${esc(f.sub||"")}</span></span></div>`+
+      (isChanged(pick)?`<p class="note"><span class="chgpill">${esc(changeText(pick))}</span></p>`:"")+
       (isVar(pick)?'<p class="note"><span class="varpill">変動</span>　納期が動きます。お客様には最低の目安としてお伝えください。</p>':"")+
       `<div class="rep-res-fin">${f.html}<span class="left">${fmtS(recv)}受付${f.date&&pc!=="e"?" ・ "+diff(recv,f.date)+"日後":""}</span></div>`+
       (pick.staff?`<p class="note">担当：${esc(pick.staff)}</p>`:"")+(pick.memo?`<p class="note">${esc(pick.memo)}</p>`:"")+
@@ -1315,10 +1459,12 @@ function renderRep(){
   $("repList").innerHTML=(repItem===VARITEM?repList().filter(isVar):repList().filter(x=>(x.item||"その他")===repItem)).map(x=>repRowHTML(x)).join("");
   bindRepRows();
 }
+const dispName=x=>x.name+(x.kind==="min"?"（基本"+(x.weeks||6)+"週間〜）":"");
+const chgPill=x=>isChanged(x)?`<span class="chgpill">${esc(changeText(x))}</span>`:"";
 function repRowHTML(x){
   const f=repCalc(x), b=catBadge(x);
   const sub=[isVar(x)?"変動":"",x.item,f.sub,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ ");
-  return `<button type="button" class="rep-row" data-id="${x.id}"><span class="cat ${b.cls}">${b.t}</span><span class="rep-name">${esc(x.name)}</span><span class="rep-fin ${f.manual?"man":""}">${f.html}</span><span class="rep-sub">${esc(sub)}</span></button>`;
+  return `<button type="button" class="rep-row ${isChanged(x)?"changed":""}" data-id="${x.id}"><span class="cat ${b.cls}">${b.t}</span><span class="rep-name">${esc(dispName(x))}</span><span class="rep-fin ${f.manual?"man":""}">${f.html}</span><span class="rep-sub">${chgPill(x)}${esc(sub)}</span></button>`;
 }
 function bindRepRows(){
   $("repList").querySelectorAll(".rep-row").forEach(b=>b.onclick=()=>{
@@ -1373,7 +1519,8 @@ const cl=window.claude;
   db.doc("settings/notices").onSnapshot(s=>{notices=(s.exists&&(s.data()||{}).list)||[];maybeShowNotice();},onErr);
 }).catch(()=>setMode(false));
 
-renderFilters();render();renderNtcBar();maybeShowNotice();
+renderFilters();applyAuth();render();renderNtcBar();
+maybeShowNotice();
 let lastDay=key(today());
 setInterval(()=>{const k=key(today());if(k!==lastDay){const was=key(recv)===lastDay;lastDay=k;if(was){recv=today();wStart=today();view=new Date(recv.getFullYear(),recv.getMonth(),1);}render();}},60000);
 })();
