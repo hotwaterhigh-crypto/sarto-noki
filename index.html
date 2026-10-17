@@ -324,6 +324,7 @@ dialog{border-radius:6px}
 .cat.e{border-color:var(--teal);color:var(--teal)}
 .cat.f{border-color:var(--rust);color:var(--rust)}
 .cat.min{border-color:var(--chalk);color:var(--chalk);font-size:13px}
+.cat.fixn{border-color:var(--teal);color:var(--teal);font-size:13px}
 .cat.q{border-color:var(--ink2);color:var(--ink2);font-size:13px}
 .rep-item.var{border-color:var(--chalk);background:var(--chalk-soft)}
 .varpill{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--chalk);color:#191D27}
@@ -557,7 +558,7 @@ const WD=["日","月","火","水","木","金","土"];
 const DEF_SHOP={
   names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",f:"クリーニング（勝川）",e:"変動"},
   cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
-  repairs:[{"id":"p1", "item":"パンツ", "name":"裾上げ（シングル）", "cat":"A", "yomi":"すそあげ しんぐる たけつめ", "memo":"", "staff":""},{"id":"p2", "item":"パンツ", "name":"裾上げ（ダブル）", "cat":"A", "yomi":"すそあげ だぶる たけつめ", "memo":"", "staff":""},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id":"p6", "item":"パンツ", "name":"渡り詰め／3方詰め", "cat":"c", "yomi":"わたりつめ さんぽうづめ", "memo":"次ページ①待ち。区分がまだ決まっていません", "staff":"古田・小林さん（紳士）／浅野・久田・小林さん（婦人）", "kind":"pending"},{"id":"p7", "item":"スカート", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":"p25", "item":"コート・アウター", "name":"袖丈詰め（筒袖）", "cat":"b", "yomi":"そでたけつめ つつそで", "memo":"", "staff":"丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""},{"id":"p40", "item":"その他", "name":"仕立て直し（ReSARTO）", "cat":"r", "yomi":"したてなおし りめいく", "memo":"", "staff":""}],
+  repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"裾詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":"p25", "item":"コート・アウター", "name":"袖丈詰め（筒袖）", "cat":"b", "yomi":"そでたけつめ つつそで", "memo":"", "staff":"丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
   binWd:[1,3,5], binHolShift:true, binAdd:[], binSkip:[], closedWd:[], holClosed:false, extra:[], off:{s:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],r:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],f:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"]}
 };
 const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},f:{days:7,mode:"biz"}};
@@ -1176,7 +1177,8 @@ function perGroups(){
   (shop.repairs||[]).forEach(x=>{
     const c=catOf(x);
     let k,label,ord;
-    if(x.kind==="min"){k="min"+(x.weeks||6);label="基本"+(x.weeks||6)+"週間以上（納期変動）";ord=70;}
+    if(x.kind==="fix"){const n=x.nights||7;k="fix"+n;label=n+"泊"+(n+1)+"日";ord=15;}
+    else if(x.kind==="min"){k="min"+(x.weeks||6);label="基本"+(x.weeks||6)+"週間以上（納期変動）";ord=70;}
     else if(x.kind==="quote"){k="quote";label="要見積もり";ord=80;}
     else if(x.kind==="pending"){k="pending";label="確認中（次ページ待ち）";ord=90;}
     else if(x.kind==="order"){k="order-"+c;label=(shop.names[c]||"")+"＋取り寄せ";ord=60;}
@@ -1194,7 +1196,6 @@ function basicsHTML(){
 function notesHTML(){
   const ym=ymOf(recv);
   return `<div class="per-n"><b>取り寄せが必要なもの</b>取り寄せに10日〜2週間。取り寄せ後に、修理日をお客様へお伝えします。最初に仕上がり日を約束しません。</div>`+
-    `<div class="per-n"><b>次ページ待ち</b>× ① パンツ／渡り詰め・3方詰め　× ② パンツの補足（スラックスとデニム／ゴム仕様は阿部さん・小林さん）。紙が届くまで「確認中」の扱いです。</div>`+
     `<div class="per-n warnbox"><b>要確認</b>① 2週間の6件は「丸の内へ変更」。② サローネの日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`;
 }
 function renderPer(){
@@ -1219,8 +1220,8 @@ $("perDone").onclick=()=>$("perDlg").close();
 const kana=t=>String(t||"").toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
 const catLabel=c=>c==="A"?"お店に合わせる（サローネ／ReSARTO）":labelOf(c);
 const REPCATS=["A","b","c","d","e","f","a","r"];
-const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["e",""],["f",""],["a",""],["r",""],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
-const repVal=x=>x.kind==="order"?("order-"+(x.cat||"c")):x.kind==="min"?"min6":x.kind==="quote"?"quote":x.kind==="pending"?"pending":(x.cat||"b");
+const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["e",""],["f",""],["a",""],["r",""],["fix7","7泊8日"],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
+const repVal=x=>x.kind==="fix"?"fix7":x.kind==="order"?("order-"+(x.cat||"c")):x.kind==="min"?"min6":x.kind==="quote"?"quote":x.kind==="pending"?"pending":(x.cat||"b");
 const repOptLabel=v=>{const o=REPOPTS.find(o=>o[0]===v);return o&&o[1]?o[1]:catLabel(v);};
 const catOf=x=>x.cat==="A"?brand:(x.cat||"b");
 let repQ="", repItem="", repPick="", repEditOn=false, R=null;
@@ -1228,6 +1229,7 @@ const REPKINDS={min:"最低週数",order:"取り寄せ",quote:"要見積もり",
 const nameOfC=id=>{const c=(shop.cItems||[]).find(y=>y.id===id);return c?c.name:"";};
 function repWeeks(n){return finish(recv,{days:n*7,mode:"cal",scope:"f"});}
 function catBadge(x){
+  if(x.kind==="fix")return {cls:"fixn",t:(x.nights||7)+"泊"};
   if(x.kind==="min")return {cls:"min",t:(x.weeks||6)+"週"};
   if(x.kind==="quote")return {cls:"q",t:"見"};
   if(x.kind==="pending")return {cls:"q",t:"？"};
@@ -1244,6 +1246,10 @@ function repCalc(x){
       return {html:"基本"+n+"週間以上",date:d,sub:"変動 未入力（目安 "+fmtS(d)+"以降）"};
     }
     return {html:"基本"+n+"週間以上",date:d,sub:"納期変動（目安 "+fmtS(d)+"以降）"};
+  }
+  if(x.kind==="fix"){
+    const n=x.nights||7, d=finish(recv,{days:n,mode:"cal",scope:"f"});
+    return {html:fmtS(d),date:d,sub:n+"泊"+(n+1)+"日"};
   }
   const c=catOf(x);
   if(x.kind==="order"){const r=abd(recv,c);return {html:fmtS(r.date)+" ＋取り寄せ",date:r.date,sub:(shop.names[c]||"")+"＋取り寄せ期間（要見積もり）"};}
@@ -1334,8 +1340,9 @@ function readRep(){if(!R)return;R.forEach((x,i)=>{
   const n=$("rp-n-"+i);if(!n)return;
   x.name=n.value;x.item=$("rp-i-"+i).value;x.yomi=$("rp-y-"+i).value;x.memo=$("rp-m-"+i).value;x.staff=$("rp-s-"+i).value;
   const v=$("rp-c-"+i).value;
-  delete x.kind;delete x.weeks;
-  if(v.startsWith("order-")){x.kind="order";x.cat=v.slice(6);}
+  delete x.kind;delete x.weeks;delete x.nights;
+  if(v==="fix7"){x.kind="fix";x.nights=7;x.cat="";}
+  else if(v.startsWith("order-")){x.kind="order";x.cat=v.slice(6);}
   else if(v==="min6"){x.kind="min";x.weeks=6;x.cat="";}
   else if(v==="quote"||v==="pending"){x.kind=v;x.cat="";}
   else x.cat=v;
@@ -1371,6 +1378,7 @@ let lastDay=key(today());
 setInterval(()=>{const k=key(today());if(k!==lastDay){const was=key(recv)===lastDay;lastDay=k;if(was){recv=today();wStart=today();view=new Date(recv.getFullYear(),recv.getMonth(),1);}render();}},60000);
 })();
 </script>
+
 
 
 
