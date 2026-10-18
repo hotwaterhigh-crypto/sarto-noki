@@ -576,7 +576,7 @@ body.notadmin .adminonly{display:none!important}
     <div class="dlg-head"><h3 id="catTitle"></h3><button class="x" type="button" id="catX" aria-label="閉じる">×</button></div>
     <p class="note" id="catNote"></p>
     <div id="catList"></div>
-    <div class="foot"><span class="note" id="catFoot"></span><button class="btn primary" type="button" id="catDone">閉じる</button></div>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn editonly" type="button" id="catEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="catDirty" hidden>未保存</span><span class="note" id="catFoot"></span></div><div class="hbtns"><button class="btn primary editonly" type="button" id="catSave" hidden>保存する</button><button class="btn" type="button" id="catDone">閉じる</button></div></div>
   </div>
 </dialog>
 
@@ -1359,10 +1359,14 @@ function plusNotice(){
 const allNotices=()=>{const a=autoNotice(),b=plusNotice();return (b?[b]:[]).concat(a?[a]:[]).concat(ntcSort(notices||[]));};
 
 /* ---------- 週のカードから一覧 ---------- */
-let catNow="";
-function catItems(code){return (shop.repairs||[]).filter(x=>!x.kind&&catOf(x)===code);}
+let catNow="", catEditOn=false, CAT=null;
+const catSrc=()=>catEditOn&&CAT?CAT:(shop.repairs||[]);
+function catItems(code){return catSrc().filter(x=>!x.kind&&catOf(x)===code);}
 function renderCat(){
   const code=catNow, ym=ymOf(recv), it=item(code,ym), r=abd(recv,code);
+  $("catEdit").setAttribute("aria-pressed",String(catEditOn));
+  $("catEdit").textContent=catEditOn?"修正をやめる":"修正する";
+  $("catSave").hidden=!catEditOn;
   $("catTitle").textContent=(shop.names[code]||"")+" の修理一覧";
   $("catNote").textContent=`${fmtS(recv)}受付 → ${fmt(r.date)}`+(code==="f"?"":`（${unit(it,recv)}）`);
   const list=catItems(code);
@@ -1372,14 +1376,14 @@ function renderCat(){
     `<span class="sub2">${chgPill(x)}${esc([x.item,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ "))}</span></div>`).join("")
     :'<p class="note">この納期の修理はまだ登録されていません。</p>';
   $("catList").querySelectorAll(".catpl").forEach(inp=>inp.onchange=()=>{
-    const x=(shop.repairs||[]).find(y=>y.id===inp.dataset.id);if(!x)return;
+    const x=catSrc().find(y=>y.id===inp.dataset.id);if(!x)return;
     const n=Math.max(0,parseInt(inp.value)||0);
     if(n)x.plus=n;else delete x.plus;
-    render();renderCat();renderBadge();
-    persist("settings/shop",shop).then(()=>toast(x.name+(n?" に ＋"+n+"日 を足しました。":" のプラスをやめました。")),()=>{});
+    dirty("catDirty",true);renderCat();
   });
+  $("catList").querySelectorAll(".catsel,.catpl").forEach(el=>{el.disabled=!catEditOn;});
   $("catList").querySelectorAll(".catsel").forEach(sel=>sel.onchange=()=>{
-    const x=(shop.repairs||[]).find(y=>y.id===sel.dataset.id);if(!x)return;
+    const x=catSrc().find(y=>y.id===sel.dataset.id);if(!x)return;
     const v=sel.value;
     delete x.kind;delete x.weeks;delete x.nights;
     if(v==="fix7"){x.kind="fix";x.nights=7;x.cat="";}
@@ -1387,13 +1391,25 @@ function renderCat(){
     else if(v==="min6"){x.kind="min";x.weeks=6;x.cat="";}
     else if(v==="quote"||v==="pending"){x.kind=v;x.cat="";}
     else x.cat=v;
-    render();renderCat();renderBadge();
-    persist("settings/shop",shop).then(()=>toast(x.name+" を "+repOptLabel(v)+" にしました。"),()=>{});
+    dirty("catDirty",true);renderCat();
   });
 }
-function openCat(code){catNow=code;renderCat();$("catDlg").showModal();}
+function openCat(code){catNow=code;catEditOn=false;CAT=null;dirty("catDirty",false);renderCat();$("catDlg").showModal();}
+$("catEdit").onclick=()=>{
+  catEditOn=!catEditOn;
+  if(catEditOn){CAT=structuredClone(shop.repairs||[]);toast("納期や「＋日」を直せます。終わったら「保存する」を押してください。");}
+  else{CAT=null;dirty("catDirty",false);}
+  renderCat();
+};
+$("catSave").onclick=()=>{
+  if(CAT)shop.repairs=CAT;
+  catEditOn=false;CAT=null;dirty("catDirty",false);
+  render();renderCat();renderBadge();
+  persist("settings/shop",shop).then(()=>toast("保存しました。"),()=>{});
+};
 $("catX").onclick=()=>$("catDlg").close();
 $("catDone").onclick=()=>$("catDlg").close();
+$("catDlg").addEventListener("close",()=>{catEditOn=false;CAT=null;dirty("catDirty",false);});
 
 /* ---------- 期間別一覧表 ---------- */
 function perGroups(){
