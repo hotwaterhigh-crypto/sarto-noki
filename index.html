@@ -1572,7 +1572,7 @@ $("repSave").onclick=()=>{
 };
 
 /* ---------- 共有データ ---------- */
-function setMode(shared){$("saveMode").textContent=shared?"● 全端末で共有中":"この端末だけに保存";}
+function setMode(shared){const el=$("saveMode");if(el)el.textContent=shared?"● 全端末で共有中":"この端末だけに保存";}
 function onErr(){toast("共有データに接続できませんでした。ページを開き直してください。");}
 const cl=window.claude;
 (cl&&cl.use?cl.use("db"):Promise.resolve(null)).then(d=>{
