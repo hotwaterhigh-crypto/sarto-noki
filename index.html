@@ -346,6 +346,11 @@ dialog{border-radius:6px}
 .cat-row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);margin-bottom:6px}
 .cat-row .nm2{font-weight:700;font-size:14px}
 .cat-row .sub2{grid-column:1/-1;font-size:11px;color:var(--ink2)}
+.catctl{display:flex;gap:6px;align-items:center}
+.catplus{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:var(--ink2);white-space:nowrap}
+.catplus input{width:52px;font:inherit;font-size:12px;text-align:center;padding:4px 2px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink)}
+body.noedit .catplus{display:none!important}
+.pluspill{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--chalk);color:#191D27;margin-right:6px}
 .plus-row{display:grid;grid-template-columns:1fr 92px auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .plus-row b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:14px}
 .plus-row .prev{font-size:12px;color:var(--ink2);white-space:nowrap}
@@ -723,7 +728,8 @@ function abd(recvD,code,cfg,over){
   return {date:addPlus(finish(recvD,Object.assign({scope:SCOPE[code]},c)),ex,SCOPE[code]),manual:false,plus:ex};
 }
 const plusOf=code=>{const p=shop.plus||{};const v=(p.per||{})[code];return Number.isFinite(+v)&&v!==""&&v!==undefined?+v:(+p.days||0);};
-const plusAny=()=>{const p=shop.plus||{};return (+p.days||0)>0||Object.values(p.per||{}).some(v=>(+v||0)>0);};
+const itemPlus=x=>Math.max(0,+(x&&x.plus)||0);
+const plusAny=()=>{const p=shop.plus||{};return (+p.days||0)>0||Object.values(p.per||{}).some(v=>(+v||0)>0)||(shop.repairs||[]).some(x=>itemPlus(x)>0);};
 function addPlus(d,ex,z){if(!ex)return d;let x=addD(d,ex),g=0;while(isClosed(x,shop,z||"f")&&g++<60)x=addD(x,1);return x;}
 const cEntries=k=>(cdaily[k.slice(0,7)]||{})[k]||null;
 const unit=(it,d)=>{
@@ -1344,8 +1350,9 @@ function plusNotice(){
   if(!plusAny())return null;
   const p=shop.plus||{}, base=+p.days||0;
   const diffs=PCODES.filter(c=>plusOf(c)!==base).map(c=>(shop.names[c]||c)+"：＋"+plusOf(c)+"日");
+  const items=(shop.repairs||[]).filter(x=>itemPlus(x)>0).map(x=>((x.item||"")+" "+x.name).trim()+"：さらに＋"+itemPlus(x)+"日");
   return {id:"auto-plus",title:"通常納期にプラスされています",
-    body:(base?"全体に プラス"+base+"日":"一部の納期にプラスあり")+(diffs.length?"\n"+diffs.join("\n"):"")
+    body:(base?"全体に プラス"+base+"日":"一部の納期にプラスあり")+(diffs.length?"\n"+diffs.join("\n"):"")+(items.length?"\n"+items.join("\n"):"")
       +"\n\nお客様には、この表示どおりの日付でご案内ください。",
     start:"",end:"",updated:"plus-"+JSON.stringify(p),auto:true};
 }
@@ -1361,9 +1368,16 @@ function renderCat(){
   const list=catItems(code);
   $("catFoot").textContent=list.length+"件";
   $("catList").innerHTML=list.length?list.map(x=>`<div class="cat-row ${isChanged(x)?"changed":""}"><span class="nm2">${esc(x.name)}</span>`+
-    `<select class="catsel" data-id="${x.id}" aria-label="${esc(x.name)}の納期">${REPOPTS.map(([v])=>`<option value="${v}"${repVal(x)===v?" selected":""}>${esc(repOptLabel(v))}</option>`).join("")}</select>`+
+    `<span class="catctl"><select class="catsel" data-id="${x.id}" aria-label="${esc(x.name)}の納期">${REPOPTS.map(([v])=>`<option value="${v}"${repVal(x)===v?" selected":""}>${esc(repOptLabel(v))}</option>`).join("")}</select>`+`<label class="catplus">＋<input type="number" class="catpl" data-id="${x.id}" min="0" max="120" value="${itemPlus(x)}" aria-label="${esc(x.name)}に足す日数">日</label></span>`+
     `<span class="sub2">${chgPill(x)}${esc([x.item,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ "))}</span></div>`).join("")
     :'<p class="note">この納期の修理はまだ登録されていません。</p>';
+  $("catList").querySelectorAll(".catpl").forEach(inp=>inp.onchange=()=>{
+    const x=(shop.repairs||[]).find(y=>y.id===inp.dataset.id);if(!x)return;
+    const n=Math.max(0,parseInt(inp.value)||0);
+    if(n)x.plus=n;else delete x.plus;
+    render();renderCat();renderBadge();
+    persist("settings/shop",shop).then(()=>toast(x.name+(n?" に ＋"+n+"日 を足しました。":" のプラスをやめました。")),()=>{});
+  });
   $("catList").querySelectorAll(".catsel").forEach(sel=>sel.onchange=()=>{
     const x=(shop.repairs||[]).find(y=>y.id===sel.dataset.id);if(!x)return;
     const v=sel.value;
@@ -1449,7 +1463,7 @@ function repCalc(x){
   if(x.kind==="quote")return {html:'<span class="warn">要見積もり</span>',sub:"紙に週数の記載がありません"};
   if(x.kind==="pending")return {html:'<span class="warn">確認中</span>',sub:"次ページ①待ち"};
   if(x.kind==="min"){
-    const n=x.weeks||6,d=repWeeks(n);
+    const n=x.weeks||6;let d=repWeeks(n);if(itemPlus(x))d=addPlus(d,itemPlus(x),"f");
     if(x.cid){
       const ent=cEntries(key(recv))||{};
       if(ent[x.cid]){const dd=parseKey(ent[x.cid]);return {date:dd,html:fmtS(dd),sub:"変動（今日の入力済み）"};}
@@ -1458,11 +1472,11 @@ function repCalc(x){
     return {html:"基本"+n+"週間以上",date:d,sub:"納期変動（目安 "+fmtS(d)+"以降）"};
   }
   if(x.kind==="fix"){
-    const n=x.nights||7, ex=plusOf("b"), d=addPlus(finish(recv,{days:n,mode:"cal",scope:"f"}),ex,"f");
+    const n=x.nights||7, ex=plusOf("b")+itemPlus(x), d=addPlus(finish(recv,{days:n,mode:"cal",scope:"f"}),ex,"f");
     return {html:fmtS(d),date:d,sub:n+"泊"+(n+1)+"日"+(ex?"＋"+ex+"日":"")};
   }
   const c=catOf(x);
-  if(x.kind==="order"){const r=abd(recv,c);return {html:fmtS(r.date)+" ＋取り寄せ",date:r.date,sub:(shop.names[c]||"")+"＋取り寄せ期間（要見積もり）"};}
+  if(x.kind==="order"){const r=abd(recv,c);const d=itemPlus(x)?addPlus(r.date,itemPlus(x),SCOPE[c]):r.date;return {html:fmtS(d)+" ＋取り寄せ",date:d,sub:(shop.names[c]||"")+"＋取り寄せ期間（要見積もり）"};}
   if(c==="e"){
     const ds=cList().filter(y=>y.date).map(y=>y.date);
     if(!ds.length)return {html:'<span class="warn">未入力</span>',sub:"フロント担当で入力してください"};
@@ -1470,7 +1484,8 @@ function repCalc(x){
     return {html:key(mn)===key(mx)?fmtS(mn):`${md(mn)}〜${md(mx)}`,date:mx,sub:catLabel("e")};
   }
   const r=abd(recv,c);
-  return {html:fmtS(r.date),date:r.date,manual:r.manual,sub:catLabel(c)+" ・ "+unit(item(c,ymOf(recv)),recv)};
+  const d=(!r.manual&&itemPlus(x))?addPlus(r.date,itemPlus(x),SCOPE[c]):r.date;
+  return {html:fmtS(d),date:d,manual:r.manual,sub:catLabel(c)+" ・ "+unit(item(c,ymOf(recv)),recv)};
 }
 const repList=()=>shop.repairs||[];
 const repItems=()=>[...new Set(repList().map(x=>x.item||"その他"))];
@@ -1527,7 +1542,7 @@ function renderRep(){
   bindRepRows();
 }
 const dispName=x=>x.name+(x.kind==="min"?"（基本"+(x.weeks||6)+"週間〜）":"");
-const chgPill=x=>isChanged(x)?`<span class="chgpill">${esc(changeText(x))}</span>`:"";
+const chgPill=x=>(isChanged(x)?`<span class="chgpill">${esc(changeText(x))}</span>`:"")+(itemPlus(x)?`<span class="pluspill">＋${itemPlus(x)}日</span>`:"");
 function repRowHTML(x){
   const f=repCalc(x), b=catBadge(x);
   const sub=[isVar(x)?"変動":"",x.item,f.sub,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ ");
