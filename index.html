@@ -408,7 +408,7 @@ body.notadmin .adminonly{display:none!important}
 <div class="wrap">
   <header>
     <div class="brand"><div class="brand-txt"><small>SARTORIA · CONSEGNA</small><h1>サルト納期カレンダー</h1></div></div>
-    <div class="hbtns"><span class="whoami" id="whoami"></span><button class="btn sm" id="btnLogout" type="button" hidden>ログアウト</button><span class="pubnote" id="pubnote">納期のご案内</span><button class="btn big editonly" id="btnPlus" type="button">納期プラス</button><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
+    <div class="hbtns"><span class="whoami" id="whoami"></span><button class="btn sm" id="btnLogin" type="button">ログイン</button><button class="btn sm" id="btnLogout" type="button" hidden>ログアウト</button><span class="pubnote" id="pubnote">納期のご案内</span><button class="btn big editonly" id="btnPlus" type="button">納期プラス</button><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
   </header>
 
   <div class="brandwrap">
@@ -561,7 +561,7 @@ body.notadmin .adminonly{display:none!important}
 
 <dialog id="loginDlg" aria-labelledby="loginTitle">
   <div class="dlg">
-    <div class="dlg-head"><h3 id="loginTitle">ログイン</h3></div>
+    <div class="dlg-head"><h3 id="loginTitle">ログイン</h3><button class="x" type="button" id="loginX" aria-label="閉じる">×</button></div>
     <p class="note" id="loginNote">使う人を選んでください。</p>
     <div class="login-roles" id="loginRoles"></div>
     <div id="loginPinWrap" hidden>
@@ -1286,8 +1286,8 @@ $("plusSave").onclick=()=>{
 };
 
 /* ---------- ログイン ---------- */
-const ROLES={s:"サローネ",r:"ReSARTO",f:"古江",k:"管理",v:"お客様"};
-const ROLESUB={s:"見るだけ",r:"見るだけ",f:"修正できます",k:"修正・パスワード変更",v:"見るだけ"};
+const ROLES={s:"サローネ",r:"ReSARTO",f:"古江",k:"管理"};
+const ROLESUB={s:"見るだけ",r:"見るだけ",f:"修正できます",k:"修正・パスワード変更"};
 const LSU="sarto-user";
 let authUser=null, loginRole=null;
 const canEdit=()=>authUser==="k"||authUser==="f";
@@ -1297,12 +1297,13 @@ function applyAuth(){
   document.body.classList.toggle("notadmin",!isAdmin());
   $("whoami").textContent=authUser?ROLES[authUser]:"";
   $("btnLogout").hidden=!authUser;
+  $("btnLogin").hidden=!!authUser;
 }
 function renderLogin(){
   $("loginRoles").innerHTML=Object.keys(ROLES).map(k=>`<button type="button" data-role="${k}">${ROLES[k]}<span class="sub">${ROLESUB[k]}</span></button>`).join("");
   $("loginRoles").querySelectorAll("button").forEach(b=>b.onclick=()=>pickRole(b.dataset.role));
   $("loginPinWrap").hidden=true;$("loginRoles").hidden=false;
-  $("loginNote").textContent="使う人を選んでください。お客様はパスワードなしで入れます。";
+  $("loginNote").textContent="修正する人だけログインしてください。見るだけなら、このまま閉じて大丈夫です。";
 }
 function pickRole(k){
   loginRole=k;
@@ -1326,9 +1327,10 @@ $("loginGo").onclick=()=>{
 };
 $("loginPin").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginGo").click();});
 $("loginBack").onclick=renderLogin;
-$("loginDlg").addEventListener("cancel",e=>{e.preventDefault();});
-$("loginDlg").addEventListener("close",()=>{if(!authUser)showLogin();});
-$("btnLogout").onclick=()=>{authUser=null;try{localStorage.removeItem(LSU);}catch(e){}applyAuth();showLogin();};
+$("loginX").onclick=()=>$("loginDlg").close();
+
+$("btnLogout").onclick=()=>{authUser=null;try{localStorage.removeItem(LSU);}catch(e){}applyAuth();render();toast("ログアウトしました。");};
+$("btnLogin").onclick=showLogin;
 try{const u=localStorage.getItem(LSU);if(u&&ROLES[u])authUser=u;}catch(e){}
 
 /* ---------- 基本から変えた項目 ---------- */
@@ -1618,7 +1620,7 @@ const cl=window.claude;
 }).catch(()=>setMode(false));
 
 renderFilters();applyAuth();render();renderNtcBar();
-if(authUser){maybeShowNotice();}else{showLogin();}
+maybeShowNotice();
 let lastDay=key(today());
 setInterval(()=>{const k=key(today());if(k!==lastDay){const was=key(recv)===lastDay;lastDay=k;if(was){recv=today();wStart=today();view=new Date(recv.getFullYear(),recv.getMonth(),1);}render();}},60000);
 })();
