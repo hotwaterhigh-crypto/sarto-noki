@@ -64,6 +64,11 @@ button.row:hover{border-color:var(--navy)}
 .cline b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:17px;white-space:nowrap}
 .cline span{font-size:13px}
 .cfoot{display:flex;justify-content:flex-end}
+.cdhead{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink2);padding-bottom:4px}
+.feat-ctl{display:flex;justify-content:flex-end;margin-top:10px}
+.featrow{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.featrow .fnm{flex:1;font-size:14px}
+.featrow .ffin{flex:0 0 auto;font-size:12px;color:var(--ink2)}
 
 /* 週間 */
 .week{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);padding:18px 18px 20px;display:grid;gap:12px}
@@ -426,6 +431,7 @@ body.notadmin .adminonly{display:none!important}
     <div class="group">
       <h2 class="eyebrow"><em>Consegna</em>出来上がり日<span class="brandnow" id="brandNow"></span></h2>
       <div class="rows" id="abcRows"></div>
+      <div class="feat-ctl editonly"><button class="btn sm" id="btnFeat" type="button">主だったお直しを選ぶ</button></div>
     </div>
   </section>
 
@@ -580,6 +586,15 @@ body.notadmin .adminonly{display:none!important}
   </div>
 </dialog>
 
+<dialog id="featDlg" class="pick" aria-labelledby="featTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="featTitle">主だったお直し</h3><button class="x" type="button" id="featX" aria-label="閉じる">×</button></div>
+    <p class="note">サローネ・ReSARTO・ログインしていない人のトップ画面に出る修理です。チェックを付けたものが出来上がり日つきで並びます。</p>
+    <div id="featList"></div>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn editonly" type="button" id="featEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="featDirty" hidden>未保存</span><span class="note" id="featFoot"></span></div><div class="hbtns"><button class="btn primary editonly" type="button" id="featSave" hidden>保存する</button><button class="btn" type="button" id="featDone">閉じる</button></div></div>
+  </div>
+</dialog>
+
 <dialog id="perDlg" class="pick" aria-labelledby="perTitle">
   <div class="dlg">
     <div class="dlg-head"><h3 id="perTitle">期間別一覧表</h3><button class="x" type="button" id="perX" aria-label="閉じる">×</button></div>
@@ -620,6 +635,7 @@ const DEF_SHOP={
   names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",g:"5週間",h:"6週間",f:"クリーニング（勝川）",e:"変動"},
   cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
   repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7}, {"id":  "p2g", "item":  "パンツ", "name":  "裾上げ（Gカット）", "cat":  "", "yomi":  "すそあげ じーかっと gかっと でにむ ちょんぱ", "memo": "", "staff":  "", "kind":  "fix", "nights":  7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":  "p25", "item":  "コート・アウター", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう つつそで", "memo":  "", "staff":  "丸の内"}, {"id":  "p23j", "item":  "ジャケット", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう", "memo":  "", "staff":  "丸の内"}, {"id":  "p23k", "item":  "ジャケット", "name":  "袖丈詰め（あきみせ）", "cat":  "b", "yomi":  "そでたけつめ あきみせ 開き見せ", "memo":  "", "staff":  "丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
+  featured:["p1","p2","p3","p4","p7","p15","p23j","p38"],
   pins:{s:"",r:"",k:"0711",f:"0000"}, plus:{days:0,per:{}},
   binWd:[1,3,5], binHolShift:true, binAdd:[], binSkip:[], closedWd:[], holClosed:false, extra:[], off:{s:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],r:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],f:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"]}
 };
@@ -669,6 +685,7 @@ function normShop(x){
     s.repairs=merged;
   }
   s.repVer=REPVER;
+  s.featured=((x&&Array.isArray(x.featured))?x.featured.slice():structuredClone(DEF_SHOP.featured)).filter(id=>s.repairs.some(r=>r.id===id));
   s.pins=Object.assign({},DEF_SHOP.pins,(x&&x.pins)||{});
   s.plus=Object.assign({days:0,per:{}},(x&&x.plus)||{});s.plus.per=Object.assign({},(x&&x.plus&&x.plus.per)||{});
   s.extra=[];s.closedWd=[];
@@ -806,6 +823,17 @@ function renderSlip(){
   const cl=cList(), ds=cl.filter(x=>x.date).map(x=>x.date);
   let cFin='<span class="warn">未入力</span>';
   if(ds.length){const mn=new Date(Math.min(...ds)),mx=new Date(Math.max(...ds));cFin=key(mn)===key(mx)?fmt(mn):`${fmtS(mn)} 〜 ${fmtS(mx)}`;}
+  if(!canEdit()){
+    const feat=(shop.featured||[]).map(id=>(shop.repairs||[]).find(x=>x.id===id)).filter(Boolean);
+    $("abcRows").innerHTML=
+      `<div class="cdetail"><div class="cdhead">変動するお直し</div>`+
+      (cl.length?cl.map(x=>`<div class="cline"><span>${esc(x.name)}</span>${x.date?`<b>${fmt(x.date)}</b>`:'<span class="warn">未入力</span>'}</div>`).join(""):'<div class="cline"><span class="note">登録がありません。</span></div>')+
+      `</div>`+
+      `<div class="cdetail"><div class="cdhead">主だったお直し</div>`+
+      (feat.length?feat.map(x=>{const f=repCalc(x);return `<div class="cline"><span>${esc((x.item?x.item+" ":"")+dispName(x))}</span><b>${f.html}</b></div>`;}).join(""):'<div class="cline"><span class="note">まだ選ばれていません。</span></div>')+
+      `</div>`;
+    return;
+  }
   $("abcRows").innerHTML=
     `<button type="button" class="row" data-cat="${brand}">${rowHTML(SHORT[brand],item(brand,ym),abd(recv,brand))}</button>`+
     `<button type="button" class="row" data-cat="${"b"}">${rowHTML(SHORT.b,item("b",ym),abd(recv,"b"))}</button>`+
@@ -1427,6 +1455,43 @@ $("catSave").onclick=()=>{
 $("catX").onclick=()=>$("catDlg").close();
 $("catDone").onclick=()=>$("catDlg").close();
 $("catDlg").addEventListener("close",()=>{catEditOn=false;CAT=null;dirty("catDirty",false);});
+
+/* ---------- 主だったお直し（トップに出すもの）を選ぶ ---------- */
+let featEditOn=false, FEAT=null;
+const featSrc=()=>featEditOn&&FEAT?FEAT:(shop.featured||[]);
+function renderFeat(){
+  $("featEdit").setAttribute("aria-pressed",String(featEditOn));
+  $("featEdit").textContent=featEditOn?"修正をやめる":"修正する";
+  $("featSave").hidden=!featEditOn;
+  const sel=featSrc();
+  $("featList").innerHTML=repItems().map(it=>`<div class="per-g"><div class="per-h"><b>${esc(it)}</b></div>`+
+    repList().filter(x=>(x.item||"その他")===it).map(x=>`<label class="featrow"><input type="checkbox" class="featck" data-id="${x.id}"${sel.includes(x.id)?" checked":""}${featEditOn?"":" disabled"}><span class="fnm">${esc(dispName(x))}</span><span class="ffin">${repCalc(x).html}</span></label>`).join("")+
+    `</div>`).join("");
+  $("featFoot").textContent=sel.length+"件をトップに表示";
+  $("featList").querySelectorAll(".featck").forEach(ck=>ck.onchange=()=>{
+    if(!FEAT)return;
+    const id=ck.dataset.id, i=FEAT.indexOf(id);
+    if(ck.checked){if(i<0)FEAT.push(id);}else if(i>=0)FEAT.splice(i,1);
+    dirty("featDirty",true);
+    $("featFoot").textContent=FEAT.length+"件をトップに表示";
+  });
+}
+$("btnFeat").onclick=()=>{featEditOn=false;FEAT=null;dirty("featDirty",false);renderFeat();$("featDlg").showModal();};
+$("featEdit").onclick=()=>{
+  featEditOn=!featEditOn;
+  if(featEditOn){FEAT=(shop.featured||[]).slice();toast("チェックを付けたものがトップに出ます。終わったら「保存する」を押してください。");}
+  else{FEAT=null;dirty("featDirty",false);}
+  renderFeat();
+};
+$("featSave").onclick=()=>{
+  if(FEAT)shop.featured=FEAT.slice();
+  featEditOn=false;FEAT=null;dirty("featDirty",false);
+  render();renderFeat();
+  persist("settings/shop",shop).then(()=>toast("保存しました。"),()=>{});
+};
+$("featX").onclick=()=>$("featDlg").close();
+$("featDone").onclick=()=>$("featDlg").close();
+$("featDlg").addEventListener("close",()=>{featEditOn=false;FEAT=null;dirty("featDirty",false);});
 
 /* ---------- 期間別一覧表 ---------- */
 function perGroups(){
