@@ -416,7 +416,7 @@ body.notadmin .adminonly{display:none!important}
     <div class="hbtns"><span class="whoami" id="whoami"></span><button class="btn sm" id="btnLogin" type="button">ログイン</button><button class="btn sm" id="btnLogout" type="button" hidden>ログアウト</button><span class="pubnote" id="pubnote">納期のご案内</span><button class="btn big editonly" id="btnPlus" type="button">納期プラス</button><button class="btn big" id="btnNtc" type="button">お知らせ<span class="ntc-badge" id="ntcBadge" hidden></span></button><button class="btn big" id="btnRep" type="button">修理内容から探す</button><button class="btn big" id="btnPer" type="button">期間別一覧表</button><button class="btn primary big" id="btnFront" type="button">フロント担当</button></div>
   </header>
 
-  <div class="brandwrap">
+  <div class="brandwrap" id="brandWrap">
     <span class="brandlbl">表示するお店</span>
     <div class="brandbar" role="group" aria-label="表示するお店" id="brandBar"><button type="button" data-b="a" id="brandA">サローネ</button><button type="button" data-b="r" id="brandR">ReSARTO</button></div>
   </div>
@@ -1344,6 +1344,7 @@ function applyAuth(){
   $("whoami").textContent=authUser?ROLES[authUser]:"";
   $("btnLogout").hidden=!authUser;
   $("btnLogin").hidden=!!authUser;
+  $("brandWrap").hidden=(authUser==="s"||authUser==="r");
 }
 function renderLogin(){
   $("loginRoles").innerHTML=Object.keys(ROLES).map(k=>`<button type="button" data-role="${k}">${ROLES[k]}<span class="sub">${ROLESUB[k]}</span></button>`).join("");
@@ -1507,7 +1508,10 @@ function perGroups(){
     else if(x.kind==="quote"){k="quote";label="要見積もり";ord=80;}
     else if(x.kind==="pending"){k="pending";label="確認中（次ページ待ち）";ord=90;}
     else if(x.kind==="order"){k="order-"+c;label=(shop.names[c]||"")+"＋取り寄せ";ord=60;}
-    else {k=c;label=labelOf(c);ord=({a:10,r:11,b:20,c:30,d:40,g:42,h:44,f:50,e:65})[c]||55;}
+    else {
+      if((c==="a"||c==="r")&&c!==brand)return;   /* 選んでいないお店のぶんは出さない */
+      k=c;label=labelOf(c);ord=({a:10,r:11,b:20,c:30,d:40,g:42,h:44,f:50,e:65})[c]||55;
+    }
     if(!gs.has(k))gs.set(k,{k,label,ord,items:[],sample:x});
     gs.get(k).items.push(x);
   });
@@ -1515,13 +1519,13 @@ function perGroups(){
 }
 function basicsHTML(){
   const ym=ymOf(recv);
-  return ["a","r","b","c","d","g","h","f"].map(c=>`<span class="per-b"><b>${esc(shop.names[c]||"")}</b>${c==="f"?"":esc(unit(item(c,ym),recv))}</span>`).join("")
+  return [brand,"b","c","d","g","h","f"].map(c=>`<span class="per-b"><b>${esc(shop.names[c]||"")}</b>${c==="f"?"":esc(unit(item(c,ym),recv))}</span>`).join("")
     +'<span class="per-b"><b>'+esc(shop.names.e||"変動")+'</b>毎日入力</span>';
 }
 function notesHTML(){
   const ym=ymOf(recv);
   return `<div class="per-n"><b>取り寄せが必要なもの</b>取り寄せに10日〜2週間。取り寄せ後に、修理日をお客様へお伝えします。最初に仕上がり日を約束しません。</div>`+
-    `<div class="per-n warnbox"><b>要確認</b>① 2週グループの6件は「丸の内へ変更」。② サローネの日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`;
+    (canEdit()?`<div class="per-n warnbox"><b>要確認</b>① 2週グループの6件は「丸の内へ変更」。② ${esc(shop.names.a||"サローネ")}の日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`:"");
 }
 function renderPer(){
   $("perNote").textContent=(key(recv)===key(today())?"本日":fmtS(recv))+"受付した場合の仕上がり日です。";
