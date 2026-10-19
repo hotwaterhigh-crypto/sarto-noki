@@ -625,6 +625,7 @@ const DEF_SHOP={
 };
 const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},g:{days:35,mode:"cal"},h:{days:42,mode:"cal"},f:{days:7,mode:"biz"}};
 const LS="sarto-noki-v3";
+const REPVER=4;  /* 修理リストを更新したら数字を増やす */
 
 let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[{id:"n-pub-1",title:"納期のご案内",body:"修理内容を選ぶと、本日お預かりした場合の仕上がり予定日が出ます。\n混み具合や生地の取り寄せで前後することがあります。詳しくは店頭でおたずねください。",start:"",end:"",updated:1}];
 try{const v=JSON.parse(localStorage.getItem(LS));if(v&&v.shop){shop=normShop(v.shop);monthly=v.monthly||{};cdaily=v.cdaily||{};abdover=v.abdover||{};notices=v.notices||[];}}catch(e){}
@@ -654,6 +655,20 @@ function normShop(x){
     ((x&&x.extra)||[]).forEach(k=>["s","r","f"].forEach(z=>{if(!s.off[z].includes(k))s.off[z].push(k);}));
   }
   s.repairs=(x&&Array.isArray(x.repairs))?structuredClone(x.repairs):structuredClone(DEF_SHOP.repairs);
+  /* 保存ずみのリストが古い版のときは最新の修理リストに作り直す（お店で変えた納期・＋日数は残す） */
+  if(!x||x.repVer!==REPVER){
+    const old=new Map((s.repairs||[]).filter(r=>r&&r.id).map(r=>[r.id,r]));
+    const def=new Set(DEF_SHOP.repairs.map(r=>r.id));
+    const keep=["cat","kind","nights","weeks","plus","cid"];
+    const merged=structuredClone(DEF_SHOP.repairs).map(r=>{
+      const o=old.get(r.id);
+      if(o)keep.forEach(k=>{if(o[k]!==undefined&&o[k]!==null&&o[k]!=="")r[k]=o[k];});
+      return r;
+    });
+    (s.repairs||[]).forEach(r=>{if(r&&r.id&&!def.has(r.id))merged.push(structuredClone(r));});
+    s.repairs=merged;
+  }
+  s.repVer=REPVER;
   s.pins=Object.assign({},DEF_SHOP.pins,(x&&x.pins)||{});
   s.plus=Object.assign({days:0,per:{}},(x&&x.plus)||{});s.plus.per=Object.assign({},(x&&x.plus&&x.plus.per)||{});
   s.extra=[];s.closedWd=[];
