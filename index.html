@@ -498,7 +498,7 @@ body.notadmin .adminonly{display:none!important}
         <div class="caltools"><button class="btn" type="button" id="mEditBtn" aria-pressed="false">修正する</button><span class="mstat dirty" id="mDirty2" hidden>未保存</span><button class="btn primary" type="button" id="mSave2">保存する</button></div>
         <div class="mcal-wrap"><div class="mcal" id="mCal"></div></div>
       </div>
-      <div><h4>月ごとの一覧（タップで切り替え）</h4><div class="tbl"><table class="mtable"><thead><tr><th>月</th><th>サローネ</th><th>ReSARTO</th><th>2週間</th><th>3週間</th><th>4週間</th><th>5週間</th><th>6週間</th><th>クリーニング</th><th>状態</th></tr></thead><tbody id="mTable"></tbody></table></div></div>
+      <div><h4>月ごとの一覧（タップで切り替え）</h4><div class="tbl"><table class="mtable"><thead><tr><th>月</th><th>サローネ</th><th>ReSARTO</th><th>2週グループ</th><th>3週グループ</th><th>4週グループ</th><th>5週グループ</th><th>6週グループ</th><th>クリーニング</th><th>状態</th></tr></thead><tbody id="mTable"></tbody></table></div></div>
       <div class="foot"><button class="btn" type="button" id="mDel">この月の設定を消す</button><div class="hbtns"><span class="mstat dirty" id="mDirty" hidden>未保存</span><button class="btn primary" type="button" id="mSave">保存する</button></div></div>
     </section>
 
@@ -510,7 +510,7 @@ body.notadmin .adminonly{display:none!important}
         <div class="calhead"><h4>定休日・ワニナル便カレンダー</h4><div class="mnav"><button class="nav" type="button" id="sCalPrev" aria-label="前の月">‹</button><span id="sCalLbl"></span><button class="nav" type="button" id="sCalNext" aria-label="次の月">›</button></div></div>
         <div class="caltools"><button class="btn editbtn" type="button" id="sEditBtn2" aria-pressed="false">修正する</button><span class="mstat dirty" id="sDirty2" hidden>未保存</span><button class="btn primary" type="button" id="sSave2">保存する</button></div>
         <div class="chips"><span class="note">登録するもの：</span><div class="seg wrap" role="group" aria-label="登録するもの" id="sModeSeg"><button type="button" data-mode="s">サローネ定休日</button><button type="button" data-mode="r">ReSARTO定休日</button><button type="button" data-mode="f">フロント（古江）定休日</button><button type="button" data-mode="b">ワニナル便</button></div></div>
-        <p class="note">「修正する」→ 登録するものを選ぶ → 日付をタップ。もう一度タップで外れます。サローネ定休日はサローネ、ReSARTO定休日は ReSARTO、フロント（古江）定休日は 2週間・3週間・4週間・変動・クリーニングとワニナル便の仕上がり計算に使います。ワニナル便を選ぶと、便の日は「便休み」、便のない日は「臨時便」に切り替わります（祝日の月曜の便は翌日、金曜の便は前日に移ります）。</p>
+        <p class="note">「修正する」→ 登録するものを選ぶ → 日付をタップ。もう一度タップで外れます。サローネ定休日はサローネ、ReSARTO定休日は ReSARTO、フロント（古江）定休日は 2週グループ・3週グループ・4週グループ・変動・クリーニングとワニナル便の仕上がり計算に使います。ワニナル便を選ぶと、便の日は「便休み」、便のない日は「臨時便」に切り替わります（祝日の月曜の便は翌日、金曜の便は前日に移ります）。</p>
         <div class="mcal-wrap"><div class="mcal" id="sCal"></div></div>
         <div class="extra" id="sExtra"></div>
       </div>
@@ -632,7 +632,7 @@ const HOL={"2026-01-01":"元日","2026-01-12":"成人の日","2026-02-11":"建�
 "2027-01-01":"元日","2027-01-11":"成人の日","2027-02-11":"建国記念の日","2027-02-23":"天皇誕生日","2027-03-21":"春分の日","2027-03-22":"振替休日","2027-04-29":"昭和の日","2027-05-03":"憲法記念日","2027-05-04":"みどりの日","2027-05-05":"こどもの日","2027-07-19":"海の日","2027-08-11":"山の日","2027-09-20":"敬老の日","2027-09-23":"秋分の日","2027-10-11":"スポーツの日","2027-11-03":"文化の日","2027-11-23":"勤労感謝の日"};
 const WD=["日","月","火","水","木","金","土"];
 const DEF_SHOP={
-  names:{a:"サローネ",r:"ReSARTO",b:"2週間",c:"3週間",d:"4週間",g:"5週間",h:"6週間",f:"クリーニング（勝川）",e:"変動"},
+  names:{a:"サローネ",r:"ReSARTO",b:"2週グループ",c:"3週グループ",d:"4週グループ",g:"5週グループ",h:"6週グループ",f:"クリーニング（勝川）",e:"変動"},
   cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
   repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7}, {"id":  "p2g", "item":  "パンツ", "name":  "裾上げ（Gカット）", "cat":  "", "yomi":  "すそあげ じーかっと gかっと でにむ ちょんぱ", "memo": "", "staff":  "", "kind":  "fix", "nights":  7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":  "p25", "item":  "コート・アウター", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう つつそで", "memo":  "", "staff":  "丸の内"}, {"id":  "p23j", "item":  "ジャケット", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう", "memo":  "", "staff":  "丸の内"}, {"id":  "p23k", "item":  "ジャケット", "name":  "袖丈詰め（あきみせ）", "cat":  "b", "yomi":  "そでたけつめ あきみせ 開き見せ", "memo":  "", "staff":  "丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
   featured:["p1","p2","p3","p4","p7","p15","p23j","p38"],
@@ -642,6 +642,7 @@ const DEF_SHOP={
 const DEF_M={a:{days:10,mode:"cal"},r:{mode:"cal",wd:[7,7,7,7,7,9,8]},b:{days:14,mode:"cal"},c:{days:21,mode:"cal"},d:{days:28,mode:"cal"},g:{days:35,mode:"cal"},h:{days:42,mode:"cal"},f:{days:7,mode:"biz"}};
 const LS="sarto-noki-v3";
 const REPVER=4;  /* 修理リストを更新したら数字を増やす */
+const NAMEVER=2; /* ◯週の呼び名を変えたら数字を増やす */
 
 let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[{id:"n-pub-1",title:"納期のご案内",body:"修理内容を選ぶと、本日お預かりした場合の仕上がり予定日が出ます。\n混み具合や生地の取り寄せで前後することがあります。詳しくは店頭でおたずねください。",start:"",end:"",updated:1}];
 try{const v=JSON.parse(localStorage.getItem(LS));if(v&&v.shop){shop=normShop(v.shop);monthly=v.monthly||{};cdaily=v.cdaily||{};abdover=v.abdover||{};notices=v.notices||[];}}catch(e){}
@@ -665,6 +666,8 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 function normShop(x){
   const s=Object.assign(structuredClone(DEF_SHOP),x||{});
   s.names=Object.assign({},DEF_SHOP.names,(x&&x.names)||{});
+  if(!x||x.nameVer!==NAMEVER)["b","c","d","g","h"].forEach(k=>{s.names[k]=DEF_SHOP.names[k];});
+  s.nameVer=NAMEVER;
   if(x&&x.off)s.off=Object.assign({s:[],r:[],f:[]},x.off);
   else{
     s.off=structuredClone(DEF_SHOP.off);
@@ -1155,7 +1158,7 @@ $("mDel").onclick=()=>{
 /* 便・休業日・名前 */
 function readS(){
   if(!T)return;
-  T.names={a:$("sNa").value.trim()||"サローネ",r:$("sNr").value.trim()||"ReSARTO",b:$("sNb").value.trim()||"2週間",c:$("sNc").value.trim()||"3週間",d:$("sNd").value.trim()||"4週間",g:$("sNg").value.trim()||"5週間",h:$("sNh").value.trim()||"6週間",e:$("sNe").value.trim()||"変動",f:$("sNf").value.trim()||"クリーニング（勝川）"};
+  T.names={a:$("sNa").value.trim()||"サローネ",r:$("sNr").value.trim()||"ReSARTO",b:$("sNb").value.trim()||"2週グループ",c:$("sNc").value.trim()||"3週グループ",d:$("sNd").value.trim()||"4週グループ",g:$("sNg").value.trim()||"5週グループ",h:$("sNh").value.trim()||"6週グループ",e:$("sNe").value.trim()||"変動",f:$("sNf").value.trim()||"クリーニング（勝川）"};
   T.cItems.forEach(ci=>{const el=$("sc-"+ci.id);if(el)ci.name=el.value.trim()||ci.name;});
   T.binWd=WD.map((_,i)=>i).filter(i=>$("sb"+i).checked);
   T.holClosed=$("sHol").checked;T.binHolShift=$("sShift").checked;
@@ -1169,7 +1172,7 @@ function fillS(){
   WD.forEach((_,i)=>{$("sb"+i).onchange=sChanged;});
   $("sHol").onchange=sChanged;$("sShift").checked=T.binHolShift!==false;$("sShift").onchange=sChanged;
   const pn=T.pins||{};$("pinS").value=pn.s||"";$("pinR").value=pn.r||"";$("pinF").value=pn.f||"";$("pinK").value=pn.k||"";
-  $("sNa").value=T.names.a;$("sNr").value=T.names.r||"ReSARTO";$("sNb").value=T.names.b;$("sNc").value=T.names.c||"3週間";$("sNd").value=T.names.d;$("sNg").value=T.names.g||"5週間";$("sNh").value=T.names.h||"6週間";$("sNe").value=T.names.e||"変動";$("sNf").value=T.names.f||"クリーニング（勝川）";
+  $("sNa").value=T.names.a;$("sNr").value=T.names.r||"ReSARTO";$("sNb").value=T.names.b;$("sNc").value=T.names.c||"3週グループ";$("sNd").value=T.names.d;$("sNg").value=T.names.g||"5週グループ";$("sNh").value=T.names.h||"6週グループ";$("sNe").value=T.names.e||"変動";$("sNf").value=T.names.f||"クリーニング（勝川）";
   ["sNa","sNr","sNb","sNc","sNd","sNg","sNh","sNe","sNf"].forEach(id=>$(id).oninput=()=>dirty("sDirty",true));
   $("sCItems").innerHTML=T.cItems.map((ci,i)=>`<div class="ci-row"><input id="sc-${ci.id}" value="${esc(ci.name)}" aria-label="変動${i+1}の名前"><button class="btn" type="button" data-id="${ci.id}">削除</button></div>`).join("");
   T.cItems.forEach(ci=>$("sc-"+ci.id).oninput=()=>dirty("sDirty",true));
@@ -1518,7 +1521,7 @@ function basicsHTML(){
 function notesHTML(){
   const ym=ymOf(recv);
   return `<div class="per-n"><b>取り寄せが必要なもの</b>取り寄せに10日〜2週間。取り寄せ後に、修理日をお客様へお伝えします。最初に仕上がり日を約束しません。</div>`+
-    `<div class="per-n warnbox"><b>要確認</b>① 2週間の6件は「丸の内へ変更」。② サローネの日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`;
+    `<div class="per-n warnbox"><b>要確認</b>① 2週グループの6件は「丸の内へ変更」。② サローネの日数は紙では7日、今の設定は${esc(unit(item("a",ym),recv))}。③ 表地交換の担当は紙が読み取りづらく要確認。</div>`;
 }
 function renderPer(){
   $("perNote").textContent=(key(recv)===key(today())?"本日":fmtS(recv))+"受付した場合の仕上がり日です。";
@@ -1542,7 +1545,7 @@ $("perDone").onclick=()=>$("perDlg").close();
 const kana=t=>String(t||"").toLowerCase().replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
 const catLabel=c=>c==="A"?"お店に合わせる（サローネ／ReSARTO）":labelOf(c);
 const REPCATS=["A","b","c","d","g","h","e","f","a","r"];
-const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["g",""],["h",""],["e",""],["f",""],["a",""],["r",""],["fix7","7泊8日"],["order-c","3週間＋取り寄せ"],["order-d","4週間＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
+const REPOPTS=[["A",""],["b",""],["c",""],["d",""],["g",""],["h",""],["e",""],["f",""],["a",""],["r",""],["fix7","7泊8日"],["order-c","3週グループ＋取り寄せ"],["order-d","4週グループ＋取り寄せ"],["min6","6週間以上"],["quote","要見積もり"],["pending","確認中（次ページ待ち）"]];
 const repVal=x=>x.kind==="fix"?"fix7":x.kind==="order"?("order-"+(x.cat||"c")):x.kind==="min"?"min6":x.kind==="quote"?"quote":x.kind==="pending"?"pending":(x.cat||"b");
 const repOptLabel=v=>{const o=REPOPTS.find(o=>o[0]===v);return o&&o[1]?o[1]:catLabel(v);};
 const catOf=x=>x.cat==="A"?brand:(x.cat||"b");
