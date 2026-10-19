@@ -350,7 +350,7 @@ dialog{border-radius:6px}
 .catplus{display:inline-flex;align-items:center;gap:2px;font-size:11px;color:var(--ink2);white-space:nowrap}
 .catplus input{width:52px;font:inherit;font-size:12px;text-align:center;padding:4px 2px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink)}
 body.noedit .catplus{display:none!important}
-.pluspill{display:inline-block;font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--chalk);color:#191D27;margin-right:6px}
+.pluspill{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--chalk);color:#191D27;margin-right:6px;white-space:normal;line-height:1.5}
 .plus-row{display:grid;grid-template-columns:1fr 92px auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
 .plus-row b{font-family:"Zen Old Mincho",serif;font-weight:900;font-size:14px}
 .plus-row .prev{font-size:12px;color:var(--ink2);white-space:nowrap}
@@ -1542,6 +1542,7 @@ function renderRep(){
     $("repBack").onclick=()=>{repPick="";renderRep();};
     $("repList").innerHTML=`<div class="rep-res"><div class="rep-res-top"><span class="cat ${b.cls}">${b.t}</span><span><b>${esc((pick.item||"")+" "+dispName(pick))}</b><span class="rep-sub">${esc(f.sub||"")}</span></span></div>`+
       (isChanged(pick)?`<p class="note"><span class="chgpill">${esc(changeText(pick))}</span></p>`:"")+
+      (plusPill(pick)?`<p class="note">${plusPill(pick)}</p>`:"")+
       (isVar(pick)?'<p class="note"><span class="varpill">変動</span>　納期が動きます。お客様には最低の目安としてお伝えください。</p>':"")+
       `<div class="rep-res-fin">${f.html}<span class="left">${fmtS(recv)}受付${f.date&&pc!=="e"?" ・ "+diff(recv,f.date)+"日後":""}</span></div>`+
       (pick.staff?`<p class="note">担当：${esc(pick.staff)}</p>`:"")+(pick.memo?`<p class="note">${esc(pick.memo)}</p>`:"")+
@@ -1575,7 +1576,23 @@ function renderRep(){
   bindRepRows();
 }
 const dispName=x=>x.name+(x.kind==="min"?"（基本"+(x.weeks||6)+"週間〜）":"");
-const chgPill=x=>(isChanged(x)?`<span class="chgpill">${esc(changeText(x))}</span>`:"")+(itemPlus(x)?`<span class="pluspill">＋${itemPlus(x)}日</span>`:"");
+/* その修理に効いている「＋◯日」の合計（全体プラス＋納期ごと＋その修理だけ） */
+function totalPlus(x){
+  if(!x||x.kind==="quote"||x.kind==="pending")return 0;
+  if(x.kind==="fix"||x.kind==="min")return plusOf("b")+itemPlus(x);
+  const c=catOf(x);
+  if(c==="e")return 0;
+  return abd(recv,c).manual?0:(plusOf(c)+itemPlus(x));
+}
+/* 「＋7日変更後の出来上がり日 11/9（月）」 */
+function plusPill(x){
+  const n=totalPlus(x);if(!n)return "";
+  const f=repCalc(x);
+  if(!f||!f.date)return `<span class="pluspill">＋${n}日</span>`;
+  const t=(x.kind==="min")?`＋${n}日変更後の目安 ${fmtS(f.date)}以降`:`＋${n}日変更後の出来上がり日 ${fmtS(f.date)}`;
+  return `<span class="pluspill">${esc(t)}</span>`;
+}
+const chgPill=x=>(isChanged(x)?`<span class="chgpill">${esc(changeText(x))}</span>`:"")+plusPill(x);
 function repRowHTML(x){
   const f=repCalc(x), b=catBadge(x);
   const sub=[isVar(x)?"変動":"",x.item,f.sub,x.staff?"担当 "+x.staff:"",x.memo].filter(Boolean).join(" ・ ");
