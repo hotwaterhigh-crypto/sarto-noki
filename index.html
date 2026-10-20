@@ -667,7 +667,7 @@ const LS="sarto-noki-v3";
 const REPVER=4;  /* 修理リストを更新したら数字を増やす */
 const NAMEVER=2; /* ◯週の呼び名を変えたら数字を増やす */
 
-let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[{id:"n-pub-1",title:"納期のご案内",body:"修理内容を選ぶと、本日お預かりした場合の仕上がり予定日が出ます。\n混み具合や生地の取り寄せで前後することがあります。詳しくは店頭でおたずねください。",start:"",end:"",updated:1}];
+let shop=normShop(null), monthly={}, cdaily={}, abdover={}, db=null, notices=[];
 try{const v=JSON.parse(localStorage.getItem(LS));if(v&&v.shop){shop=normShop(v.shop);monthly=v.monthly||{};cdaily=v.cdaily||{};abdover=v.abdover||{};notices=v.notices||[];}}catch(e){}
 function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({shop,monthly,cdaily,abdover,notices}));}catch(e){}}
 
@@ -1882,7 +1882,7 @@ function setMode(shared){
 function onErr(){toast("共有データに接続できませんでした。ページを開き直してください。");}
 
 /* 共有の保存先（Firebase）。アドレスを入れると全員で同じ内容になります。 */
-const FBURL="";
+const FBURL="https://sarto-noki-default-rtdb.firebaseio.com";
 function fbDB(url){
   const base=url.replace(/\/+$/,"")+"/sarto";
   let tree={}; const subs=[];
