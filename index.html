@@ -202,7 +202,9 @@ dialog::backdrop{background:rgba(20,23,30,.5)}
 .dchip[aria-current="true"]{outline:2px solid var(--navy);outline-offset:1px}
 .set-row{display:grid;grid-template-columns:1fr 80px 100px;gap:6px;align-items:center;margin-bottom:6px}
 .set-row .lab{font-weight:700;font-size:14px}
-.monthnav{display:flex;align-items:center;gap:8px;font-family:"Zen Old Mincho",serif;font-size:19px;font-weight:900}
+.monthnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:"Zen Old Mincho",serif;font-size:19px;font-weight:900}
+.ymsel{display:flex;gap:6px}
+.ymsel select{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14px;font-weight:700;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
 .mstat{font-size:12px;color:var(--ink2)} .mstat.set{color:var(--teal)} .mstat.dirty{color:var(--rust);font-weight:700}
 .tbl{overflow-x:auto}
 .mtable{width:100%;border-collapse:collapse;font-size:13px}
@@ -487,7 +489,7 @@ body.notadmin .adminonly{display:none!important}
     <!-- 納期の月間設定 -->
     <section class="pane" id="pane-m" role="tabpanel" aria-labelledby="tab-m" hidden>
       <div class="fieldrow" style="justify-content:space-between">
-        <div class="monthnav"><button class="nav" type="button" id="mPrev" aria-label="前の月">‹</button><span id="mLbl"></span><button class="nav" type="button" id="mNext" aria-label="次の月">›</button></div>
+        <div class="monthnav"><button class="nav" type="button" id="mPrev" aria-label="前の月">‹</button><span id="mLbl"></span><button class="nav" type="button" id="mNext" aria-label="次の月">›</button><span class="ymsel"><select id="mYSel" aria-label="年をえらぶ"></select><select id="mMSel" aria-label="月をえらぶ"></select></span></div>
         <span class="mstat" id="mStat"></span>
       </div>
       <div id="mRows"></div>
@@ -1203,6 +1205,7 @@ function fillM(cfgOverride){
   if(mDraftYm!==mYm||!mDraft){mDraft=structuredClone(abdover[mYm]||{});mDraftYm=mYm;mSelK=null;}
   const st=monthCfg(mYm), cfg=cfgOverride||st.cfg;
   $("mLbl").textContent=ymLabel(mYm);
+  fillYmSel($("mYSel"),$("mMSel"),mYm,v=>{mYm=v;fillM();});
   $("mStat").textContent=st.src==="set"?"設定済み":st.src==="prev"?`未設定（${ymLabel(st.from)}の値を使用中）`:"未設定（初期値を使用中）";
   $("mStat").className="mstat"+(st.src==="set"?" set":"");
   $("mRows").innerHTML=CODES.map(c=>mRow(c,Object.assign({},DEF_M[c],cfg[c]||{}))).join("");
@@ -1303,6 +1306,18 @@ $("pkNext").onclick=()=>{pkYm=ymShift(pkYm,1);drawPick();};
 $("pkX").onclick=()=>$("pickDlg").close();
 $("pkDone").onclick=()=>$("pickDlg").close();
 $("pickDlg").addEventListener("close",()=>{mSelK=null;if($("front").open)drawMCal();});
+/* 年・月のえらび箱を作る */
+function fillYmSel(ySel,mSel,ym,onPick){
+  if(!ySel||!mSel)return;
+  const [y,m]=ym.split("-").map(Number), ty=today().getFullYear();
+  const years=[];
+  for(let i=ty-2;i<=ty+3;i++)years.push(i);
+  if(years.indexOf(y)<0){years.push(y);years.sort((a,b)=>a-b);}
+  ySel.innerHTML=years.map(v=>`<option value="${v}"${v===y?" selected":""}>${v}年</option>`).join("");
+  mSel.innerHTML=Array.from({length:12},(_,i)=>i+1).map(v=>`<option value="${v}"${v===m?" selected":""}>${v}月</option>`).join("");
+  const go=()=>onPick(ySel.value+"-"+String(mSel.value).padStart(2,"0"));
+  ySel.onchange=go;mSel.onchange=go;
+}
 $("mPrev").onclick=()=>{mYm=ymShift(mYm,-1);fillM();};
 $("mNext").onclick=()=>{mYm=ymShift(mYm,1);fillM();};
 $("mCopy").onclick=()=>{fillM(monthCfg(ymShift(mYm,-1)).cfg);toast(ymLabel(ymShift(mYm,-1))+"の値を入れました。カレンダーで確認して保存してください。");};
