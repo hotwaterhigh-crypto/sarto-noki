@@ -1530,7 +1530,7 @@ function doLogin(k){
   authUser=k;try{localStorage.setItem(LSU,k);}catch(e){}
   if(k==="s"||k==="r"){brand=k==="s"?"a":"r";try{localStorage.setItem("sarto-brand",brand);}catch(e){}}
   applyAuth();render();$("loginDlg").close();
-  if(canEdit())toast("このページでの修正は、この端末にだけ保存されます。");
+  if(canEdit()&&!db)toast("このページでの修正は、この端末にだけ保存されます。");
 }
 function showLogin(){renderLogin();if(!$("loginDlg").open)$("loginDlg").showModal();}
 $("loginGo").onclick=()=>{
@@ -1875,19 +1875,62 @@ $("repSave").onclick=()=>{
 };
 
 /* ---------- 共有データ ---------- */
-function setMode(shared){const el=$("saveMode");if(el)el.textContent=shared?"● 全端末で共有中":"この端末だけに保存";}
+function setMode(shared){
+  const el=$("saveMode");if(el)el.textContent=shared?"● 全端末で共有中":"この端末だけに保存";
+  const pn=$("pubnote");if(pn)pn.textContent=shared?"● 全員と共有中":"納期のご案内";
+}
 function onErr(){toast("共有データに接続できませんでした。ページを開き直してください。");}
-const cl=window.claude;
-(cl&&cl.use?cl.use("db"):Promise.resolve(null)).then(d=>{
-  if(!d){setMode(false);return;}
+
+/* 共有の保存先（Firebase）。アドレスを入れると全員で同じ内容になります。 */
+const FBURL="";
+function fbDB(url){
+  const base=url.replace(/\/+$/,"")+"/sarto";
+  let tree={}; const subs=[];
+  const at=(t,p)=>String(p).split("/").filter(Boolean).reduce((o,k)=>(o==null?null:o[k]),t);
+  const put=(p,v)=>{
+    const seg=String(p).split("/").filter(Boolean);
+    if(!seg.length){tree=(v&&typeof v==="object")?v:{};return;}
+    let o=tree;
+    for(let i=0;i<seg.length-1;i++){if(!o[seg[i]]||typeof o[seg[i]]!=="object")o[seg[i]]={};o=o[seg[i]];}
+    const last=seg[seg.length-1];
+    if(v===null||v===undefined)delete o[last];else o[last]=v;
+  };
+  const fire=()=>{subs.forEach(f=>{try{f();}catch(e){}});};
+  const es=new EventSource(base+".json");
+  es.addEventListener("put",e=>{try{const m=JSON.parse(e.data);put(m.path,m.data);fire();}catch(err){}});
+  es.addEventListener("patch",e=>{try{const m=JSON.parse(e.data),d=m.data||{};Object.keys(d).forEach(k=>put((m.path==="/"?"":m.path)+"/"+k,d[k]));fire();}catch(err){}});
+  es.addEventListener("cancel",()=>onErr());
+  const write=(p,body)=>fetch(base+"/"+p+".json",body===null?{method:"DELETE"}:{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+    .then(r=>{if(!r.ok)throw Object.assign(new Error("write"),{code:r.status});put("/"+p,body);return true;});
+  return {
+    doc:p=>({
+      onSnapshot:(cb)=>{const f=()=>{const v=at(tree,p);cb({exists:v!==null&&v!==undefined,data:()=>v});};subs.push(f);f();},
+      set:b=>write(p,b),
+      delete:()=>write(p,null)
+    }),
+    collection:n=>({
+      onSnapshot:(cb)=>{const f=()=>{const v=at(tree,n)||{};cb({docs:Object.keys(v).map(id=>({id,data:()=>v[id]}))});};subs.push(f);f();}
+    })
+  };
+}
+function bootDB(d,reset){
   db=d;setMode(true);
-  shop=normShop(null);monthly={};cdaily={};abdover={};render();
-  db.doc("settings/shop").onSnapshot(s=>{shop=normShop(s.exists?structuredClone(s.data()):null);render();},onErr);
-  db.collection("monthly").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=x.data());monthly=m;render();},onErr);
-  db.collection("cdaily").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});cdaily=m;render();},onErr);
-  db.collection("abdover").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});abdover=m;render();},onErr);
-  db.doc("settings/notices").onSnapshot(s=>{notices=(s.exists&&(s.data()||{}).list)||[];maybeShowNotice();},onErr);
-}).catch(()=>setMode(false));
+  if(reset){shop=normShop(null);monthly={};cdaily={};abdover={};render();}
+  db.doc("settings/shop").onSnapshot(s=>{shop=normShop(s.exists?structuredClone(s.data()):null);render();saveLocal();},onErr);
+  db.collection("monthly").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=x.data());monthly=m;render();saveLocal();},onErr);
+  db.collection("cdaily").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});cdaily=m;render();saveLocal();},onErr);
+  db.collection("abdover").onSnapshot(q=>{const m={};q.docs.forEach(x=>m[x.id]=(x.data()||{}).days||{});abdover=m;render();saveLocal();},onErr);
+  db.doc("settings/notices").onSnapshot(s=>{notices=(s.exists&&(s.data()||{}).list)||[];maybeShowNotice();saveLocal();},onErr);
+}
+const cl=window.claude;
+if(FBURL&&typeof EventSource!=="undefined"){
+  try{bootDB(fbDB(FBURL),false);}catch(e){setMode(false);}
+}else{
+  (cl&&cl.use?cl.use("db"):Promise.resolve(null)).then(d=>{
+    if(!d){setMode(false);return;}
+    bootDB(d,true);
+  }).catch(()=>setMode(false));
+}
 
 renderFilters();applyAuth();render();renderNtcBar();
 maybeShowNotice();
