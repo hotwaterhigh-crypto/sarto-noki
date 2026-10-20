@@ -190,9 +190,10 @@ dialog::backdrop{background:rgba(20,23,30,.5)}
 .fieldrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fieldrow label{font-size:13px;color:var(--ink2)}
 .fieldrow input[type=date]{width:auto}
-.c-in{display:grid;grid-template-columns:minmax(70px,1fr) 170px minmax(120px,1.2fr);gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.c-in{display:grid;grid-template-columns:minmax(70px,1fr) 170px minmax(110px,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.c-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .c-in label{font-weight:700}
-@media (max-width:520px){.c-in{grid-template-columns:1fr 1fr}.c-hint{grid-column:1/-1}}
+@media (max-width:520px){.c-in{grid-template-columns:1fr 1fr}.c-hint{grid-column:1/-1}.c-btns{grid-column:1/-1;justify-content:flex-start}}
 .c-hint{font-size:12px;color:var(--ink2)} .c-hint.bad{color:var(--rust)}
 .days7{display:flex;flex-wrap:wrap;gap:6px}
 .dchip{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper)}
@@ -586,6 +587,28 @@ body.notadmin .adminonly{display:none!important}
   </div>
 </dialog>
 
+<dialog id="cspanDlg" class="pick" aria-labelledby="cspanTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="cspanTitle">期間</h3><button class="x" type="button" id="cspanX" aria-label="閉じる">×</button></div>
+    <p class="note" id="cspanNote"></p>
+    <div class="fieldrow"><label for="cspanDays">期間</label><input type="number" id="cspanDays" min="0" max="180" step="1" style="width:110px" disabled><span>日間</span></div>
+    <div class="chips" id="cspanQuick"></div>
+    <p class="note" id="cspanPrev"></p>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="cspanEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="cspanDirty" hidden>未保存</span></div><div class="hbtns"><button class="btn primary" type="button" id="cspanSave" hidden>保存する</button><button class="btn" type="button" id="cspanDone">閉じる</button></div></div>
+  </div>
+</dialog>
+
+<dialog id="ccalDlg" class="pick" aria-labelledby="ccalTitle">
+  <div class="dlg">
+    <div class="dlg-head"><h3 id="ccalTitle">カレンダー</h3><button class="x" type="button" id="ccalX" aria-label="閉じる">×</button></div>
+    <p class="note" id="ccalNote"></p>
+    <div class="calhead"><h4 id="ccalStep">受付日をえらぶ</h4><div class="mnav"><button class="nav" type="button" id="ccalPrev" aria-label="前の月">‹</button><span id="ccalLbl"></span><button class="nav" type="button" id="ccalNext" aria-label="次の月">›</button></div></div>
+    <div class="mcal-wrap"><div class="mcal" id="ccalCal"></div></div>
+    <div class="fieldrow" id="ccalBackRow" hidden><button class="btn" type="button" id="ccalBack">← 受付日を選び直す</button><button class="btn" type="button" id="ccalClear">この日の入力を消す</button></div>
+    <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="ccalEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="ccalDirty" hidden>未保存</span><span class="note" id="ccalFoot"></span></div><div class="hbtns"><button class="btn primary" type="button" id="ccalSave" hidden>保存する</button><button class="btn" type="button" id="ccalDone">閉じる</button></div></div>
+  </div>
+</dialog>
+
 <dialog id="featDlg" class="pick" aria-labelledby="featTitle">
   <div class="dlg">
     <div class="dlg-head"><h3 id="featTitle">主だったお直し</h3><button class="x" type="button" id="featX" aria-label="閉じる">×</button></div>
@@ -635,7 +658,7 @@ const DEF_SHOP={
   names:{a:"サローネ",r:"ReSARTO",b:"2週グループ",c:"3週グループ",d:"4週グループ",g:"5週グループ",h:"6週グループ",f:"クリーニング（勝川）",e:"変動"},
   cItems:[{id:"c1",name:"ジャケット 肩から着丈詰め"},{id:"c2",name:"コート 肩から着丈詰め"},{id:"c3",name:"ラグランコート 肩山詰め"},{id:"c4",name:"変動4"}],
   repairs:[{"id": "p1", "item": "パンツ", "name": "裾上げ（シングル）", "cat": "", "yomi": "すそあげ しんぐる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7},{"id": "p2", "item": "パンツ", "name": "裾上げ（ダブル）", "cat": "", "yomi": "すそあげ だぶる たけつめ", "memo": "", "staff": "", "kind": "fix", "nights": 7}, {"id":  "p2g", "item":  "パンツ", "name":  "裾上げ（Gカット）", "cat":  "", "yomi":  "すそあげ じーかっと gかっと でにむ ちょんぱ", "memo": "", "staff":  "", "kind":  "fix", "nights":  7},{"id":"p3", "item":"パンツ", "name":"膝〜裾の幅詰め", "cat":"b", "yomi":"ひざ すそ はばつめ てーぱーど", "memo":"渡りを触らないもの", "staff":"丸の内"},{"id":"p4", "item":"パンツ", "name":"ウエスト直し（婦人・両脇から詰める）", "cat":"b", "yomi":"うえすと なおし ふじん つめ", "memo":"", "staff":"丸の内"},{"id":"p5", "item":"パンツ", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと いんぱんつ", "memo":"修理範囲が紙に未記載", "staff":"久田・浅野・小林さん"},{"id": "p6a", "item": "パンツ", "name": "スラックス 三方詰め・渡り詰め", "cat": "c", "yomi": "すらっくす さんぽうづめ わたりつめ 三方詰め", "memo": "", "staff": "小林・古田さん"}, {"id": "p6b", "item": "パンツ", "name": "デニム・カジュアルパンツ 三方詰め・渡り詰め", "cat": "c", "yomi": "でにむ かじゅある さんぽうづめ わたりつめ", "memo": "", "staff": "浅野・小林さん"}, {"id": "p6c", "item": "パンツ", "name": "三方出し（スラックス・カジュアル・婦人）", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田・浅野・小林さん"},{"id":"p7", "item":"スカート", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい たけつめ", "memo":"", "staff":"丸の内"},{"id":"p8", "item":"スカート", "name":"3方詰め／プリーツ・ギャザーのウエスト詰め", "cat":"c", "yomi":"さんぽうづめ ぷりーつ ぎゃざー うえすとつめ", "memo":"", "staff":"久田・小林・矢野さん"}, {"id": "p6d", "item": "スカート", "name": "三方出し", "cat": "d", "yomi": "さんぽうだし 三方出し ひろげる", "memo": "", "staff": "久田さん"},{"id":"p9", "item":"スカート", "name":"ウエストゴム仕様のお直し", "cat":"c", "yomi":"ごむ うえすと", "memo":"修理範囲が紙に未記載", "staff":"久田・小林・矢野・浅野さん"},{"id":"p10", "item":"スカート", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち ぱいぴんぐ みかえし", "memo":"メロー、カバーステッチ、パイピング移動、見返し付きなど", "staff":"研修生、久田・矢野さん"},{"id":"p11", "item":"ワンピース", "name":"丈詰め（タタキ・まつり縫い）", "cat":"b", "yomi":"すそつめ たたき まつりぬい", "memo":"", "staff":"丸の内"},{"id":"p12", "item":"ワンピース", "name":"特殊ミシンの裾詰め", "cat":"c", "yomi":"とくしゅみしん めろー かばーすてっち", "memo":"メロー、カバーステッチなど", "staff":"研修生、久田さん（なりさん）"},{"id":"p13", "item":"ワンピース", "name":"ウエスト切り替え位置での詰め（トップカット）", "cat":"d", "yomi":"うえすと きりかえ つめ とっぷかっと", "memo":"", "staff":"久田・小林さん"},{"id":"p14", "item":"ワンピース", "name":"サイズUP・生地つぎ足し", "cat":"d", "yomi":"さいずあっぷ きじ つぎたし", "memo":"", "staff":"久田・小林さん"},{"id":"p15", "item":"シャツ", "name":"袖丈詰め（シンプル）", "cat":"b", "yomi":"そでたけつめ", "memo":"", "staff":"丸の内"},{"id":"p16", "item":"シャツ", "name":"リサイズ・複合修理", "cat":"c", "yomi":"りさいず ふくごう みはば きたけ", "memo":"身幅詰め＋着丈詰めなど", "staff":"研修生、浅野さん"},{"id":"p17", "item":"シャツ", "name":"カバーステッチ仕様のお直し（カットソー含む）", "cat":"c", "yomi":"かばーすてっち かっとそー", "memo":"丸の内の機械の調子・外注手配を考慮", "staff":"研修生、矢野さん"},{"id":"p18", "item":"ジャケット", "name":"本切羽", "cat":"c", "yomi":"ほんせっぱ", "memo":"", "staff":"なりさん"},{"id":"p19", "item":"ジャケット", "name":"袖丈詰め（袖山）", "cat":"c", "yomi":"そでたけつめ そでやま", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p20", "item":"ジャケット", "name":"肩幅詰め", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p21", "item":"ジャケット", "name":"身幅詰め", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p22", "item":"ジャケット", "name":"着丈詰め", "cat":"c", "yomi":"きたけつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p23", "item":"ジャケット", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c1"},{"id":"p24", "item":"ジャケット", "name":"寸法の大きい肩巾・身巾・袖巾", "cat":"", "yomi":"すんぽう おおきい かたはば みはば そではば ふくごう", "memo":"「JK・複合」も同じ扱い。紙に週数の記載なし", "staff":"石川さん、宇藤さん", "kind":"quote"},{"id":  "p25", "item":  "コート・アウター", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう つつそで", "memo":  "", "staff":  "丸の内"}, {"id":  "p23j", "item":  "ジャケット", "name":  "袖丈詰め（ピス移動）", "cat":  "b", "yomi":  "そでたけつめ ぴすいどう", "memo":  "", "staff":  "丸の内"}, {"id":  "p23k", "item":  "ジャケット", "name":  "袖丈詰め（あきみせ）", "cat":  "b", "yomi":  "そでたけつめ あきみせ 開き見せ", "memo":  "", "staff":  "丸の内"},{"id":"p26", "item":"コート・アウター", "name":"袖丈詰め（ベルト上のみ）", "cat":"b", "yomi":"そでたけつめ べると", "memo":"", "staff":"丸の内"},{"id":"p27", "item":"コート・アウター", "name":"肩幅詰め（単品）", "cat":"c", "yomi":"かたはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p28", "item":"コート・アウター", "name":"身幅詰め（単品）", "cat":"c", "yomi":"みはばつめ", "memo":"寸法の少ないもの", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p29", "item":"コート・アウター", "name":"ブルゾン等のお直し", "cat":"c", "yomi":"ぶるぞん", "memo":"ジャケットと同等のお直しを含む想定", "staff":"石川・久田・宇藤・古田・矢野さん、研修生"},{"id":"p30", "item":"コート・アウター", "name":"肩から着丈詰め", "cat":"", "yomi":"かたから きたけつめ", "memo":"基本6週間以上。日によって変わります", "staff":"石川さん", "kind":"min", "weeks":6, "cid":"c2"},{"id":"p31", "item":"コート・アウター", "name":"ラグランコートの肩山詰め", "cat":"", "yomi":"らぐらん かたやまつめ", "memo":"基本6週間以上。日によって変わります。宇藤さんのみ対応", "staff":"宇藤さんのみ", "kind":"min", "weeks":6, "cid":"c3"},{"id":"p32", "item":"コート・アウター", "name":"表地交換（全体）", "cat":"d", "yomi":"おもてじ こうかん", "memo":"部分の交換は4週間以上。取り寄せ期間は要見積もり。担当は紙が読み取りづらく要確認", "staff":"宇藤さんのみ（要確認）", "kind":"order"},{"id":"p33", "item":"ダウンジャケット", "name":"袖詰め・肩幅詰め・破れリペア", "cat":"c", "yomi":"そでつめ かたはば やぶれ りぺあ だうん", "memo":"取り寄せが不要な場合・寸法の少ないもの", "staff":"なりさん、研修生"},{"id":"p34", "item":"ダウンジャケット", "name":"取り寄せが必要な修理", "cat":"c", "yomi":"とりよせ ぱーつ きじ だうん", "memo":"取り寄せ期間は要見積もり", "staff":"研修生", "kind":"order"},{"id": "p35", "item": "その他", "name": "かけつぎ（虫食い・破れ）", "cat": "", "yomi": "かけつぎ かけはぎ むしくい やぶれ", "memo": "生地により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p36", "item": "その他", "name": "革・レザーの修理", "cat": "", "yomi": "かわ れざー しゅうり", "memo": "内容により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id": "p37", "item": "その他", "name": "特殊素材・ドレスの直し", "cat": "", "yomi": "とくしゅ どれす なおし", "memo": "素材により日数が変わります。見積もりのうえご連絡", "staff": "", "kind": "quote"},{"id":"p38", "item":"その他", "name":"クリーニング", "cat":"f", "yomi":"くりーにんぐ かつかわ あらい", "memo":"", "staff":""}],
-  featured:["p1","p2","p3","p4","p7","p15","p23j","p38"],
+  featured:["p1","p2","p3","p4","p7","p15","p23j","p38"], cSpan:{},
   pins:{s:"",r:"",k:"0711",f:"0000"}, plus:{days:0,per:{}},
   binWd:[1,3,5], binHolShift:true, binAdd:[], binSkip:[], closedWd:[], holClosed:false, extra:[], off:{s:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],r:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"],f:["2026-12-31","2027-01-01","2027-01-02","2027-01-03"]}
 };
@@ -668,6 +691,7 @@ function normShop(x){
   s.names=Object.assign({},DEF_SHOP.names,(x&&x.names)||{});
   if(!x||x.nameVer!==NAMEVER)["b","c","d","g","h"].forEach(k=>{s.names[k]=DEF_SHOP.names[k];});
   s.nameVer=NAMEVER;
+  s.cSpan=Object.assign({},(x&&x.cSpan)||{});
   if(x&&x.off)s.off=Object.assign({s:[],r:[],f:[]},x.off);
   else{
     s.off=structuredClone(DEF_SHOP.off);
@@ -767,6 +791,15 @@ const itemPlus=x=>Math.max(0,+(x&&x.plus)||0);
 const plusAny=()=>{const p=shop.plus||{};return (+p.days||0)>0||Object.values(p.per||{}).some(v=>(+v||0)>0)||(shop.repairs||[]).some(x=>itemPlus(x)>0);};
 function addPlus(d,ex,z){if(!ex)return d;let x=addD(d,ex),g=0;while(isClosed(x,shop,z||"f")&&g++<60)x=addD(x,1);return x;}
 const cEntries=k=>(cdaily[k.slice(0,7)]||{})[k]||null;
+const spanOf=cid=>Object.assign({days:0,from:""},(shop.cSpan||{})[cid]||{});
+/* その受付日の変動の出来上がり日。個別入力があればそれ、なければ「期間」で計算 */
+function cDateFor(d,cid){
+  const k=key(d), ent=cEntries(k);
+  if(ent&&ent[cid])return parseKey(ent[cid]);
+  const sp=spanOf(cid), n=+sp.days||0;
+  if(n>0&&(!sp.from||k>=sp.from))return finish(d,{days:n,mode:"cal",scope:"f"});
+  return null;
+}
 const unit=(it,d)=>{
   if(it.wd){
     if(d){const n=it.wd[d.getDay()];return n+"泊"+(n+1)+"日";}
@@ -815,7 +848,7 @@ let brand="a";try{const b=localStorage.getItem("sarto-brand");if(b==="a"||b==="r
 function rowHTML(code,it,r,noUnit){
   return `<span class="code">${code}</span><span class="nm"><span>${esc(it.name)}</span>${r.manual?'<span class="man-tag">手修正</span>':(noUnit?"":`<span class="mono">${unit(it,recv)}</span>`)}</span><span class="fin">${fmt(r.date)}</span>`;
 }
-function cList(){const ent=cEntries(key(recv));return shop.cItems.map(ci=>({name:ci.name,date:ent&&ent[ci.id]?parseKey(ent[ci.id]):null}));}
+function cList(){return shop.cItems.map(ci=>({id:ci.id,name:ci.name,date:cDateFor(recv,ci.id)}));}
 
 function renderSlip(){
   const isToday=key(recv)===key(today()), ym=ymOf(recv);
@@ -893,7 +926,7 @@ function renderWeek(){
     if(closed)cls.push("closed");if(bin)cls.push("bin");if(k===tk)cls.push("today");if(k===rk)cls.push("recv");
     const tags=binTag(d)+closedTags(d,shop,zs)+(HOL[k]?`<span class="kn">${HOL[k]}</span>`:"");
     const line=c=>{const r=abd(d,c);return `<span class="wline"><i>${letterOf(c)}</i><span><b class="${r.manual?"man":""}">${fmtS(r.date)}</b>${(c==="a"||c==="r")?`<span class="wsub">${esc(shop.names[c])}</span>`:""}</span></span>`;};
-    const ent=cEntries(k), cds=ent?shop.cItems.map(ci=>ent[ci.id]).filter(Boolean).map(parseKey):[];
+    const cds=shop.cItems.map(ci=>cDateFor(d,ci.id)).filter(Boolean);
     let cTxt='<span class="warn">未入力</span>';
     if(cds.length){const mn=new Date(Math.min(...cds)),mx=new Date(Math.max(...cds));cTxt=key(mn)===key(mx)?`<b>${fmtS(mn)}</b>`:`<b>${md(mn)}〜${md(mx)}</b>`;}
     h+=`<button type="button" class="${cls.join(" ")}" data-k="${k}" aria-label="${fmt(d)}受付の仕上がりを見る"><span class="whead"><span class="wdate mono">${d.getMonth()+1}/${d.getDate()}</span><span class="wdow">${WD[d.getDay()]}</span></span><span class="wtags">${tags}</span>${line(brand)}${line("b")}${line("c")}${line("d")}${line("f")}<span class="wline"><i>変</i>${cTxt}</span></button>`;
@@ -954,10 +987,18 @@ function fillC(){
   $("cDay").value=cDayK;
   if(!cCalYm)cCalYm=cDayK.slice(0,7);
   const ent=cEntries(cDayK)||{};
-  $("cStat").textContent=cEntries(cDayK)?"入力済み":"未入力";
-  $("cStat").className="mstat"+(cEntries(cDayK)?" set":"");
-  $("cInputs").innerHTML=shop.cItems.map(ci=>`<div class="c-in"><label for="cf-${ci.id}">${esc(ci.name)}</label><input type="date" id="cf-${ci.id}" value="${ent[ci.id]||""}" min="${cDayK}"><span class="c-hint" id="ch-${ci.id}"></span></div>`).join("");
+  const anyv=shop.cItems.some(ci=>cDateFor(parseKey(cDayK),ci.id));
+  $("cStat").textContent=anyv?"入力済み":"未入力";
+  $("cStat").className="mstat"+(anyv?" set":"");
+  const cday=parseKey(cDayK);
+  $("cInputs").innerHTML=shop.cItems.map(ci=>{
+    const dv=ent[ci.id]||(cDateFor(cday,ci.id)?key(cDateFor(cday,ci.id)):"");
+    const sp=spanOf(ci.id), nn=+sp.days||0;
+    return `<div class="c-in"><label for="cf-${ci.id}">${esc(ci.name)}</label><input type="date" id="cf-${ci.id}" value="${dv}" min="${cDayK}"><span class="c-hint" id="ch-${ci.id}"></span><span class="c-btns"><button class="btn sm" type="button" data-span="${ci.id}">期間${nn?"（"+nn+"日）":""}</button><button class="btn sm" type="button" data-ccal="${ci.id}">カレンダー</button></span></div>`;
+  }).join("");
   shop.cItems.forEach(ci=>{$("cf-"+ci.id).oninput=()=>{cHint(ci);cChanged();};cHint(ci);});
+  $("cInputs").querySelectorAll("[data-span]").forEach(b=>b.onclick=()=>openSpan(b.dataset.span));
+  $("cInputs").querySelectorAll("[data-ccal]").forEach(b=>b.onclick=()=>openCCal(b.dataset.ccal));
   if(cSel>=shop.cItems.length)cSel=0;
   dirty("cDirty",false);
   drawCCal();
@@ -1015,6 +1056,131 @@ $("cClear").onclick=()=>{
   if(!cEntries(cDayK)){toast("この日は入力がありません。");return;}
   saveCDay(null).then(()=>toast("入力を消しました。"),()=>{});
 };
+
+/* ---------- 変動：項目ごとの「期間」 ---------- */
+let spanCid="", spanEditOn=false, SPAN=null;
+const spanDays=()=>Math.max(0,Math.min(180,parseInt($("cspanDays").value)||0));
+function spanPreview(n){
+  $("cspanNote").textContent=n?`今日（${fmtS(today())}）以降に受け付けたぶんは、受付日から${n}日間で出来上がり日を出します。`:"期間はまだ決まっていません。0日間にすると「未入力」に戻ります。";
+  $("cspanPrev").textContent=n?`例：${fmtS(today())}受付 → ${fmtS(finish(today(),{days:n,mode:"cal",scope:"f"}))}　／　${fmtS(addD(today(),7))}受付 → ${fmtS(finish(addD(today(),7),{days:n,mode:"cal",scope:"f"}))}`:"";
+}
+function renderSpan(){
+  const ci=(shop.cItems||[]).find(c=>c.id===spanCid)||{name:""};
+  $("cspanTitle").textContent=ci.name+" の期間";
+  $("cspanEdit").setAttribute("aria-pressed",String(spanEditOn));
+  $("cspanEdit").textContent=spanEditOn?"修正をやめる":"修正する";
+  $("cspanSave").hidden=!spanEditOn;
+  const cur=spanEditOn&&SPAN?SPAN:spanOf(spanCid);
+  const n=+cur.days||0;
+  $("cspanDays").value=n;
+  $("cspanDays").disabled=!spanEditOn;
+  $("cspanQuick").innerHTML=spanEditOn?[7,10,14,21,28,35,42,49,56,63].map(v=>`<button type="button" class="fchip" data-n="${v}" aria-pressed="${v===n}">${v}日</button>`).join(""):"";
+  $("cspanQuick").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(!SPAN)return;SPAN.days=+b.dataset.n;dirty("cspanDirty",true);renderSpan();});
+  spanPreview(n);
+}
+function openSpan(cid){spanCid=cid;spanEditOn=false;SPAN=null;dirty("cspanDirty",false);renderSpan();$("cspanDlg").showModal();}
+$("cspanDays").oninput=()=>{if(!SPAN)return;SPAN.days=spanDays();dirty("cspanDirty",true);spanPreview(SPAN.days);$("cspanQuick").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.n===SPAN.days)));};
+$("cspanEdit").onclick=()=>{
+  spanEditOn=!spanEditOn;
+  if(spanEditOn){SPAN={days:+spanOf(spanCid).days||0,from:""};toast("日数を選んで「保存する」を押してください。今日以降がすべてこの日数になります。");}
+  else{SPAN=null;dirty("cspanDirty",false);}
+  renderSpan();
+};
+$("cspanSave").onclick=()=>{
+  const n=spanDays(), tk=key(today());
+  shop.cSpan=Object.assign({},shop.cSpan||{},{[spanCid]:{days:n,from:tk}});
+  const months={};
+  Object.keys(cdaily).forEach(ym=>{
+    const m=Object.assign({},cdaily[ym]||{});let ch=false;
+    Object.keys(m).forEach(k=>{
+      if(k<tk||!m[k]||!m[k][spanCid])return;
+      const day=Object.assign({},m[k]);delete day[spanCid];
+      if(Object.keys(day).length)m[k]=day;else delete m[k];
+      ch=true;
+    });
+    if(ch)months[ym]=m;
+  });
+  Object.keys(months).forEach(ym=>{cdaily=Object.assign({},cdaily,{[ym]:months[ym]});});
+  spanEditOn=false;SPAN=null;dirty("cspanDirty",false);
+  render();fillC();renderSpan();
+  Promise.all([persist("settings/shop",shop)].concat(Object.keys(months).map(ym=>persist("cdaily/"+ym,Object.keys(months[ym]).length?{days:months[ym]}:null))))
+    .then(()=>toast(n?n+"日間で保存しました。今日以降はすべてこの日数になります。":"期間をやめました。"),()=>{});
+};
+$("cspanX").onclick=()=>$("cspanDlg").close();
+$("cspanDone").onclick=()=>$("cspanDlg").close();
+$("cspanDlg").addEventListener("close",()=>{spanEditOn=false;SPAN=null;dirty("cspanDirty",false);});
+
+/* ---------- 変動：項目ごとの日毎カレンダー ---------- */
+let ccalCid="", ccalEditOn=false, ccalYm="", ccalPick="", CCAL=null;
+function ccalVal(k){
+  if(CCAL&&Object.prototype.hasOwnProperty.call(CCAL,k))return CCAL[k];
+  const ent=cEntries(k);
+  if(ent&&ent[ccalCid])return ent[ccalCid];
+  const sp=spanOf(ccalCid), n=+sp.days||0;
+  if(n>0&&(!sp.from||k>=sp.from))return key(finish(parseKey(k),{days:n,mode:"cal",scope:"f"}));
+  return null;
+}
+function renderCCal(){
+  const ci=(shop.cItems||[]).find(c=>c.id===ccalCid)||{name:""};
+  $("ccalTitle").textContent=ci.name+" のカレンダー";
+  $("ccalEdit").setAttribute("aria-pressed",String(ccalEditOn));
+  $("ccalEdit").textContent=ccalEditOn?"修正をやめる":"修正する";
+  $("ccalSave").hidden=!ccalEditOn;
+  $("ccalBackRow").hidden=!ccalPick;
+  $("ccalLbl").textContent=ymLabel(ccalYm);
+  if(!ccalPick){
+    $("ccalStep").textContent="受付日をえらぶ";
+    $("ccalNote").textContent=ccalEditOn?"受付日をタップすると、その日の出来上がり日を選べます。":"日にちの中の数字が出来上がり日です。直すときは「修正する」を押してください。";
+    miniCal($("ccalCal"),ccalYm,(d,k)=>{
+      const v=ccalVal(k), cls=[];
+      if(isClosed(d))cls.push("closed");else if(isBin(d))cls.push("bin");
+      if(k===key(today()))cls.push("today");
+      return {cls,disabled:!ccalEditOn,html:`<span class="marks">${v?`<span class="mk c">${md(parseKey(v))}</span>`:""}</span>`};
+    },k=>{ccalPick=k;ccalYm=k.slice(0,7);renderCCal();});
+  }else{
+    $("ccalStep").textContent=fmtS(parseKey(ccalPick))+"受付 → 出来上がり日";
+    $("ccalNote").textContent="出来上がり日をタップしてください。";
+    const cur=ccalVal(ccalPick);
+    miniCal($("ccalCal"),ccalYm,(d,k)=>{
+      const cls=[];
+      if(isClosed(d))cls.push("closed");else if(isBin(d))cls.push("bin");
+      if(cur===k)cls.push("recv");
+      return {cls,disabled:k<ccalPick,html:(isClosed(d)?'<span class="kn">休</span>':"")};
+    },k=>{CCAL=CCAL||{};CCAL[ccalPick]=k;dirty("ccalDirty",true);ccalPick="";renderCCal();});
+  }
+  const n=CCAL?Object.keys(CCAL).length:0;
+  $("ccalFoot").textContent=n?n+"日ぶんを変更中":"";
+}
+function openCCal(cid){ccalCid=cid;ccalEditOn=false;CCAL=null;ccalPick="";ccalYm=cDayK.slice(0,7);dirty("ccalDirty",false);renderCCal();$("ccalDlg").showModal();}
+$("ccalPrev").onclick=()=>{ccalYm=ymShift(ccalYm,-1);renderCCal();};
+$("ccalNext").onclick=()=>{ccalYm=ymShift(ccalYm,1);renderCCal();};
+$("ccalBack").onclick=()=>{ccalPick="";renderCCal();};
+$("ccalClear").onclick=()=>{if(!ccalPick)return;CCAL=CCAL||{};CCAL[ccalPick]=null;dirty("ccalDirty",true);ccalPick="";renderCCal();};
+$("ccalEdit").onclick=()=>{
+  ccalEditOn=!ccalEditOn;
+  if(ccalEditOn){CCAL={};toast("受付日をタップ → 出来上がり日をタップ。終わったら「保存する」を押してください。");}
+  else{CCAL=null;dirty("ccalDirty",false);}
+  ccalPick="";renderCCal();
+};
+$("ccalSave").onclick=()=>{
+  const ch=CCAL||{};
+  const months={};
+  Object.keys(ch).forEach(k=>{
+    const ym=k.slice(0,7);
+    const m=months[ym]||(months[ym]=Object.assign({},cdaily[ym]||{}));
+    const day=Object.assign({},m[k]||{});
+    if(ch[k])day[ccalCid]=ch[k];else delete day[ccalCid];
+    if(Object.keys(day).length)m[k]=day;else delete m[k];
+  });
+  Object.keys(months).forEach(ym=>{cdaily=Object.assign({},cdaily,{[ym]:months[ym]});});
+  const ps=Object.keys(months).map(ym=>persist("cdaily/"+ym,Object.keys(months[ym]).length?{days:months[ym]}:null));
+  CCAL=null;ccalEditOn=false;ccalPick="";dirty("ccalDirty",false);
+  render();fillC();renderCCal();
+  Promise.all(ps).then(()=>toast(ps.length?"保存しました。":"変更はありませんでした。"),()=>{});
+};
+$("ccalX").onclick=()=>$("ccalDlg").close();
+$("ccalDone").onclick=()=>$("ccalDlg").close();
+$("ccalDlg").addEventListener("close",()=>{ccalEditOn=false;CCAL=null;ccalPick="";dirty("ccalDirty",false);});
 
 /* A・B・D 月間 */
 function mRow(code,c){
@@ -1570,8 +1736,8 @@ function repCalc(x){
   if(x.kind==="min"){
     const n=x.weeks||6;let d=repWeeks(n);if(itemPlus(x))d=addPlus(d,itemPlus(x),"f");
     if(x.cid){
-      const ent=cEntries(key(recv))||{};
-      if(ent[x.cid]){const dd=parseKey(ent[x.cid]);return {date:dd,html:fmtS(dd),sub:"変動（今日の入力済み）"};}
+      const dd=cDateFor(recv,x.cid);
+      if(dd)return {date:dd,html:fmtS(dd),sub:"変動（入力済み）"};
       return {html:"基本"+n+"週間以上",date:d,sub:"変動 未入力（目安 "+fmtS(d)+"以降）"};
     }
     return {html:"基本"+n+"週間以上",date:d,sub:"納期変動（目安 "+fmtS(d)+"以降）"};
