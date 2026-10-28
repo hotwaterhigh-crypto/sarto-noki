@@ -133,6 +133,7 @@ button.row:hover{border-color:var(--navy)}
 
 /* 確認カレンダー */
 .confirm{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--ground)}
+.mnav{flex-wrap:wrap}
 .calhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
 .calhead h4{margin:0}
 .mnav{display:flex;align-items:center;gap:6px;font-family:"Zen Old Mincho",serif;font-weight:900;font-size:16px}
@@ -203,7 +204,7 @@ dialog::backdrop{background:rgba(20,23,30,.5)}
 .set-row{display:grid;grid-template-columns:1fr 80px 100px;gap:6px;align-items:center;margin-bottom:6px}
 .set-row .lab{font-weight:700;font-size:14px}
 .monthnav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:"Zen Old Mincho",serif;font-size:19px;font-weight:900}
-.ymsel{display:flex;gap:6px}
+.ymsel{display:flex;gap:6px;align-items:center}
 .ymsel select{font-family:"Zen Kaku Gothic New",sans-serif;font-size:14px;font-weight:700;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
 .mstat{font-size:12px;color:var(--ink2)} .mstat.set{color:var(--teal)} .mstat.dirty{color:var(--rust);font-weight:700}
 .tbl{overflow-x:auto}
@@ -444,7 +445,7 @@ body.notadmin .adminonly{display:none!important}
   <section class="cal">
     <h2 class="eyebrow"><em>Calendario</em>月間カレンダー</h2>
     <div class="cal-top">
-      <div class="month"><button class="nav" id="prev" type="button" aria-label="前の月">‹</button><span id="monthLbl"></span><button class="nav" id="next" type="button" aria-label="次の月">›</button></div>
+      <div class="month"><button class="nav" id="prev" type="button" aria-label="前の月">‹</button><span id="monthLbl"></span><button class="nav" id="next" type="button" aria-label="次の月">›</button><span class="ymsel"><select id="calY" aria-label="年をえらぶ"></select><select id="calM" aria-label="月をえらぶ"></select></span></div>
       <div class="filters" id="filters"></div>
     </div>
     <p class="hint">日付をタップすると、その日に受付した場合の仕上がり日が上の伝票とカレンダーに表示されます。</p>
@@ -479,7 +480,7 @@ body.notadmin .adminonly{display:none!important}
       <div id="cInputs"></div>
       <div class="fieldrow"><button class="btn" type="button" id="cCopy">前回と同じ日数で入れる</button><span class="note">空欄のままの項目はトップに「未入力」と出ます。</span></div>
       <div class="confirm">
-        <div class="calhead"><h4>確認カレンダー</h4><div class="mnav"><button class="nav" type="button" id="cCalPrev" aria-label="前の月">‹</button><span id="cCalLbl"></span><button class="nav" type="button" id="cCalNext" aria-label="次の月">›</button></div></div>
+        <div class="calhead"><h4>確認カレンダー</h4><div class="mnav"><button class="nav" type="button" id="cCalPrev" aria-label="前の月">‹</button><span id="cCalLbl"></span><button class="nav" type="button" id="cCalNext" aria-label="次の月">›</button><span class="ymsel"><select id="cCalY" aria-label="年をえらぶ"></select><select id="cCalM" aria-label="月をえらぶ"></select></span></div></div>
         <div class="chips"><span class="note">直す項目（変動）：</span><span class="chips" id="cChips"></span></div>
         <p class="note">項目を選んで日付をタップすると、その日を仕上がり日にします（選んだ後は次の項目に進みます）。</p>
         <div class="mcal-wrap"><div class="mcal" id="cCal"></div></div>
@@ -512,7 +513,7 @@ body.notadmin .adminonly{display:none!important}
       <div><div class="h4row"><h4>ワニナル便の曜日</h4><div class="caltools"><button class="btn editbtn" type="button" id="sEditBtn1" aria-pressed="false">修正する</button><span class="mstat dirty" id="sDirty1" hidden>未保存</span><button class="btn primary" type="button" id="sSave1">保存する</button></div></div><div class="wk" id="sBin"></div></div>
       <div class="wk"><label class="chk"><input type="checkbox" id="sHol"> 祝日も休業にする</label><label class="chk"><input type="checkbox" id="sShift"> 祝日のワニナル便を移動する（月曜→翌日・金曜→前日）</label></div>
       <div class="confirm">
-        <div class="calhead"><h4>定休日・ワニナル便カレンダー</h4><div class="mnav"><button class="nav" type="button" id="sCalPrev" aria-label="前の月">‹</button><span id="sCalLbl"></span><button class="nav" type="button" id="sCalNext" aria-label="次の月">›</button></div></div>
+        <div class="calhead"><h4>定休日・ワニナル便カレンダー</h4><div class="mnav"><button class="nav" type="button" id="sCalPrev" aria-label="前の月">‹</button><span id="sCalLbl"></span><button class="nav" type="button" id="sCalNext" aria-label="次の月">›</button><span class="ymsel"><select id="sCalY" aria-label="年をえらぶ"></select><select id="sCalM" aria-label="月をえらぶ"></select></span></div></div>
         <div class="caltools"><button class="btn editbtn" type="button" id="sEditBtn2" aria-pressed="false">修正する</button><span class="mstat dirty" id="sDirty2" hidden>未保存</span><button class="btn primary" type="button" id="sSave2">保存する</button></div>
         <div class="chips"><span class="note">登録するもの：</span><div class="seg wrap" role="group" aria-label="登録するもの" id="sModeSeg"><button type="button" data-mode="s">サローネ定休日</button><button type="button" data-mode="r">ReSARTO定休日</button><button type="button" data-mode="f">フロント（古江）定休日</button><button type="button" data-mode="n">納期NG日</button><button type="button" data-mode="b">ワニナル便</button></div></div>
         <p class="note">「修正する」→ 登録するものを選ぶ → 日付をタップ。もう一度タップで外れます。サローネ定休日はサローネ、ReSARTO定休日は ReSARTO、フロント（古江）定休日は 2週グループ・3週グループ・4週グループ・変動・クリーニングとワニナル便の仕上がり計算に使います。ワニナル便を選ぶと、便の日は「便休み」、便のない日は「臨時便」に切り替わります（祝日の月曜の便は翌日、金曜の便は前日に移ります）。納期NG日は「その日を仕上がり日にしない」日です。お店は開いていても、計算した仕上がり日がその日に当たると自動で翌日（翌日もNGならその次）に送ります。すべての納期に効きます。</p>
@@ -606,7 +607,7 @@ body.notadmin .adminonly{display:none!important}
   <div class="dlg">
     <div class="dlg-head"><h3 id="ccalTitle">カレンダー</h3><button class="x" type="button" id="ccalX" aria-label="閉じる">×</button></div>
     <p class="note" id="ccalNote"></p>
-    <div class="calhead"><h4 id="ccalStep">受付日をえらぶ</h4><div class="mnav"><button class="nav" type="button" id="ccalPrev" aria-label="前の月">‹</button><span id="ccalLbl"></span><button class="nav" type="button" id="ccalNext" aria-label="次の月">›</button></div></div>
+    <div class="calhead"><h4 id="ccalStep">受付日をえらぶ</h4><div class="mnav"><button class="nav" type="button" id="ccalPrev" aria-label="前の月">‹</button><span id="ccalLbl"></span><button class="nav" type="button" id="ccalNext" aria-label="次の月">›</button><span class="ymsel"><select id="ccalY" aria-label="年をえらぶ"></select><select id="ccalM" aria-label="月をえらぶ"></select></span></div></div>
     <div class="mcal-wrap"><div class="mcal" id="ccalCal"></div></div>
     <div class="fieldrow" id="ccalBackRow" hidden><button class="btn" type="button" id="ccalBack">← 受付日を選び直す</button><button class="btn" type="button" id="ccalClear">この日の入力を消す</button></div>
     <div class="foot"><div class="hbtns"><button class="btn editbtn" type="button" id="ccalEdit" aria-pressed="false">修正する</button><span class="mstat dirty" id="ccalDirty" hidden>未保存</span><span class="note" id="ccalFoot"></span></div><div class="hbtns"><button class="btn primary" type="button" id="ccalSave" hidden>保存する</button><button class="btn" type="button" id="ccalDone">閉じる</button></div></div>
@@ -647,7 +648,7 @@ body.notadmin .adminonly{display:none!important}
     <div class="dlg-head"><h3 id="pkTitle"></h3><button class="x" type="button" id="pkX" aria-label="閉じる">×</button></div>
     <div class="seg wrap" role="group" aria-label="直す項目" id="pkSeg"><button type="button" data-c="a">A</button><button type="button" data-c="r">A</button><button type="button" data-c="b">B</button><button type="button" data-c="c">C</button><button type="button" data-c="d">D</button><button type="button" data-c="g">G</button><button type="button" data-c="h">H</button><button type="button" data-c="f">F</button></div>
     <div class="pknow" id="pkNow"></div>
-    <div class="calhead"><b id="pkHint" style="font-size:14px"></b><div class="mnav"><button class="nav" type="button" id="pkPrev" aria-label="前の月">‹</button><span id="pkYmLbl"></span><button class="nav" type="button" id="pkNext" aria-label="次の月">›</button></div></div>
+    <div class="calhead"><b id="pkHint" style="font-size:14px"></b><div class="mnav"><button class="nav" type="button" id="pkPrev" aria-label="前の月">‹</button><span id="pkYmLbl"></span><button class="nav" type="button" id="pkNext" aria-label="次の月">›</button><span class="ymsel"><select id="pkY" aria-label="年をえらぶ"></select><select id="pkM" aria-label="月をえらぶ"></select></span></div></div>
     <div class="mcal-wrap"><div class="mcal" id="pkCal"></div></div>
     <div class="foot"><span class="note">最後にフロント担当の「保存する」で反映されます。</span><button class="btn primary" type="button" id="pkDone">閉じる</button></div>
   </div>
@@ -831,6 +832,18 @@ function persist(path,body){
   return (body===null?db.doc(path).delete():db.doc(path).set(body)).catch(e=>{writeFail(e);throw e;});
 }
 
+/* 年・月のえらび箱を作る */
+function fillYmSel(ySel,mSel,ym,onPick){
+  if(!ySel||!mSel)return;
+  const [y,m]=ym.split("-").map(Number), ty=today().getFullYear();
+  const years=[];
+  for(let i=ty-2;i<=ty+3;i++)years.push(i);
+  if(years.indexOf(y)<0){years.push(y);years.sort((a,b)=>a-b);}
+  ySel.innerHTML=years.map(v=>`<option value="${v}"${v===y?" selected":""}>${v}年</option>`).join("");
+  mSel.innerHTML=Array.from({length:12},(_,i)=>i+1).map(v=>`<option value="${v}"${v===m?" selected":""}>${v}月</option>`).join("");
+  const go=()=>onPick(ySel.value+"-"+String(mSel.value).padStart(2,"0"));
+  ySel.onchange=go;mSel.onchange=go;
+}
 /* 確認カレンダー共通 */
 function miniCal(el,ym,cell,onTap){
   const [y,m]=ym.split("-").map(Number), first=new Date(y,m-1,1);
@@ -901,6 +914,7 @@ function renderFilters(){
 
 function renderCal(){
   $("monthLbl").textContent=view.getFullYear()+"年 "+(view.getMonth()+1)+"月";
+  fillYmSel($("calY"),$("calM"),ymOf(view),v=>{const [yy,mm]=v.split("-").map(Number);view=new Date(yy,mm-1,1);renderCal();});
   const marks={};
   const put=(d,t,c)=>{(marks[key(d)]=marks[key(d)]||[]).push([t,c]);};
   if(show.ab)[brand,"b","c","d","g","h","f"].forEach(c=>{const r=abd(recv,c);put(r.date,letterOf(c),r.manual?"man":"");});
@@ -1018,6 +1032,7 @@ function fillC(){
 }
 function drawCCal(){
   $("cCalLbl").textContent=ymLabel(cCalYm);
+  fillYmSel($("cCalY"),$("cCalM"),cCalYm,v=>{cCalYm=v;drawCCal();});
   $("cChips").innerHTML=shop.cItems.map((ci,i)=>`<button type="button" class="fchip" data-i="${i}" aria-pressed="${i===cSel}">${esc(ci.name)}</button>`).join("");
   $("cChips").querySelectorAll("button").forEach(b=>b.onclick=()=>{cSel=+b.dataset.i;drawCCal();});
   const vals={};shop.cItems.forEach((ci,i)=>{const v=$("cf-"+ci.id).value;if(v)(vals[v]=vals[v]||[]).push(i);});
@@ -1136,6 +1151,7 @@ function renderCCal(){
   $("ccalSave").hidden=!ccalEditOn;
   $("ccalBackRow").hidden=!ccalPick;
   $("ccalLbl").textContent=ymLabel(ccalYm);
+  fillYmSel($("ccalY"),$("ccalM"),ccalYm,v=>{ccalYm=v;renderCCal();});
   if(!ccalPick){
     $("ccalStep").textContent="受付日をえらぶ";
     $("ccalNote").textContent=ccalEditOn?"受付日をタップすると、その日の出来上がり日を選べます。":"日にちの中の数字が出来上がり日です。直すときは「修正する」を押してください。";
@@ -1287,6 +1303,7 @@ function drawPick(){
   });
   $("pkHint").textContent=`${labelOf(pkCode)} の仕上がり日をタップ`;
   $("pkYmLbl").textContent=ymLabel(pkYm);
+  fillYmSel($("pkY"),$("pkM"),pkYm,v=>{pkYm=v;drawPick();});
   const cur=abd(recvD,pkCode,cfg,mDraft);
   miniCal($("pkCal"),pkYm,(d,k)=>{
     const cls=[];if(isClosed(d,shop,SCOPE[pkCode]))cls.push("closed");else if(isBin(d))cls.push("bin");
@@ -1312,18 +1329,6 @@ $("pkNext").onclick=()=>{pkYm=ymShift(pkYm,1);drawPick();};
 $("pkX").onclick=()=>$("pickDlg").close();
 $("pkDone").onclick=()=>$("pickDlg").close();
 $("pickDlg").addEventListener("close",()=>{mSelK=null;if($("front").open)drawMCal();});
-/* 年・月のえらび箱を作る */
-function fillYmSel(ySel,mSel,ym,onPick){
-  if(!ySel||!mSel)return;
-  const [y,m]=ym.split("-").map(Number), ty=today().getFullYear();
-  const years=[];
-  for(let i=ty-2;i<=ty+3;i++)years.push(i);
-  if(years.indexOf(y)<0){years.push(y);years.sort((a,b)=>a-b);}
-  ySel.innerHTML=years.map(v=>`<option value="${v}"${v===y?" selected":""}>${v}年</option>`).join("");
-  mSel.innerHTML=Array.from({length:12},(_,i)=>i+1).map(v=>`<option value="${v}"${v===m?" selected":""}>${v}月</option>`).join("");
-  const go=()=>onPick(ySel.value+"-"+String(mSel.value).padStart(2,"0"));
-  ySel.onchange=go;mSel.onchange=go;
-}
 $("mPrev").onclick=()=>{mYm=ymShift(mYm,-1);fillM();};
 $("mNext").onclick=()=>{mYm=ymShift(mYm,1);fillM();};
 $("mCopy").onclick=()=>{fillM(monthCfg(ymShift(mYm,-1)).cfg);toast(ymLabel(ymShift(mYm,-1))+"の値を入れました。カレンダーで確認して保存してください。");};
@@ -1380,6 +1385,7 @@ function syncSEdit(){
 function drawSCal(){
   syncSEdit();
   $("sCalLbl").textContent=ymLabel(sCalYm);
+  fillYmSel($("sCalY"),$("sCalM"),sCalYm,v=>{sCalYm=v;drawSCal();});
   $("sModeSeg").querySelectorAll("button").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.mode===sMode));if(b.dataset.mode!=="b"&&b.dataset.mode!=="n")b.textContent=offName(b.dataset.mode,T)+"定休日";});
   miniCal($("sCal"),sCalYm,(d,k)=>{
     const zs=["s","r","f"], bin=isBin(d,T), cls=[];
